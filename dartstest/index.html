@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Voice Darts Scorer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background: #b30000;
+      color: yellow;
+      font-family: monospace;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: all 0.5s ease;
+    }
+    h1 {
+      font-size: 25vw;
+      line-height: 1;
+      margin: 0;
+      user-select: none;
+    }
+    button {
+      font-size: 5vw;
+      padding: 2vw 4vw;
+      margin: 2vw;
+      background: black;
+      color: yellow;
+      border: none;
+      border-radius: 1vw;
+      user-select: none;
+    }
+    #start-btn {
+      font-size: 10vw;
+      padding: 5vw;
+      margin: 5vw;
+      background: black;
+      color: yellow;
+      border: none;
+      border-radius: 1vw;
+      user-select: none;
+    }
+    p {
+      font-size: 3vw;
+      max-width: 90vw;
+      margin: 0 2vw 1vw;
+      user-select: none;
+    }
+
+    @media (orientation: landscape) {
+      h1 {
+        font-size: 25vh;
+      }
+      button {
+        font-size: 6vh;
+      }
+      p {
+        font-size: 4vh;
+      }
+      #start-btn {
+        font-size: 12vh;
+        padding: 6vh;
+        margin: 6vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1 id="score">501</h1>
+  <button id="start-btn">Start Listening</button>
+  <div id="control-buttons" style="display:none;">
+    <button onclick="resetScore()">Reset</button>
+    <button onclick="bust()">Bust</button>
+  </div>
+  <p id="status">How it works - say your 3 throws ie "20, 19, double 4" then say "go" and your remaining total will be updated.</p>
+
+  <script>
+    let currentScore = 501;
+    let spokenScores = [];
+    let inputTimer = null;
+
+    const scoreDisplay = document.getElementById("score");
+    const statusDisplay = document.getElementById("status");
+    const startBtn = document.getElementById("start-btn");
+    const controlButtons = document.getElementById("control-buttons");
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      statusDisplay.textContent = "Sorry, your browser does not support Speech Recognition.";
+      startBtn.style.display = "none";
+    }
+
+    const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+    if (recognition) {
+      recognition.lang = "en-US";
+      recognition.interimResults = false;
+      recognition.continuous = true;
+
+      recognition.onresult = function(event) {
+        const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+        console.log("Heard:", transcript);
+        statusDisplay.textContent = "Heard: " + transcript;
+
+        if (transcript.includes("go")) {
+          if (spokenScores.length === 0) {
+            statusDisplay.textContent = "No scores detected. Say your throws first.";
+            return;
+          }
+          const total = spokenScores.reduce((a, b) => a + b, 0);
+          if (currentScore - total >= 0) {
+            currentScore -= total;
+            scoreDisplay.textContent = currentScore;
+            statusDisplay.textContent = `Scored ${total}. Remaining: ${currentScore}`;
+          } else {
+            statusDisplay.textContent = "Bust! Say 'reset' or tap Bust.";
+          }
+          spokenScores = [];
+          if (inputTimer) {
+            clearTimeout(inputTimer);
+            inputTimer = null;
+          }
+        } else if (transcript.includes("reset")) {
+          resetScore();
+        } else if (transcript.includes("bust")) {
+          bust();
+        } else {
+          // Try to parse segments separated by comma or space
+          let segments = transcript.split(/[ ,]+/).filter(s => s.length > 0);
+          let scores = [];
+          for (let seg of segments) {
+            let val = parseScoreSegment(seg);
+            if (val > 0) scores.push(val);
+          }
+          if (scores.length > 0) {
+            spokenScores = scores.slice(0, 3);
+            statusDisplay.textContent = "Scores detected: " + spokenScores.join(", ") + " — waiting for more or say 'Go'.";
+
+            // Reset the 3-second timer on every new input
+            if (inputTimer) clearTimeout(inputTimer);
+            inputTimer = setTimeout(() => {
+              statusDisplay.textContent = "Input finalized: " + spokenScores.join(", ") + ". Say 'Go' to confirm.";
+              inputTimer = null;
+            }, 3000);
+          }
+        }
+      };
+
+      recognition.onerror = function(event) {
+        statusDisplay.textContent = "Error: " + event.error;
+      };
+
+      recognition.onend = function() {
+        // Automatically restart recognition unless stopped by user
+        if (startBtn.style.display === "none") {
+          recognition.start();
+        }
+      };
+    }
+
+    function parseScoreSegment(segment) {
+      segment = segment.trim();
+      if (segment.startsWith("double ")) {
+        let val = parseInt(segment.replace("double ", ""));
+        if (!isNaN(val)) return val * 2;
+      } else if (segment.startsWith("triple ")) {
+        let val = parseInt(segment.replace("triple ", ""));
+        if (!isNaN(val)) return val * 3;
+      } else {
+        let val = parseInt(segment);
+        if (!isNaN(val)) return val;
+      }
+      return 0; // fallback for unknown or invalid input
+    }
+
+    function resetScore() {
+      currentScore = 501;
+      scoreDisplay.textContent = currentScore;
+      statusDisplay.textContent = "Score reset to 501.";
+      spokenScores = [];
+      if (inputTimer) {
+        clearTimeout(inputTimer);
+        inputTimer = null;
+      }
+    }
+
+    function bust() {
+      statusDisplay.textContent = "Bust called. Scores ignored.";
+      spokenScores = [];
+      if (inputTimer) {
+        clearTimeout(inputTimer);
+        inputTimer = null;
+      }
+    }
+
+    startBtn.addEventListener('click', () => {
+      if (recognition) {
+        recognition.start();
+        startBtn.style.display = 'none';
+        controlButtons.style.display = 'block';
+        statusDisplay.textContent = "Listening... Say your throws.";
+      }
+    });
+  </script>
+</body>
+</html>
