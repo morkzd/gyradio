@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Voice Darts Scorer</title>
+<style>
+  body {
+    background: #b30000;
+    color: yellow;
+    font-family: monospace;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+  #score {
+    font-size: 40vw;
+    line-height: 1;
+    margin: 0;
+    user-select: none;
+  }
+  #status {
+    font-size: 4vw;
+    margin: 1vw;
+    max-width: 90vw;
+  }
+  #start-btn {
+    font-size: 10vw;
+    padding: 5vw 10vw;
+    margin: 5vw;
+    background: black;
+    color: yellow;
+    border: none;
+    border-radius: 1vw;
+    user-select: none;
+    cursor: pointer;
+  }
+  #congrats {
+    position: fixed;
+    top: 30vh;
+    width: 100%;
+    text-align: center;
+    font-size: 12vw;
+    font-weight: bold;
+    color: gold;
+    text-shadow: 0 0 20px #fff, 0 0 30px gold;
+    pointer-events: none;
+    user-select: none;
+    display: none;
+  }
+  @media (orientation: landscape) {
+    #score { font-size: 40vh; }
+    #status { font-size: 5vh; }
+    #start-btn { font-size: 12vh; padding: 6vh 12vh; }
+    #congrats { font-size: 15vh; }
+  }
+</style>
+</head>
+<body>
+  <h1 id="score">501</h1>
+  <button id="start-btn">Start Listening</button>
+  <p id="status">Say your throw as "N times X" (e.g. "1 times 20"). Say "reset game" to start over.</p>
+  <div id="congrats">🎉 Congratulations! 🎉</div>
+  <audio id="beep" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA="></audio>
+  <canvas id="confetti-canvas" style="position:fixed;top:0;left:0;pointer-events:none;z-index:9999;"></canvas>
+
+<script>
+(() => {
+  const scoreDisplay = document.getElementById("score");
+  const statusDisplay = document.getElementById("status");
+  const startBtn = document.getElementById("start-btn");
+  const congrats = document.getElementById("congrats");
+  const beep = document.getElementById("beep");
+  const confettiCanvas = document.getElementById('confetti-canvas');
+  const ctx = confettiCanvas.getContext('2d');
+
+  let currentScore = 501;
+  let recognitionActive = false;
+
+  function resizeCanvas() {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  const confettiCount = 150;
+  const confettiColors = ['#fce18a', '#ff726d', '#b48def', '#f4306d', '#5ad5d5'];
+  let confettiParticles = [];
+
+  function randomRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
+
+  function createConfetti() {
+    confettiParticles = [];
+    for (let i = 0; i < confettiCount; i++) {
+      confettiParticles.push({
+        x: randomRange(0, confettiCanvas.width),
+        y: randomRange(-confettiCanvas.height, 0),
+        size: randomRange(5, 10),
+        color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+        speedX: randomRange(-2, 2),
+        speedY: randomRange(2, 5),
+        rotation: randomRange(0, 360),
+        rotationSpeed: randomRange(-10, 10)
+      });
+    }
+  }
+
+  function updateConfetti() {
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    confettiParticles.forEach(p => {
+      p.x += p.speedX;
+      p.y += p.speedY;
+      p.rotation += p.rotationSpeed;
+      if (p.y > confettiCanvas.height) {
+        p.x = randomRange(0, confettiCanvas.width);
+        p.y = randomRange(-confettiCanvas.height, 0);
+      }
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.rotation * Math.PI) / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.4);
+      ctx.restore();
+    });
+  }
+
+  let confettiAnimationId;
+  function startConfetti() {
+    createConfetti();
+    confettiAnimationId = requestAnimationFrame(confettiLoop);
+  }
+
+  function confettiLoop() {
+    updateConfetti();
+    confettiAnimationId = requestAnimationFrame(confettiLoop);
+  }
+
+  function stopConfetti() {
+    cancelAnimationFrame(confettiAnimationId);
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+  }
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    statusDisplay.textContent = "Your browser does not support Speech Recognition.";
+    startBtn.style.display = "none";
+    return;
+  }
+  const recognition = new SpeechRecognition();
+  recognition.lang = "en-US";
+  recognition.interimResults = false;
+  recognition.continuous = true;
+
+  recognition.onresult = function(event) {
+    if (!recognitionActive) return;
+    const transcriptRaw = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+
+    if (transcriptRaw.includes("reset game")) {
+      resetGame();
+      statusDisplay.textContent = "Game reset. Say your throw.";
+      return;
+    }
+
+    const score = parseScore(transcriptRaw);
+
+    if (score > 0) {
+      // Only play beep after valid score
+      beep.play();
+
+      // Handle bust if score is 1
+      if (currentScore === 1) {
+        statusDisplay.textContent = `Bust! You can't finish on 1. Score remains ${currentScore}.`;
+        return;
+      }
+
+      const projectedScore = currentScore - score;
+
+      if (projectedScore < 0) {
+        statusDisplay.textContent = `Bust! Throw of ${score} too high. Score remains ${currentScore}.`;
+        return;
+      } else if (projectedScore === 0) {
+        currentScore = 0;
+        updateScoreDisplay();
+        recognition.stop();
+        recognitionActive = false;
+        statusDisplay.textContent = "You've finished the game!";
+        showCongrats();
+        return;
+      } else {
+        currentScore = projectedScore;
+        updateScoreDisplay();
+        statusDisplay.textContent = `Registered: ${score}. Remaining: ${currentScore}`;
+      }
+    } else {
+      statusDisplay.textContent = `Didn't catch that. Please say "N times X" like "1 times 20".`;
+    }
+  };
+
+  recognition.onerror = (e) => {
+    statusDisplay.textContent = `Error: ${e.error}`;
+  };
+
+  recognition.onend = () => {
+    if (recognitionActive) recognition.start();
+  };
+
+  function parseScore(phrase) {
+    phrase = phrase.replace(/outer bull/gi, '25').replace(/bull/gi, '50');
+    phrase = phrase.replace(/times/gi, 'x');
+    const match = phrase.match(/^(\d+)\s*x\s*(\d+)$/);
+    if (match) {
+      const n = parseInt(match[1]);
+      const val = parseInt(match[2]);
+      if (n >= 1 && n <= 3 && val >= 1 && val <= 60) {
+        return n * val;
+      }
+    }
+    if (phrase === "50") return 50;
+    if (phrase === "25") return 25;
+    return 0;
+  }
+
+  function updateScoreDisplay(scoreToShow) {
+    if (scoreToShow === undefined) scoreToShow = currentScore;
+    scoreDisplay.textContent = scoreToShow;
+    scoreDisplay.style.fontSize = scoreToShow < 100 ? '50vw' : '40vw';
+  }
+
+  function showCongrats() {
+    congrats.style.display = 'block';
+    startConfetti();
+    setTimeout(() => {
+      congrats.style.display = 'none';
+      stopConfetti();
+      resetGame();
+      startBtn.style.display = 'inline-block';
+      statusDisplay.textContent = 'Say your throw as "N times X" (e.g. "1 times 20").';
+    }, 8000);
+  }
+
+  function resetGame() {
+    currentScore = 501;
+    updateScore
