@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Glory Years Radio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: 'Press Start 2P', monospace;
+      text-align: center;
+      padding-bottom: 160px; /* Extra space for bottom link */
+    }
+
+    h1 {
+      margin: 20px 0;
+      font-size: 40px;
+    }
+
+    .video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      padding: 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .playlist-button {
+      padding: 28px;
+      background-color: #6B4F2C;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 36px;
+      width: 100%;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease;
+    }
+
+    .playlist-button:hover {
+      background-color: #8B5E3C;
+    }
+
+    .game-link {
+      display: block;
+      margin: 60px auto 0;
+      font-size: 24px;
+      color: white;
+      text-decoration: underline;
+    }
+
+    @media screen and (max-width: 600px) {
+      h1 {
+        font-size: 36px;
+      }
+      .playlist-button {
+        font-size: 40px;
+        padding: 30px;
+      }
+      .game-link {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Glory Years Radio</h1>
+
+  <div class="video-container">
+    <iframe id="player" src="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_q9HMbMXeuPuzFC_8eqMNg&autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
+
+  <div class="button-grid">
+    <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_q9HMbMXeuPuzFC_8eqMNg&autoplay=1">All Songs</button>
+    <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_tW6GvvQJFbGui4bwKgm0y&autoplay=1">Friday After Work</button>
+    <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_PW0EN1IXjG22ywRe1QfZ_&autoplay=1">Jukebox</button>
+    <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr8kktNixGyyL1KUifMCFd2f&autoplay=1">60s</button>
+    <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-vS-Ln_K0PbxT5r2Kq0G3W&autoplay=1">70s</button>
+    <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr9tDexl1i-4_i3Kg1vdBpJ-&autoplay=1">80's</button>
+    <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr93bqj0X4vBzuS0Vb1JRd_i&autoplay=1">90s</button>
+    <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr8qk2WL7tYTUjsBmEf1f4uc&autoplay=1">Noir</button>
+    <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-DC9Dll04uJ8qcfjPDXila&autoplay=1">Gritty Rock</button>
+    <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-juKVSKB4QzxvavD5AaUg2&autoplay=1">Prog Rock</button>
+    <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-COzT6vVjXSSt_Y_0pnmSs&autoplay=1">Divas & Crooners</button>
+    <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr8xZstz9bv353IIkCfXoPKs&autoplay=1">Light & Fluffy</button>
+    <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_vVNZmctjShLjjozNjWuA4&autoplay=1">Heartland</button>
+    <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-WOgqPuchTrBf2RW8Zkypv&autoplay=1">College</button>
+  </div>
+
+  <a class="game-link" href="https://www.gyradio.com/game/" target="_blank">Play a retro game while you listen</a>
+
+  <script>
+    document.querySelectorAll('.playlist-button').forEach(button => {
+      button.addEventListener('click', () => {
+        const url = button.getAttribute('data-url');
+        const player = document.getElementById('player');
+        player.src = url;
+      });
+    });
+  </script>
+</body>
+</html>
+
