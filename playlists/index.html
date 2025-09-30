@@ -56,6 +56,26 @@
       border: none;
     }
 
+    .subscribe-button {
+      padding: 0.8vh;
+      font-size: 1.6vh;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      cursor: pointer;
+      background: linear-gradient(270deg, #ff69b4, #ff85c1, #ff69b4);
+      background-size: 600% 600%;
+      animation: shimmer 12s ease infinite;
+      transition: transform 0.2s ease;
+      width: 100%;
+      margin: 2vh 0;
+    }
+
+    .subscribe-button:hover {
+      transform: scale(1.05);
+    }
+
     .button-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -150,6 +170,10 @@
       <iframe id="player" src="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_q9HMbMXeuPuzFC_8eqMNg&autoplay=1&loop=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
 
+    <button class="subscribe-button" onclick="window.open('https://www.youtube.com/@gloryyearsradio?sub_confirmation=1', '_blank')">
+      Subscribe! (handy for TV Playback)
+    </button>
+
     <div class="button-grid">
       <button class="playlist-button active" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_q9HMbMXeuPuzFC_8eqMNg&autoplay=1&loop=1">All Songs</button>
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_tW6GvvQJFbGui4bwKgm0y&autoplay=1&loop=1">Friday After Work</button>
@@ -165,26 +189,30 @@
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr8xZstz9bv353IIkCfXoPKs&autoplay=1&loop=1">Light & Fluffy</button>
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_vVNZmctjShLjjozNjWuA4&autoplay=1&loop=1">Heartland</button>
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-WOgqPuchTrBf2RW8Zkypv&autoplay=1&loop=1">College</button>
-    </div>
+    </div> <!-- end of .button-grid -->
 
     <a class="game-link" href="https://www.gyradio.com/game/" target="_blank">Play KAMAKAZIMANIA</a>
     <button class="install-button" id="installBtn" style="display:none;">Add to Home Screen</button>
     <div class="footer-note">Ai music for geriatric people</div>
-  </div>
-  <script>
-    // Button functionality
-    document.querySelectorAll('.playlist-button').forEach(button => {
-      button.addEventListener('click', () => {
-        const url = button.getAttribute('data-url');
-        const player = document.getElementById('player');
-        player.src = url;
+  </div> <!-- end of .container -->
 
-        document.querySelectorAll('.playlist-button').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const player = document.getElementById('player');
+      const buttons = document.querySelectorAll('.playlist-button');
+
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          const url = button.getAttribute('data-url');
+          player.src = url;
+
+          buttons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+        });
       });
     });
 
-    // Canvas starfield animation
+    // Starfield animation
     const canvas = document.getElementById('background');
     const ctx = canvas.getContext('2d');
     let stars = [];
@@ -230,3 +258,5 @@
   </script>
 </body>
 </html>
+
+
