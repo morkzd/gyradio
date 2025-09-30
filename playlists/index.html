@@ -1,4 +1,3 @@
- 
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,7 +32,7 @@
       margin: auto;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
       box-sizing: border-box;
       padding: 2vh 4vw;
@@ -62,6 +61,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 1vh;
       width: 100%;
+      margin-bottom: 3vh;
     }
 
     @keyframes shimmer {
@@ -98,6 +98,7 @@
       color: white;
       text-decoration: underline;
       text-align: center;
+      margin-bottom: 2vh;
     }
 
     .install-button {
@@ -108,6 +109,14 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
+    }
+
+    .footer-note {
+      font-family: Arial, sans-serif;
+      font-size: 0.9vh;
+      color: #aaa;
+      text-align: center;
+      margin-top: 2vh;
     }
 
     @media (max-width: 500px) {
@@ -138,32 +147,31 @@
     <h1>Glory Years Radio</h1>
 
     <div class="video-container">
-      <iframe id="player" src="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_q9HMbMXeuPuzFC_8eqMNg&autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <iframe id="player" src="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_q9HMbMXeuPuzFC_8eqMNg&autoplay=1&loop=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
 
     <div class="button-grid">
-      <button class="playlist-button active" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_q9HMbMXeuPuzFC_8eqMNg&autoplay=1">All Songs</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_tW6GvvQJFbGui4bwKgm0y&autoplay=1">Friday After Work</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_PW0EN1IXjG22ywRe1QfZ_&autoplay=1">Jukebox</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr8kktNixGyyL1KUifMCFd2f&autoplay=1">60s</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-vS-Ln_K0PbxT5r2Kq0G3W&autoplay=1">70s</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr9tDexl1i-4_i3Kg1vdBpJ-&autoplay=1">80's</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr93bqj0X4vBzuS0Vb1JRd_i&autoplay=1">90s</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr8qk2WL7tYTUjsBmEf1f4uc&autoplay=1">Noir</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-DC9Dll04uJ8qcfjPDXila&autoplay=1">Gritty Rock</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-juKVSKB4QzxvavD5AaUg2&autoplay=1">Prog Rock</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-COzT6vVjXSSt_Y_0pnmSs&autoplay=1">Divas & Crooners</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr8xZstz9bv353IIkCfXoPKs&autoplay=1">Light & Fluffy</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_vVNZmctjShLjjozNjWuA4&autoplay=1">Heartland</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-WOgqPuchTrBf2RW8Zkypv&autoplay=1">College</button>
+      <button class="playlist-button active" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_q9HMbMXeuPuzFC_8eqMNg&autoplay=1&loop=1">All Songs</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_tW6GvvQJFbGui4bwKgm0y&autoplay=1&loop=1">Friday After Work</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_PW0EN1IXjG22ywRe1QfZ_&autoplay=1&loop=1">Jukebox</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr8kktNixGyyL1KUifMCFd2f&autoplay=1&loop=1">60s</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-vS-Ln_K0PbxT5r2Kq0G3W&autoplay=1&loop=1">70s</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr9tDexl1i-4_i3Kg1vdBpJ-&autoplay=1&loop=1">80's</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr93bqj0X4vBzuS0Vb1JRd_i&autoplay=1&loop=1">90s</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr8qk2WL7tYTUjsBmEf1f4uc&autoplay=1&loop=1">Noir</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-DC9Dll04uJ8qcfjPDXila&autoplay=1&loop=1">Gritty Rock</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-juKVSKB4QzxvavD5AaUg2&autoplay=1&loop=1">Prog Rock</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-COzT6vVjXSSt_Y_0pnmSs&autoplay=1&loop=1">Divas & Crooners</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr8xZstz9bv353IIkCfXoPKs&autoplay=1&loop=1">Light & Fluffy</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_vVNZmctjShLjjozNjWuA4&autoplay=1&loop=1">Heartland</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-WOgqPuchTrBf2RW8Zkypv&autoplay=1&loop=1">College</button>
     </div>
 
     <a class="game-link" href="https://www.gyradio.com/game/" target="_blank">Play KAMAKAZIMANIA</a>
     <button class="install-button" id="installBtn" style="display:none;">Add to Home Screen</button>
+    <div class="footer-note">Ai music for geriatric people</div>
   </div>
-
-
- <script>
+  <script>
     // Button functionality
     document.querySelectorAll('.playlist-button').forEach(button => {
       button.addEventListener('click', () => {
