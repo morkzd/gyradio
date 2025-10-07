@@ -45,9 +45,21 @@
       text-align: center;
     }
 
+    .live-label {
+      font-size: 1.6vh;
+      color: #00ffff;
+      background-color: #111;
+      padding: 0.5vh 1vh;
+      border-radius: 6px;
+      margin-bottom: 1vh;
+      box-shadow: 0 0 10px #00ffff;
+      transition: opacity 0.3s ease;
+    }
+
     .video-container {
       width: 100%;
       height: 30vh;
+      margin-bottom: 1vh;
     }
 
     .video-container iframe {
@@ -56,7 +68,35 @@
       border: none;
     }
 
-    .subscribe-button {
+    .tune-button {
+      width: 100%;
+      padding: 1.2vh;
+      font-size: 1.6vh;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 2vh;
+      cursor: pointer;
+      background: linear-gradient(270deg, #3399ff, #66ccff, #3399ff);
+      background-size: 600% 600%;
+      animation: shimmer 12s ease infinite;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
+    }
+
+    .tune-button:hover {
+      transform: scale(1.03);
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1vh;
+      width: 100%;
+      margin: 2vh 0;
+    }
+
+    .action-button {
       padding: 0.8vh;
       font-size: 1.6vh;
       color: white;
@@ -68,17 +108,23 @@
       background-size: 600% 600%;
       animation: shimmer 12s ease infinite;
       transition: transform 0.2s ease;
-      width: 100%;
-      margin: 2vh 0;
     }
 
-    .subscribe-button:hover {
+    .action-button:hover {
       transform: scale(1.05);
+    }
+
+    .playlist-label {
+      font-size: 1.4vh;
+      color: #ccc;
+      margin: 2vh 0 1vh;
+      text-align: left;
+      width: 100%;
     }
 
     .button-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(3, 1fr);
       gap: 1vh;
       width: 100%;
       margin-bottom: 3vh;
@@ -113,14 +159,6 @@
       box-shadow: 0 0 12px #FFD700;
     }
 
-    .game-link {
-      font-size: 1.6vh;
-      color: white;
-      text-decoration: underline;
-      text-align: center;
-      margin-bottom: 2vh;
-    }
-
     .install-button {
       font-size: 1.4vh;
       padding: 1vh 2vh;
@@ -139,6 +177,19 @@
       margin-top: 2vh;
     }
 
+    .kamakazi-icon {
+      position: fixed;
+      bottom: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      background-image: url('https://www.gyradio.com/game/icon.png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      cursor: pointer;
+      z-index: 2;
+    }
+
     @media (max-width: 500px) {
       .container {
         width: 95vw;
@@ -153,10 +204,6 @@
       h1 {
         font-size: 3vh;
       }
-
-      .game-link {
-        font-size: 1.4vh;
-      }
     }
   </style>
 </head>
@@ -165,19 +212,26 @@
 
   <div class="container">
     <h1>Glory Years Radio</h1>
+    <div class="live-label">LIVE RADIO</div>
 
     <div class="video-container">
-      <iframe id="player" src="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_q9HMbMXeuPuzFC_8eqMNg&autoplay=1&loop=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <iframe id="player" allow="autoplay; encrypted-media" allowfullscreen muted></iframe>
     </div>
 
-    <button class="subscribe-button" onclick="window.open('https://www.youtube.com/@gloryyearsradio?sub_confirmation=1', '_blank')">
-      Subscribe! (handy for TV Playback)
-    </button>
+    <button class="tune-button" id="tuneAgainBtn">Live Radio Show</button>
+    <button class="tune-button" id="sleepTimerBtn">⏲️ Sleep Timer (30 min)</button>
+    <div class="action-grid">
+      <button class="action-button" onclick="window.open('https://www.youtube.com/@gloryyearsradio?sub_confirmation=1', '_blank')">Subscribe</button>
+      <button class="action-button"></button>
+      <button class="action-button" onclick="window.open('https://www.gyradio.com/game/', '_blank')">Retro Game</button>
+    </div>
+
+    <div class="playlist-label">Playlists</div>
 
     <div class="button-grid">
       <button class="playlist-button active" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_q9HMbMXeuPuzFC_8eqMNg&autoplay=1&loop=1">All Songs</button>
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_tW6GvvQJFbGui4bwKgm0y&autoplay=1&loop=1">Friday After Work</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_PW0EN1IXjG22ywRe1QfZ_&autoplay=1&loop=1">Jukebox</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_PW0EN1IXjG22ywRe1QfZ_&autoplay=1&loop=1">50s</button>
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr8kktNixGyyL1KUifMCFd2f&autoplay=1&loop=1">60s</button>
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-vS-Ln_K0PbxT5r2Kq0G3W&autoplay=1&loop=1">70s</button>
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr9tDexl1i-4_i3Kg1vdBpJ-&autoplay=1&loop=1">80's</button>
@@ -185,30 +239,83 @@
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr8qk2WL7tYTUjsBmEf1f4uc&autoplay=1&loop=1">Noir</button>
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-DC9Dll04uJ8qcfjPDXila&autoplay=1&loop=1">Gritty Rock</button>
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-juKVSKB4QzxvavD5AaUg2&autoplay=1&loop=1">Prog Rock</button>
-      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-COzT6vVjXSSt_Y_0pnmSs&autoplay=1&loop=1">Divas & Crooners</button>
+      <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-COzT6vVjXSSt_Y_0pnmSs&autoplay=1&loop=1">RnB</button>
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr8xZstz9bv353IIkCfXoPKs&autoplay=1&loop=1">Light & Fluffy</button>
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_vVNZmctjShLjjozNjWuA4&autoplay=1&loop=1">Heartland</button>
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-WOgqPuchTrBf2RW8Zkypv&autoplay=1&loop=1">College</button>
-    </div> <!-- end of .button-grid -->
+      <button class="playlist-button" onclick="window.open('https://www.youtube.com/@morkzdelorean', '_blank')">Music Videos</button>
+    </div>
 
-    <a class="game-link" href="https://www.gyradio.com/game/" target="_blank">Play KAMAKAZIMANIA</a>
     <button class="install-button" id="installBtn" style="display:none;">Add to Home Screen</button>
     <div class="footer-note">Ai music for geriatric people</div>
-  </div> <!-- end of .container -->
+  </div>
+
+  <a class="kamakazi-icon" href="https://www.gyradio.com/game/" target="_blank" title="Play Kamakazimania"></a>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const player = document.getElementById('player');
-      const buttons = document.querySelectorAll('.playlist-button');
+      const liveLabel = document.querySelector('.live-label');
+      const tuneAgainBtn = document.getElementById('tuneAgainBtn');
+      const sleepTimerBtn = document.getElementById('sleepTimerBtn');
+      const playlistButtons = document.querySelectorAll('.playlist-button');
 
-      buttons.forEach(button => {
+      const liveVideoId = "0h-VFC_B54I";
+      const liveVideoBase = `https://www.youtube.com/embed/${liveVideoId}`;
+      const allSongsUrl = "https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_q9HMbMXeuPuzFC_8eqMNg&loop=1";
+
+
+      // Load default video
+     const defaultIntroPlaylist = "https://www.youtube.com/embed?listType=playlist&list=PLmeHHqm4zpr_-QAUdPbPdU2G-OiGYcGAc&autoplay=1&loop=1";
+player.src = defaultIntroPlaylist;
+
+      liveLabel.style.opacity = "0.5";
+
+      // Playlist switching
+      playlistButtons.forEach(button => {
         button.addEventListener('click', () => {
           const url = button.getAttribute('data-url');
-          player.src = url;
-
-          buttons.forEach(btn => btn.classList.remove('active'));
-          button.classList.add('active');
+          if (url) {
+            player.src = url;
+            playlistButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            liveLabel.style.opacity = "0.5";
+          }
         });
+      });
+
+      // Live Radio Show button
+      tuneAgainBtn.textContent = "Live Radio Show (touch to unmute)";
+      tuneAgainBtn.addEventListener('click', () => {
+        const randomStart = Math.floor(Math.random() * (14000 - 60 + 1)) + 60;
+        const embedUrl = `${liveVideoBase}?start=${randomStart}&autoplay=1&loop=1&mute=1`;
+        player.src = embedUrl;
+        liveLabel.style.opacity = "1";
+      });
+
+      // Sleep Timer with countdown
+      sleepTimerBtn.addEventListener('click', () => {
+        let remaining = 1800;
+        sleepTimerBtn.disabled = true;
+
+        const updateLabel = () => {
+          const mins = Math.floor(remaining / 60);
+          const secs = remaining % 60;
+          sleepTimerBtn.textContent = `⏲️ Sleep Timer: ${mins}:${secs.toString().padStart(2, '0')}`;
+        };
+
+        updateLabel();
+        const interval = setInterval(() => {
+          remaining--;
+          updateLabel();
+          if (remaining <= 0) {
+            clearInterval(interval);
+            player.src = "";
+            sleepTimerBtn.textContent = "⏲️ Sleep Timer Ended";
+            sleepTimerBtn.disabled = false;
+            liveLabel.style.opacity = "0.5";
+          }
+        }, 1000);
       });
     });
 
@@ -239,6 +346,7 @@
 
     function drawStars() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle
       ctx.fillStyle = '#fff';
       stars.forEach(star => {
         ctx.beginPath();
@@ -258,5 +366,3 @@
   </script>
 </body>
 </html>
-
-
