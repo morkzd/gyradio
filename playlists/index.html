@@ -308,7 +308,7 @@ tuneAgainBtn.addEventListener('click', async () => {
 
     const randomIndex = Math.floor(Math.random() * bumpers.length);
     const randomEntry = bumpers[randomIndex];
-    const { videoId, maxStart } = randomEntry;
+    const { videoId, playlistId, index, maxStart } = randomEntry;
 
     const startTime = Math.floor(Math.random() * maxStart);
    const embedUrl = `https://www.youtube.com/embed/${videoId}?list=${playlistId}&index=${index}&start=${startTime}&autoplay=1&loop=1&mute=1`;
@@ -403,4 +403,3 @@ tuneAgainBtn.addEventListener('click', async () => {
 
 </body>
 </html>
-
