@@ -289,20 +289,33 @@
 
     // Live Radio Show / Retune button
     tuneAgainBtn.textContent = "Live Radio Show / Retune";
-    tuneAgainBtn.addEventListener('click', async () => {
-      try {
-        const response = await fetch('/data/gy_radio_bumpers.json');
-        const bumpers = await response.json();
-        const randomEntry = bumpers[Math.floor(Math.random() * bumpers.length)];
-        const { videoId, playlistId, index } = randomEntry;
-        const embedUrl = `https://www.youtube.com/embed/${videoId}?list=${playlistId}&index=${index}&autoplay=1&loop=1&mute=1`;
-        player.src = embedUrl;
-        liveLabel.classList.add('active');
-      } catch (error) {
-        console.error("Failed to load bumper JSON:", error);
-        liveLabel.classList.remove('active');
-      }
-    });
+tuneAgainBtn.addEventListener('click', async () => {
+  try {
+    const response = await fetch('https://www.gyradio.com/data/gy_radio_bumpers.json');
+    const bumpers = await response.json();
+
+    // Ensure it's a valid array
+    if (!Array.isArray(bumpers) || bumpers.length === 0) {
+      throw new Error("Bumper list is empty or invalid");
+    }
+
+    // Randomize
+    const randomIndex = Math.floor(Math.random() * bumpers.length);
+    const randomEntry = bumpers[randomIndex];
+
+    // Build embed URL
+    const { videoId, playlistId, index } = randomEntry;
+    const embedUrl = `https://www.youtube.com/embed/${videoId}?list=${playlistId}&index=${index}&autoplay=1&loop=1`;
+
+    // Load video
+    player.src = embedUrl;
+    liveLabel.classList.add('active');
+  } catch (error) {
+    console.error("Failed to load bumper JSON:", error);
+    liveLabel.classList.remove('active');
+  }
+});
+
 
     // Sleep Timer
     sleepTimerBtn.addEventListener('click', () => {
