@@ -40,7 +40,7 @@
     }
 
     h1 {
-      font-size: 4vh;
+      font-size: 2vh;
       margin: 0;
       text-align: center;
     }
@@ -232,7 +232,7 @@
     <button class="tune-button" id="sleepTimerBtn">⏲️ Sleep Timer (30 min)</button>
     <div class="action-grid">
       <button class="action-button" onclick="window.open('https://www.youtube.com/@gloryyearsradio?sub_confirmation=1', '_blank')">Subscribe</button>
-      <button class="action-button"></button>
+      <button id="comedyBtn" class="playlist-button">Comedy</button>
       <button class="action-button" onclick="window.open('https://www.gyradio.com/game/', '_blank')">Retro Game</button>
     </div>
 
@@ -269,6 +269,14 @@
     const tuneAgainBtn = document.getElementById('tuneAgainBtn');
     const sleepTimerBtn = document.getElementById('sleepTimerBtn');
     const playlistButtons = document.querySelectorAll('.playlist-button');
+const comedyBtn = document.getElementById('comedyBtn');
+comedyBtn.textContent = "Comedy";
+comedyBtn.addEventListener('click', () => {
+  const comedyUrl = "https://www.youtube.com/embed/videoseries?list=PLmeHHqm4zpr_MPPQaamd4f69Bm9GVtYwd&autoplay=1&loop=1";
+  player.src = comedyUrl;
+  liveLabel.classList.remove('active'); // Optional: remove live label if active
+});
+
 
     const defaultIntroPlaylist = "https://www.youtube.com/embed?listType=playlist&list=PLmeHHqm4zpr_-QAUdPbPdU2G-OiGYcGAc&autoplay=1&loop=1";
     player.src = defaultIntroPlaylist;
@@ -291,30 +299,28 @@
     tuneAgainBtn.textContent = "Live Radio Show / Retune";
 tuneAgainBtn.addEventListener('click', async () => {
   try {
-    const response = await fetch('https://www.gyradio.com/data/gy_radio_bumpers.json');
+    const response = await fetch('https://www.gyradio.com/data/liveRadioVideos.json'); // updated JSON path
     const bumpers = await response.json();
 
-    // Ensure it's a valid array
     if (!Array.isArray(bumpers) || bumpers.length === 0) {
-      throw new Error("Bumper list is empty or invalid");
+      throw new Error("Live Radio list is empty or invalid");
     }
 
-    // Randomize
     const randomIndex = Math.floor(Math.random() * bumpers.length);
     const randomEntry = bumpers[randomIndex];
+    const { videoId, maxStart } = randomEntry;
 
-    // Build embed URL
-    const { videoId, playlistId, index } = randomEntry;
-    const embedUrl = `https://www.youtube.com/embed/${videoId}?list=${playlistId}&index=${index}&autoplay=1&loop=1`;
+    const startTime = Math.floor(Math.random() * maxStart);
+    const embedUrl = `https://www.youtube.com/embed/${videoId}?start=${startTime}&autoplay=1&loop=1`;
 
-    // Load video
     player.src = embedUrl;
     liveLabel.classList.add('active');
   } catch (error) {
-    console.error("Failed to load bumper JSON:", error);
+    console.error("Failed to load Live Radio JSON:", error);
     liveLabel.classList.remove('active');
   }
 });
+
 
 
     // Sleep Timer
