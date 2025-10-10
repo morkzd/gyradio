@@ -221,7 +221,7 @@
   <canvas id="background"></canvas>
 
   <div class="container">
-    <h1>Glory Years Radio</h1>
+    <h1>G-Y-RADIO</h1>
     <div class="live-label">LIVE RADIO</div>
 
     <div class="video-container">
@@ -299,7 +299,7 @@ comedyBtn.addEventListener('click', () => {
     tuneAgainBtn.textContent = "Live Radio Show / Retune";
 tuneAgainBtn.addEventListener('click', async () => {
   try {
-    const response = await fetch('https://www.gyradio.com/data/gy_radio_bumpers.json'); // updated JSON path
+    const response = await fetch('https://www.gyradio.com/data/liveRadioVideos.json'); // updated JSON path
     const bumpers = await response.json();
 
     if (!Array.isArray(bumpers) || bumpers.length === 0) {
@@ -402,4 +402,3 @@ tuneAgainBtn.addEventListener('click', async () => {
 
 </body>
 </html>
-
