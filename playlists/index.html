@@ -189,6 +189,16 @@
       cursor: pointer;
       z-index: 2;
     }
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 10px #00ffff; }
+  50% { box-shadow: 0 0 20px #00ffff; }
+  100% { box-shadow: 0 0 10px #00ffff; }
+}
+
+.live-label.active {
+  opacity: 1;
+  animation: pulseGlow 1.5s infinite;
+}
 
     @media (max-width: 500px) {
       .container {
@@ -252,77 +262,79 @@
 
   <a class="kamakazi-icon" href="https://www.gyradio.com/game/" target="_blank" title="Play Kamakazimania"></a>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const player = document.getElementById('player');
-      const liveLabel = document.querySelector('.live-label');
-      const tuneAgainBtn = document.getElementById('tuneAgainBtn');
-      const sleepTimerBtn = document.getElementById('sleepTimerBtn');
-      const playlistButtons = document.querySelectorAll('.playlist-button');
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const player = document.getElementById('player');
+    const liveLabel = document.querySelector('.live-label');
+    const tuneAgainBtn = document.getElementById('tuneAgainBtn');
+    const sleepTimerBtn = document.getElementById('sleepTimerBtn');
+    const playlistButtons = document.querySelectorAll('.playlist-button');
 
-      const liveVideoId = "0h-VFC_B54I";
-      const liveVideoBase = `https://www.youtube.com/embed/${liveVideoId}`;
-      const allSongsUrl = "https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_q9HMbMXeuPuzFC_8eqMNg&loop=1";
+    const defaultIntroPlaylist = "https://www.youtube.com/embed?listType=playlist&list=PLmeHHqm4zpr_-QAUdPbPdU2G-OiGYcGAc&autoplay=1&loop=1";
+    player.src = defaultIntroPlaylist;
+    liveLabel.classList.remove('active');
 
-
-      // Load default video
-     const defaultIntroPlaylist = "https://www.youtube.com/embed?listType=playlist&list=PLmeHHqm4zpr_-QAUdPbPdU2G-OiGYcGAc&autoplay=1&loop=1";
-player.src = defaultIntroPlaylist;
-
-      liveLabel.style.opacity = "0.5";
-
-      // Playlist switching
-      playlistButtons.forEach(button => {
-        button.addEventListener('click', () => {
-          const url = button.getAttribute('data-url');
-          if (url) {
-            player.src = url;
-            playlistButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-            liveLabel.style.opacity = "0.5";
-          }
-        });
+    // Playlist switching
+    playlistButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const url = button.getAttribute('data-url');
+        if (url) {
+          player.src = url;
+          playlistButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          liveLabel.classList.remove('active');
+        }
       });
+    });
 
-      // Live Radio Show button
-      tuneAgainBtn.textContent = "Live Radio Show (touch to unmute)";
-      tuneAgainBtn.addEventListener('click', () => {
-        const randomStart = Math.floor(Math.random() * (14000 - 60 + 1)) + 60;
-        const embedUrl = `${liveVideoBase}?start=${randomStart}&autoplay=1&loop=1&mute=1`;
+    // Live Radio Show / Retune button
+    tuneAgainBtn.textContent = "Live Radio Show / Retune";
+    tuneAgainBtn.addEventListener('click', async () => {
+      try {
+        const response = await fetch('/data/gy_radio_bumpers.json');
+        const bumpers = await response.json();
+        const randomEntry = bumpers[Math.floor(Math.random() * bumpers.length)];
+        const { videoId, playlistId, index } = randomEntry;
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?list=${playlistId}&index=${index}&autoplay=1&loop=1&mute=1`;
         player.src = embedUrl;
-        liveLabel.style.opacity = "1";
-      });
+        liveLabel.classList.add('active');
+      } catch (error) {
+        console.error("Failed to load bumper JSON:", error);
+        liveLabel.classList.remove('active');
+      }
+    });
 
-      // Sleep Timer with countdown
-      sleepTimerBtn.addEventListener('click', () => {
-        let remaining = 1800;
-        sleepTimerBtn.disabled = true;
+    // Sleep Timer
+    sleepTimerBtn.addEventListener('click', () => {
+      let remaining = 1800;
+      sleepTimerBtn.disabled = true;
 
-        const updateLabel = () => {
-          const mins = Math.floor(remaining / 60);
-          const secs = remaining % 60;
-          sleepTimerBtn.textContent = `⏲️ Sleep Timer: ${mins}:${secs.toString().padStart(2, '0')}`;
-        };
+      const updateLabel = () => {
+        const mins = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+        sleepTimerBtn.textContent = `⏲️ Sleep Timer: ${mins}:${secs.toString().padStart(2, '0')}`;
+      };
 
+      updateLabel();
+      const interval = setInterval(() => {
+        remaining--;
         updateLabel();
-        const interval = setInterval(() => {
-          remaining--;
-          updateLabel();
-          if (remaining <= 0) {
-            clearInterval(interval);
-            player.src = "";
-            sleepTimerBtn.textContent = "⏲️ Sleep Timer Ended";
-            sleepTimerBtn.disabled = false;
-            liveLabel.style.opacity = "0.5";
-          }
-        }, 1000);
-      });
+        if (remaining <= 0) {
+          clearInterval(interval);
+          player.src = "";
+          liveLabel.classList.remove('active');
+          sleepTimerBtn.textContent = "⏲️ Sleep Timer Ended";
+          sleepTimerBtn.disabled = false;
+          stopStars(); // stop animation
+        }
+      }, 1000);
     });
 
     // Starfield animation
     const canvas = document.getElementById('background');
     const ctx = canvas.getContext('2d');
     let stars = [];
+    let animationFrame;
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
@@ -346,7 +358,6 @@ player.src = defaultIntroPlaylist;
 
     function drawStars() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle
       ctx.fillStyle = '#fff';
       stars.forEach(star => {
         ctx.beginPath();
@@ -358,11 +369,17 @@ player.src = defaultIntroPlaylist;
           star.x = Math.random() * canvas.width;
         }
       });
-      requestAnimationFrame(drawStars);
+      animationFrame = requestAnimationFrame(drawStars);
+    }
+
+    function stopStars() {
+      cancelAnimationFrame(animationFrame);
     }
 
     createStars(100);
     drawStars();
-  </script>
+  });
+</script>
+
 </body>
 </html>
