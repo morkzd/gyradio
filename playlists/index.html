@@ -93,7 +93,7 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 1vh;
       width: 100%;
-      margin: 2vh 0;
+      margin: 1vh 0;
     }
 
     .action-button {
@@ -228,8 +228,16 @@
       <iframe id="player" allow="autoplay; encrypted-media" allowfullscreen muted></iframe>
     </div>
 
-    <button class="tune-button" id="tuneAgainBtn">Live Radio Show</button>
-    <button class="tune-button" id="sleepTimerBtn">⏲️ Sleep Timer (30 min)</button>
+    <!-- Standout full-width Live Radio button -->
+<button class="tune-button" id="tuneAgainBtn">Live Radio Show</button>
+
+<!-- New row of 3 pink action buttons -->
+<div class="action-grid">
+  <button class="action-button" id="sleepTimerBtn">⏲️ Sleep Timer</button>
+  <button class="action-button" id="carModeBtn">🚗 Car Mode</button>
+  <button class="action-button" id="merchBtn">🛍️ GY Merchandise</button>
+</div>
+
     <div class="action-grid">
       <button class="action-button" onclick="window.open('https://www.youtube.com/@gloryyearsradio?sub_confirmation=1', '_blank')">Subscribe</button>
       <button id="comedyBtn" class="playlist-button">Comedy</button>
@@ -268,21 +276,25 @@
     const liveLabel = document.querySelector('.live-label');
     const tuneAgainBtn = document.getElementById('tuneAgainBtn');
     const sleepTimerBtn = document.getElementById('sleepTimerBtn');
+    const carModeBtn = document.getElementById('carModeBtn');
+    const merchBtn = document.getElementById('merchBtn');
     const playlistButtons = document.querySelectorAll('.playlist-button');
-const comedyBtn = document.getElementById('comedyBtn');
-comedyBtn.textContent = "Comedy";
-comedyBtn.addEventListener('click', () => {
-  const comedyUrl = "https://www.youtube.com/embed/videoseries?list=PLmeHHqm4zpr_MPPQaamd4f69Bm9GVtYwd&autoplay=1&loop=1";
-  player.src = comedyUrl;
-  liveLabel.classList.remove('active'); // Optional: remove live label if active
-});
+    const comedyBtn = document.getElementById('comedyBtn');
 
+    // 🎭 Comedy playlist button
+    comedyBtn.textContent = "Comedy";
+    comedyBtn.addEventListener('click', () => {
+      const comedyUrl = "https://www.youtube.com/embed/videoseries?list=PLmeHHqm4zpr_MPPQaamd4f69Bm9GVtYwd&autoplay=1&loop=1";
+      player.src = comedyUrl;
+      liveLabel.classList.remove('active');
+    });
 
+    // 📺 Default intro playlist
     const defaultIntroPlaylist = "https://www.youtube.com/embed?listType=playlist&list=PLmeHHqm4zpr_-QAUdPbPdU2G-OiGYcGAc&autoplay=1&loop=1";
     player.src = defaultIntroPlaylist;
     liveLabel.classList.remove('active');
 
-    // Playlist switching
+    // 🔀 Playlist switching
     playlistButtons.forEach(button => {
       button.addEventListener('click', () => {
         const url = button.getAttribute('data-url');
@@ -295,36 +307,35 @@ comedyBtn.addEventListener('click', () => {
       });
     });
 
-    // Live Radio Show / Retune button
+    // 📻 Live Radio Show / Retune button
     tuneAgainBtn.textContent = "Live Radio Show / Retune";
-tuneAgainBtn.addEventListener('click', async () => {
-  try {
-    const response = await fetch('https://www.gyradio.com/data/gy_radio_bumpers.json'); // updated JSON path
-    const bumpers = await response.json();
+    tuneAgainBtn.addEventListener('click', async () => {
+      try {
+        const now = new Date();
+        const hour = now.getHours();
+        const secondsIntoHour = now.getMinutes() * 60 + now.getSeconds();
 
-    if (!Array.isArray(bumpers) || bumpers.length === 0) {
-      throw new Error("Live Radio list is empty or invalid");
-    }
+        const response = await fetch('https://www.gyradio.com/data/gy_radio_bumpers.json?ts=' + Date.now());
+        const bumpers = await response.json();
 
-    const randomIndex = Math.floor(Math.random() * bumpers.length);
-    const randomEntry = bumpers[randomIndex];
-    const { videoId, playlistId, index, maxStart } = randomEntry;
+        if (!Array.isArray(bumpers) || bumpers.length < 5) {
+          throw new Error("Live Radio list is invalid or incomplete");
+        }
 
-    const startTime = Math.floor(Math.random() * maxStart);
-   const embedUrl = `https://www.youtube.com/embed/${videoId}?list=${playlistId}&index=${index}&start=${startTime}&autoplay=1&loop=1`;
+        const blockIndex = hour % bumpers.length;
+        const selectedEntry = bumpers[blockIndex];
+        const { videoId, playlistId, index } = selectedEntry;
 
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?list=${playlistId}&index=${index}&start=${secondsIntoHour}&autoplay=1&loop=1`;
+        player.src = embedUrl;
+        liveLabel.classList.add('active');
+      } catch (error) {
+        console.error("Failed to load Live Radio JSON:", error);
+        liveLabel.classList.remove('active');
+      }
+    });
 
-    player.src = embedUrl;
-    liveLabel.classList.add('active');
-  } catch (error) {
-    console.error("Failed to load Live Radio JSON:", error);
-    liveLabel.classList.remove('active');
-  }
-});
-
-
-
-    // Sleep Timer
+    // ⏲️ Sleep Timer
     sleepTimerBtn.addEventListener('click', () => {
       let remaining = 1800;
       sleepTimerBtn.disabled = true;
@@ -350,7 +361,17 @@ tuneAgainBtn.addEventListener('click', async () => {
       }, 1000);
     });
 
-    // Starfield animation
+    // 🚗 Car Mode placeholder
+    carModeBtn.addEventListener('click', () => {
+      alert("Car Mode coming soon!");
+    });
+
+    // 🛍️ GY Merchandise placeholder
+    merchBtn.addEventListener('click', () => {
+      alert("GY Merchandise page is under construction!");
+    });
+
+    // ✨ Starfield animation
     const canvas = document.getElementById('background');
     const ctx = canvas.getContext('2d');
     let stars = [];
@@ -400,6 +421,7 @@ tuneAgainBtn.addEventListener('click', async () => {
     drawStars();
   });
 </script>
+
 
 </body>
 </html>
