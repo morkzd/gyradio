@@ -1,0 +1,29 @@
+{
+  "videos": [
+    {
+      "title": "GYRadio Vol. 1",
+      "description": "First 5-hour mix of GYRadio.",
+      "url": "https://www.youtube.com/embed/Vd2TVS5ei6Y"
+    },
+    {
+      "title": "GYRadio Vol. 2",
+      "description": "Second mix with new selections.",
+      "url": "https://www.youtube.com/embed/zYPO_guvwWk"
+    },
+    {
+      "title": "GYRadio Vol. 3",
+      "description": "Third mix, mellow and deep.",
+      "url": "https://www.youtube.com/embed/4wP2B5xIdHY"
+    },
+    {
+      "title": "GYRadio Vol. 4",
+      "description": "Fourth mix, upbeat and bright.",
+      "url": "https://www.youtube.com/embed/R7Gab0BMahk"
+    },
+    {
+      "title": "GYRadio Vol. 5",
+      "description": "Fifth mix, ambient and smooth.",
+      "url": "https://www.youtube.com/embed/QGLiwozVXsY"
+    }
+  ]
+}
