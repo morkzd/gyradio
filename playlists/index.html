@@ -261,11 +261,27 @@
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr8xZstz9bv353IIkCfXoPKs&autoplay=1&loop=1">Light & Fluffy</button>
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr_vVNZmctjShLjjozNjWuA4&autoplay=1&loop=1">Heartland</button>
       <button class="playlist-button" data-url="https://www.youtube.com/embed/r9ZQrpwamtY?list=PLmeHHqm4zpr-WOgqPuchTrBf2RW8Zkypv&autoplay=1&loop=1">College</button>
-      <button class="playlist-button" onclick="window.open('https://www.youtube.com/@morkzdelorean', '_blank')">Music Videos</button>
+      <button class="playlist-button" onclick="window.open('https://www.youtube.com/watch?v=I3TWd3TAoyw&list=OLAK5uy_nkHwq8G5Qc9cTx8c1-IjJacn7-4SloXbw&index=1', '_blank')">Free Album</button>
+
     </div>
 
     <button class="install-button" id="installBtn" style="display:none;">Add to Home Screen</button>
-    <div class="footer-note">Ai music for geriatric people</div>
+    <div class="footer-note">
+  Ai music for geriatric people —
+  <a href="#" onclick="document.getElementById('privacyModal').style.display='block'" style="color:#0ff;">Privacy Policy</a>
+</div>
+
+<!-- Privacy Modal -->
+<div id="privacyModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10; color:#fff; font-family:Arial, sans-serif;">
+  <div style="max-width:600px; margin:10vh auto; background:#111; padding:20px; border-radius:8px; box-shadow:0 0 20px #0ff;">
+    <h2 style="font-size:1.2rem; margin-bottom:1rem;">Privacy Policy</h2>
+    <p style="font-size:0.9rem; line-height:1.5;">
+      Glory Years Radio does not collect personal data or track users. All content is streamed anonymously. We respect your privacy and do not use cookies or analytics tools. For questions, contact us via the official site.
+    </p>
+    <button onclick="document.getElementById('privacyModal').style.display='none'" style="margin-top:1rem; padding:10px 20px; background:#0ff; color:#000; border:none; border-radius:6px; cursor:pointer;">Close</button>
+  </div>
+</div>
+
   </div>
 
   <a class="kamakazi-icon" href="https://www.gyradio.com/game/" target="_blank" title="Play Kamakazimania"></a>
@@ -363,8 +379,9 @@
 
     // 🚗 Car Mode placeholder
     carModeBtn.addEventListener('click', () => {
-      alert("Car Mode coming soon!");
-    });
+  window.open('https://www.gyradio.com/car/', '_blank');
+});
+
 
     // 🛍️ GY Merchandise placeholder
     merchBtn.addEventListener('click', () => {
