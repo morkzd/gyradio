@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GYRadio Car Mode</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      color: #fff;
+      font-family: sans-serif;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-top: 2vh;
+    }
+
+    .video-container {
+      width: 426px;
+      height: 240px;
+      margin: 2vh auto;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .video-links {
+      margin-top: 2vh;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .video-links a {
+      color: #0ff;
+      text-decoration: none;
+      font-size: 1rem;
+      background-color: #222;
+      padding: 10px;
+      border-radius: 6px;
+      transition: background-color 0.3s;
+    }
+
+    .video-links a:hover {
+      background-color: #444;
+    }
+
+    .back-button {
+      margin-top: 2vh;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      background-color: #333;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 500px) {
+      .video-container {
+        width: 100%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>GYRadio Car Mode</h1>
+  <div class="video-container">
+    <iframe id="player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
+
+  <div class="video-links" id="videoLinks">Loading options...</div>
+
+  <button class="back-button" onclick="window.location.href='https://www.gyradio.com/'">Return to Full Site</button>
+
+  <script>
+    let videos = [];
+
+    function loadVideo(index) {
+      const video = videos[index];
+      const embedURL = video.url + "?start=30&autoplay=1&rel=0&modestbranding=1";
+      document.getElementById('player').src = embedURL;
+    }
+
+    fetch('https://www.gyradio.com/car-data/car-mode-videos.json')
+      .then(res => res.json())
+      .then(data => {
+        videos = data.videos;
+
+        // Load a random video on page load
+        const randomIndex = Math.floor(Math.random() * videos.length);
+        loadVideo(randomIndex);
+
+        // Build video links
+        const labels = [
+          "🎬 Buffy Jacobs",
+          "🎬 Aunt Baybay",
+          "🎬 Dr. Edd",
+          "🎬 Trevor Jams",
+          "🎬 DJ Freezer Burn"
+        ];
+
+        const linksContainer = document.getElementById('videoLinks');
+        linksContainer.innerHTML = '';
+
+        videos.forEach((video, i) => {
+          const link = document.createElement('a');
+          link.href = '#';
+          link.textContent = labels[i] || `Video ${i + 1}`;
+          link.onclick = () => {
+            loadVideo(i);
+            return false;
+          };
+          linksContainer.appendChild(link);
+        });
+      })
+      .catch(err => {
+        document.getElementById('videoLinks').textContent = 'Error loading video list.';
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
