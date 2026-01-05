@@ -17,8 +17,6 @@
     }
 
     .container {
-      position: relative;
-      z-index: 1;
       width: 90vw;
       max-width: 600px;
       margin: 0 auto;
@@ -136,22 +134,51 @@
       margin-top: 4vh;
     }
 
-    @media (max-width: 500px) {
-      .container {
-        width: 95vw;
-        padding: 3vh 3vw 6vh;
-      }
-      h1 {
-        font-size: 2.8vh;
-      }
-      .main-button,
-      .secondary-button {
-        font-size: 1.7vh;
-        padding: 1.7vh;
-      }
+    .privacy-link {
+      font-family: Arial, sans-serif;
+      font-size: 1.1vh;
+      color: #0ff;
+      text-align: center;
+      margin-top: 1vh;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    /* Privacy Modal */
+    #privacyModal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 10;
+      color: #fff;
+      font-family: Arial, sans-serif;
+    }
+
+    #privacyModal .modal-content {
+      max-width: 600px;
+      margin: 10vh auto;
+      background: #111;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 20px #0ff;
+    }
+
+    #privacyModal button {
+      margin-top: 1rem;
+      padding: 10px 20px;
+      background: #0ff;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h1>GLORY YEARS RADIO</h1>
@@ -169,8 +196,21 @@
       <button class="secondary-button" id="merchBtn">🛍️ Glory Years Merchandise</button>
     </div>
 
-    <div class="footer-note">
-      A simple radio for the glory years.
+    <div class="footer-note">A simple radio for the glory years.</div>
+    <div class="privacy-link" id="privacyLink">Privacy Policy</div>
+  </div>
+
+  <!-- Privacy Modal -->
+  <div id="privacyModal">
+    <div class="modal-content">
+      <h2>Privacy Policy</h2>
+      <p>
+        Glory Years Radio does not collect personal data or track users.  
+        All content is streamed anonymously.  
+        We respect your privacy and do not use cookies or analytics tools.  
+        For questions, contact us via the official site.
+      </p>
+      <button id="closePrivacyBtn">Close</button>
     </div>
   </div>
 
@@ -183,7 +223,11 @@
       const carModeBtn = document.getElementById('carModeBtn');
       const merchBtn = document.getElementById('merchBtn');
 
-      // Optional: a gentle default (no sound until Play pressed)
+      const privacyLink = document.getElementById('privacyLink');
+      const privacyModal = document.getElementById('privacyModal');
+      const closePrivacyBtn = document.getElementById('closePrivacyBtn');
+
+      // Default muted intro playlist
       const defaultIntroPlaylist =
         "https://www.youtube.com/embed?listType=playlist&list=PLmeHHqm4zpr_-QAUdPbPdU2G-OiGYcGAc";
       player.src = defaultIntroPlaylist;
@@ -200,13 +244,8 @@
           );
           const bumpers = await response.json();
 
-          if (!Array.isArray(bumpers) || bumpers.length < 5) {
-            throw new Error("Live Radio list is invalid or incomplete");
-          }
-
           const blockIndex = hour % bumpers.length;
-          const selectedEntry = bumpers[blockIndex];
-          const { videoId, playlistId, index } = selectedEntry;
+          const { videoId, playlistId, index } = bumpers[blockIndex];
 
           const embedUrl =
             `https://www.youtube.com/embed/${videoId}` +
@@ -219,15 +258,14 @@
           liveLabel.textContent = "GLORY YEARS RADIO — ON AIR";
           liveLabel.classList.add('active');
         } catch (error) {
-          console.error("Failed to load Live Radio JSON:", error);
           liveLabel.textContent = "RADIO STATION OFF AIR";
           liveLabel.classList.remove('active');
         }
       });
 
-      // ⏲️ Sleep Timer (30 minutes)
+      // ⏲️ Sleep Timer
       sleepTimerBtn.addEventListener('click', () => {
-        let remaining = 1800; // 30 minutes
+        let remaining = 1800;
         sleepTimerBtn.disabled = true;
 
         const updateLabel = () => {
@@ -259,12 +297,21 @@
         window.open('https://www.gyradio.com/car/', '_blank');
       });
 
-      // 🛍️ Merchandise
+      // 🛍️ Merch popup
       merchBtn.addEventListener('click', () => {
-        // Replace with your actual merch URL when ready
-        window.open('https://www.gyradio.com/merch/', '_blank');
+        alert("The Glory Years Radio merchandise store is currently under construction.");
+      });
+
+      // Privacy Policy modal
+      privacyLink.addEventListener('click', () => {
+        privacyModal.style.display = 'block';
+      });
+
+      closePrivacyBtn.addEventListener('click', () => {
+        privacyModal.style.display = 'none';
       });
     });
   </script>
 </body>
 </html>
+
