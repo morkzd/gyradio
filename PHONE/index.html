@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glory Years Radio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      background-color: #000;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: 'Press Start 2P', monospace, sans-serif;
+      color: #fff;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 90vw;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 3vh 4vw 6vh;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 2.4vh;
+      margin: 1vh 0 0.5vh;
+      text-align: center;
+      letter-spacing: 0.12em;
+    }
+
+    .tagline {
+      font-family: Arial, sans-serif;
+      font-size: 1.5vh;
+      color: #ccc;
+      text-align: center;
+      margin-bottom: 2vh;
+    }
+
+    .live-label {
+      font-size: 1.6vh;
+      color: #00ffff;
+      background-color: #111;
+      padding: 0.5vh 1.2vh;
+      border-radius: 6px;
+      margin-bottom: 1.5vh;
+      box-shadow: 0 0 10px #00ffff;
+      transition: opacity 0.3s ease;
+      opacity: 0.5;
+    }
+
+    .live-label.active {
+      opacity: 1;
+      animation: pulseGlow 1.5s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 10px #00ffff; }
+      50% { box-shadow: 0 0 20px #00ffff; }
+      100% { box-shadow: 0 0 10px #00ffff; }
+    }
+
+    .video-container {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      margin-bottom: 2vh;
+      background-color: #111;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.6);
+    }
+
+    .video-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .button-column {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5vh;
+      margin-top: 1vh;
+    }
+
+    .main-button,
+    .secondary-button {
+      width: 100%;
+      padding: 1.5vh;
+      font-size: 1.8vh;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      transition: transform 0.15s ease;
+      text-align: center;
+    }
+
+    .main-button {
+      background: linear-gradient(270deg, #3399ff, #66ccff, #3399ff);
+      background-size: 600% 600%;
+      animation: shimmer 12s ease infinite;
+    }
+
+    .secondary-button {
+      background: linear-gradient(270deg, #ff69b4, #ff85c1, #ff69b4);
+      background-size: 600% 600%;
+      animation: shimmer 12s ease infinite;
+    }
+
+    .main-button:hover,
+    .secondary-button:hover {
+      transform: scale(1.03);
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .footer-note {
+      font-family: Arial, sans-serif;
+      font-size: 1.1vh;
+      color: #777;
+      text-align: center;
+      margin-top: 4vh;
+    }
+
+    @media (max-width: 500px) {
+      .container {
+        width: 95vw;
+        padding: 3vh 3vw 6vh;
+      }
+      h1 {
+        font-size: 2.8vh;
+      }
+      .main-button,
+      .secondary-button {
+        font-size: 1.7vh;
+        padding: 1.7vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>GLORY YEARS RADIO</h1>
+    <div class="tagline">Music from the good old days</div>
+    <div class="live-label" id="liveLabel">RADIO STATION OFF AIR</div>
+
+    <div class="video-container">
+      <iframe id="player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+
+    <div class="button-column">
+      <button class="main-button" id="playRadioBtn">▶ Play Glory Years Radio</button>
+      <button class="secondary-button" id="sleepTimerBtn">⏲️ Sleep Timer (30 minutes)</button>
+      <button class="secondary-button" id="carModeBtn">🚗 Car Mode</button>
+      <button class="secondary-button" id="merchBtn">🛍️ Glory Years Merchandise</button>
+    </div>
+
+    <div class="footer-note">
+      A simple radio for the glory years.
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const player = document.getElementById('player');
+      const liveLabel = document.getElementById('liveLabel');
+      const playRadioBtn = document.getElementById('playRadioBtn');
+      const sleepTimerBtn = document.getElementById('sleepTimerBtn');
+      const carModeBtn = document.getElementById('carModeBtn');
+      const merchBtn = document.getElementById('merchBtn');
+
+      // Optional: a gentle default (no sound until Play pressed)
+      const defaultIntroPlaylist =
+        "https://www.youtube.com/embed?listType=playlist&list=PLmeHHqm4zpr_-QAUdPbPdU2G-OiGYcGAc";
+      player.src = defaultIntroPlaylist;
+
+      // ▶ Play Glory Years Radio (pseudo-live)
+      playRadioBtn.addEventListener('click', async () => {
+        try {
+          const now = new Date();
+          const hour = now.getHours();
+          const secondsIntoHour = now.getMinutes() * 60 + now.getSeconds();
+
+          const response = await fetch(
+            'https://www.gyradio.com/data/gy_radio_bumpers.json?ts=' + Date.now()
+          );
+          const bumpers = await response.json();
+
+          if (!Array.isArray(bumpers) || bumpers.length < 5) {
+            throw new Error("Live Radio list is invalid or incomplete");
+          }
+
+          const blockIndex = hour % bumpers.length;
+          const selectedEntry = bumpers[blockIndex];
+          const { videoId, playlistId, index } = selectedEntry;
+
+          const embedUrl =
+            `https://www.youtube.com/embed/${videoId}` +
+            `?list=${playlistId}` +
+            `&index=${index}` +
+            `&start=${secondsIntoHour}` +
+            `&autoplay=1&loop=1`;
+
+          player.src = embedUrl;
+          liveLabel.textContent = "GLORY YEARS RADIO — ON AIR";
+          liveLabel.classList.add('active');
+        } catch (error) {
+          console.error("Failed to load Live Radio JSON:", error);
+          liveLabel.textContent = "RADIO STATION OFF AIR";
+          liveLabel.classList.remove('active');
+        }
+      });
+
+      // ⏲️ Sleep Timer (30 minutes)
+      sleepTimerBtn.addEventListener('click', () => {
+        let remaining = 1800; // 30 minutes
+        sleepTimerBtn.disabled = true;
+
+        const updateLabel = () => {
+          const mins = Math.floor(remaining / 60);
+          const secs = remaining % 60;
+          sleepTimerBtn.textContent =
+            `⏲️ Sleep Timer: ${mins}:${secs.toString().padStart(2, '0')}`;
+        };
+
+        updateLabel();
+
+        const interval = setInterval(() => {
+          remaining--;
+          updateLabel();
+
+          if (remaining <= 0) {
+            clearInterval(interval);
+            player.src = "";
+            liveLabel.textContent = "RADIO STATION OFF AIR";
+            liveLabel.classList.remove('active');
+            sleepTimerBtn.textContent = "⏲️ Sleep Timer (30 minutes)";
+            sleepTimerBtn.disabled = false;
+          }
+        }, 1000);
+      });
+
+      // 🚗 Car Mode
+      carModeBtn.addEventListener('click', () => {
+        window.open('https://www.gyradio.com/car/', '_blank');
+      });
+
+      // 🛍️ Merchandise
+      merchBtn.addEventListener('click', () => {
+        // Replace with your actual merch URL when ready
+        window.open('https://www.gyradio.com/merch/', '_blank');
+      });
+    });
+  </script>
+</body>
+</html>
