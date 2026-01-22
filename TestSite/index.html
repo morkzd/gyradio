@@ -7,13 +7,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
 
   <style>
+    /* ------------------------------
+       GLOBAL + BACKGROUND
+    ------------------------------ */
     html, body {
       margin: 0;
       padding: 0;
-      background-color: #000;
       min-height: 100vh;
       overflow-x: hidden;
       font-family: 'Press Start 2P', monospace, sans-serif;
+      background: radial-gradient(circle at 50% 0%, #0a0f1f, #000 70%);
       color: #fff;
     }
 
@@ -21,43 +24,56 @@
       width: 90vw;
       max-width: 600px;
       margin: 0 auto;
-      padding: 3vh 4vw 6vh;
+      padding: 4vh 4vw 6vh;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
       align-items: center;
+
+      background: rgba(0, 0, 0, 0.35);
+      border-radius: 14px;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 0 25px rgba(0, 255, 255, 0.08);
     }
 
+    /* ------------------------------
+       HEADER
+    ------------------------------ */
     h1 {
-      font-size: 2.4vh;
+      font-size: 2.6vh;
       margin: 1vh 0 0.5vh;
       text-align: center;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.18em;
+      text-shadow: 0 0 8px #00eaff, 0 0 14px #00eaff;
     }
 
     .tagline {
       font-family: Arial, sans-serif;
       font-size: 1.5vh;
-      color: #ccc;
+      color: #a8d8ff;
       text-align: center;
       margin-bottom: 2vh;
+      text-shadow: 0 0 6px rgba(0, 200, 255, 0.4);
     }
 
+    /* ------------------------------
+       LIVE LABEL
+    ------------------------------ */
     .live-label {
       font-size: 1.6vh;
-      color: #00ffff;
-      background-color: #111;
+      background: rgba(0, 20, 30, 0.8);
       padding: 0.5vh 1.2vh;
       border-radius: 6px;
       margin-bottom: 1.5vh;
-      box-shadow: 0 0 10px #00ffff;
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      box-shadow: 0 0 12px #00ffff, inset 0 0 8px rgba(0, 255, 255, 0.3);
+      opacity: 0.7;
       transition: opacity 0.3s ease;
-      opacity: 0.5;
     }
 
     .live-label.active {
       opacity: 1;
-      animation: pulseGlow 1.5s infinite;
+      animation: pulseGlow 1.8s infinite ease-in-out;
     }
 
     @keyframes pulseGlow {
@@ -66,6 +82,9 @@
       100% { box-shadow: 0 0 10px #00ffff; }
     }
 
+    /* ------------------------------
+       VIDEO PLAYER
+    ------------------------------ */
     .video-container {
       width: 100%;
       aspect-ratio: 16 / 9;
@@ -73,7 +92,11 @@
       background-color: #111;
       border-radius: 10px;
       overflow: hidden;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.6);
+
+      border: 1px solid rgba(0, 255, 255, 0.25);
+      box-shadow:
+        0 0 18px rgba(0, 255, 255, 0.25),
+        inset 0 0 12px rgba(0, 255, 255, 0.15);
     }
 
     .video-container iframe {
@@ -82,6 +105,9 @@
       border: none;
     }
 
+    /* ------------------------------
+       BUTTONS
+    ------------------------------ */
     .button-column {
       width: 100%;
       display: flex;
@@ -99,26 +125,35 @@
       border: none;
       border-radius: 10px;
       cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-      transition: transform 0.15s ease;
       text-align: center;
+      transition: transform 0.15s ease, filter 0.15s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
     }
 
     .main-button {
-      background: linear-gradient(270deg, #3399ff, #66ccff, #3399ff);
-      background-size: 600% 600%;
-      animation: shimmer 12s ease infinite;
+      background: linear-gradient(90deg, #00aaff, #66e0ff, #00aaff);
+      background-size: 300% 300%;
+      animation: shimmer 10s ease infinite;
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      box-shadow:
+        0 0 12px rgba(0, 255, 255, 0.4),
+        inset 0 0 10px rgba(0, 255, 255, 0.2);
     }
 
     .secondary-button {
-      background: linear-gradient(270deg, #ff69b4, #ff85c1, #ff69b4);
-      background-size: 600% 600%;
+      background: linear-gradient(90deg, #ff4fa3, #ff7cc7, #ff4fa3);
+      background-size: 300% 300%;
       animation: shimmer 12s ease infinite;
+      border: 1px solid rgba(255, 105, 180, 0.4);
+      box-shadow:
+        0 0 12px rgba(255, 105, 180, 0.4),
+        inset 0 0 10px rgba(255, 105, 180, 0.2);
     }
 
     .main-button:hover,
     .secondary-button:hover {
-      transform: scale(1.03);
+      transform: scale(1.05);
+      filter: brightness(1.15);
     }
 
     @keyframes shimmer {
@@ -127,25 +162,32 @@
       100% { background-position: 0% 50%; }
     }
 
+    /* ------------------------------
+       FOOTER
+    ------------------------------ */
     .footer-note {
       font-family: Arial, sans-serif;
       font-size: 1.1vh;
-      color: #777;
+      color: #88aacc;
       text-align: center;
       margin-top: 4vh;
+      text-shadow: 0 0 6px rgba(0, 200, 255, 0.3);
     }
 
     .privacy-link {
       font-family: Arial, sans-serif;
       font-size: 1.1vh;
-      color: #0ff;
+      color: #00eaff;
       text-align: center;
       margin-top: 1vh;
       cursor: pointer;
       text-decoration: underline;
+      text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
     }
 
-    /* Privacy Modal */
+    /* ------------------------------
+       PRIVACY MODAL
+    ------------------------------ */
     #privacyModal {
       display: none;
       position: fixed;
@@ -162,10 +204,14 @@
     #privacyModal .modal-content {
       max-width: 600px;
       margin: 10vh auto;
-      background: #111;
+      background: rgba(0, 0, 0, 0.85);
       padding: 20px;
       border-radius: 8px;
-      box-shadow: 0 0 20px #0ff;
+
+      border: 1px solid rgba(0, 255, 255, 0.4);
+      box-shadow:
+        0 0 25px rgba(0, 255, 255, 0.4),
+        inset 0 0 15px rgba(0, 255, 255, 0.2);
     }
 
     #privacyModal button {
@@ -237,7 +283,9 @@
       const privacyModal = document.getElementById('privacyModal');
       const closePrivacyBtn = document.getElementById('closePrivacyBtn');
 
-      // ▶ Play Glory Years Radio (pseudo-live)
+      /* ------------------------------
+         PLAY RADIO (PSEUDO-LIVE)
+      ------------------------------ */
       playRadioBtn.addEventListener('click', async () => {
         try {
           // Reveal the rest of the UI instantly
@@ -248,7 +296,7 @@
           const secondsIntoHour = now.getMinutes() * 60 + now.getSeconds();
 
           const response = await fetch(
-            'https://www.gyradio.com/datatest/gy_radio_bumpers.json?ts=' + Date.now()
+            'https://www.gyradio.com/data/gy_radio_bumpers.json?ts=' + Date.now()
           );
           const bumpers = await response.json();
 
@@ -272,12 +320,16 @@
         }
       });
 
-      // 📻 Playlists
+      /* ------------------------------
+         PLAYLISTS BUTTON
+      ------------------------------ */
       playlistsBtn.addEventListener('click', () => {
         window.location.href = '/playlists/';
       });
 
-      // ⏲️ Sleep Timer
+      /* ------------------------------
+         SLEEP TIMER
+      ------------------------------ */
       sleepTimerBtn.addEventListener('click', () => {
         let remaining = 1800;
         sleepTimerBtn.disabled = true;
@@ -306,17 +358,23 @@
         }, 1000);
       });
 
-      // 🚗 Car Mode
+      /* ------------------------------
+         CAR MODE
+      ------------------------------ */
       carModeBtn.addEventListener('click', () => {
         window.open('https://www.gyradio.com/car/', '_blank');
       });
 
-      // 🛍️ Merch popup
+      /* ------------------------------
+         MERCH
+      ------------------------------ */
       merchBtn.addEventListener('click', () => {
         alert("The Glory Years Radio merchandise store is currently under construction.");
       });
 
-      // Privacy Policy modal
+      /* ------------------------------
+         PRIVACY MODAL
+      ------------------------------ */
       privacyLink.addEventListener('click', () => {
         privacyModal.style.display = 'block';
       });
@@ -328,4 +386,3 @@
   </script>
 </body>
 </html>
-
