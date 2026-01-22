@@ -248,7 +248,7 @@
           const secondsIntoHour = now.getMinutes() * 60 + now.getSeconds();
 
           const response = await fetch(
-            'https://www.gyradio.com/data/gy_radio_bumpers.json?ts=' + Date.now()
+            'https://www.gyradio.com/datatest/gy_radio_bumpers.json?ts=' + Date.now()
           );
           const bumpers = await response.json();
 
@@ -328,3 +328,4 @@
   </script>
 </body>
 </html>
+
