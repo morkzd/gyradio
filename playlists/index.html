@@ -225,6 +225,14 @@
       border-radius: 6px;
       cursor: pointer;
     }
+
+    /* ------------------------------
+       DIMMING EFFECT
+    ------------------------------ */
+    .dimmed {
+      filter: brightness(0.3);
+      transition: filter 1s ease;
+    }
   </style>
 </head>
 
@@ -244,7 +252,7 @@
       </div>
 
       <div class="button-column">
-        <button class="secondary-button" id="sleepTimerBtn">⏲️ Sleep Timer (20 seconds)</button>
+        <button class="secondary-button" id="sleepTimerBtn">⏲️ Sleep Timer (15 minutes)</button>
         <button class="secondary-button" id="carModeBtn">🚗 Car Mode</button>
         <button class="secondary-button" id="merchBtn">🛍️ Glory Years Merchandise</button>
       </div>
@@ -296,7 +304,7 @@
           const bumpers = await response.json();
 
           /* -----------------------------------------
-             NEW SEQUENTIAL ROTATION (per-device)
+             SEQUENTIAL ROTATION (per-device)
           ----------------------------------------- */
           let lastBlock = localStorage.getItem('gyr_lastBlock');
           let blockIndex;
@@ -323,6 +331,19 @@
 
           liveLabel.textContent = "GLORY YEARS RADIO — ON AIR";
           liveLabel.classList.add('active');
+
+          /* -----------------------------------------
+             AUTO-DIMMING AFTER 15 MINUTES
+          ----------------------------------------- */
+          setTimeout(() => {
+            document.body.classList.add("dimmed");
+          }, 900000); // 15 minutes
+
+          // Wake up on any tap/click
+          document.addEventListener("click", () => {
+            document.body.classList.remove("dimmed");
+          });
+
         } catch (error) {
           liveLabel.textContent = "RADIO STATION OFF AIR";
           liveLabel.classList.remove('active');
@@ -330,10 +351,10 @@
       });
 
       /* ------------------------------
-         SLEEP TIMER (20 seconds)
+         SLEEP TIMER (15 minutes)
       ------------------------------ */
       sleepTimerBtn.addEventListener('click', () => {
-        let remaining = 20;
+        let remaining = 900; // 15 minutes
         sleepTimerBtn.disabled = true;
 
         const updateLabel = () => {
@@ -354,7 +375,7 @@
             player.src = "";
             liveLabel.textContent = "RADIO STATION OFF AIR";
             liveLabel.classList.remove('active');
-            sleepTimerBtn.textContent = "⏲️ Sleep Timer (20 seconds)";
+            sleepTimerBtn.textContent = "⏲️ Sleep Timer (15 minutes)";
             sleepTimerBtn.disabled = false;
           }
         }, 1000);
@@ -388,3 +409,4 @@
   </script>
 </body>
 </html>
+
