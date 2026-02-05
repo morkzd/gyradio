@@ -139,7 +139,7 @@
         0 0 12px rgba(0, 255, 255, 0.4),
         inset 0 0 10px rgba(0, 255, 255, 0.2);
 
-      margin-bottom: 2vh; /* NEW SPACING */
+      margin-bottom: 2vh;
     }
 
     .secondary-button {
@@ -225,6 +225,14 @@
       border-radius: 6px;
       cursor: pointer;
     }
+
+    /* ------------------------------
+       DIMMING EFFECT
+    ------------------------------ */
+    .dimmed {
+      filter: brightness(0.3);
+      transition: filter 1s ease;
+    }
   </style>
 </head>
 
@@ -234,19 +242,17 @@
     <div class="tagline">To the good old days</div>
     <div class="live-label" id="liveLabel">RADIO STATION OFF AIR</div>
 
-    <!-- Only this button is visible at first -->
     <div class="button-column">
       <button class="main-button" id="playRadioBtn">▶ Play Glory Years Radio</button>
     </div>
 
-    <!-- Hidden until radio starts -->
     <div id="afterStart" style="display:none; width:100%;">
       <div class="video-container">
         <iframe id="player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       </div>
 
       <div class="button-column">
-        <button class="secondary-button" id="sleepTimerBtn">⏲️ Sleep Timer (30 minutes)</button>
+        <button class="secondary-button" id="sleepTimerBtn">⏲️ Sleep Timer (15 minutes)</button>
         <button class="secondary-button" id="carModeBtn">🚗 Car Mode</button>
         <button class="secondary-button" id="merchBtn">🛍️ Glory Years Merchandise</button>
       </div>
@@ -256,7 +262,6 @@
     </div>
   </div>
 
-  <!-- Privacy Modal -->
   <div id="privacyModal">
     <div class="modal-content">
       <h2>Privacy Policy</h2>
@@ -288,11 +293,9 @@
       ------------------------------ */
       playRadioBtn.addEventListener('click', async () => {
         try {
-          // Reveal the rest of the UI instantly
           document.getElementById('afterStart').style.display = 'block';
 
           const now = new Date();
-          const hour = now.getHours();
           const secondsIntoHour = now.getMinutes() * 60 + now.getSeconds();
 
           const response = await fetch(
@@ -300,7 +303,20 @@
           );
           const bumpers = await response.json();
 
-          const blockIndex = hour % bumpers.length;
+          /* -----------------------------------------
+             SEQUENTIAL ROTATION (per-device)
+          ----------------------------------------- */
+          let lastBlock = localStorage.getItem('gyr_lastBlock');
+          let blockIndex;
+
+          if (lastBlock === null) {
+            blockIndex = Math.floor(Math.random() * bumpers.length);
+          } else {
+            blockIndex = (parseInt(lastBlock, 10) + 1) % bumpers.length;
+          }
+
+          localStorage.setItem('gyr_lastBlock', blockIndex);
+
           const { videoId, playlistId, index } = bumpers[blockIndex];
 
           const embedUrl =
@@ -308,12 +324,26 @@
             `?list=${playlistId}` +
             `&index=${index}` +
             `&start=${secondsIntoHour}` +
-            `&autoplay=1&loop=1`;
+            `&autoplay=1&loop=1` +
+            `&cb=${Date.now()}`;
 
           player.src = embedUrl;
 
           liveLabel.textContent = "GLORY YEARS RADIO — ON AIR";
           liveLabel.classList.add('active');
+
+          /* -----------------------------------------
+             AUTO-DIMMING AFTER 15 MINUTES
+          ----------------------------------------- */
+          setTimeout(() => {
+            document.body.classList.add("dimmed");
+          }, 900000); // 15 minutes
+
+          // Wake up on any tap/click
+          document.addEventListener("click", () => {
+            document.body.classList.remove("dimmed");
+          });
+
         } catch (error) {
           liveLabel.textContent = "RADIO STATION OFF AIR";
           liveLabel.classList.remove('active');
@@ -321,10 +351,10 @@
       });
 
       /* ------------------------------
-         SLEEP TIMER
+         SLEEP TIMER (15 minutes)
       ------------------------------ */
       sleepTimerBtn.addEventListener('click', () => {
-        let remaining = 1800;
+        let remaining = 900; // 15 minutes
         sleepTimerBtn.disabled = true;
 
         const updateLabel = () => {
@@ -345,7 +375,7 @@
             player.src = "";
             liveLabel.textContent = "RADIO STATION OFF AIR";
             liveLabel.classList.remove('active');
-            sleepTimerBtn.textContent = "⏲️ Sleep Timer (30 minutes)";
+            sleepTimerBtn.textContent = "⏲️ Sleep Timer (15 minutes)";
             sleepTimerBtn.disabled = false;
           }
         }, 1000);
@@ -379,4 +409,3 @@
   </script>
 </body>
 </html>
-
