@@ -5,57 +5,33 @@
 <title>Cricket Nets Scenarios</title>
 
 <style>
-    /* --- GLOBAL LAYOUT --- */
     html, body {
         margin: 0;
         padding: 0;
         height: 100%;
         overflow: hidden;
         font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, #000000 0%, #003300 100%);
         color: white;
-        background: black;
     }
 
-    /* --- STARFIELD BACKGROUND --- */
-    body::before, body::after {
-        content: "";
-        position: absolute;
-        top: 0; left: 0;
-        width: 200%;
-        height: 200%;
-        background: radial-gradient(white 1px, transparent 1px);
-        background-size: 3px 3px;
-        opacity: 0.15;
-        animation: drift 60s linear infinite;
+    /* MAIN CONTAINER – evenly spaced layout */
+    #app {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+        text-align: center;
+        padding: 10px 0;
     }
 
-    body::after {
-        opacity: 0.08;
-        animation-duration: 120s;
-    }
-
-    @keyframes drift {
-        from { transform: translate(0,0); }
-        to { transform: translate(-200px, -200px); }
-    }
-
-    /* --- GREEN OVERLAY (GRASS) --- */
-    #greenOverlay {
-        position: absolute;
-        top: 0; left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,80,0,0.6) 100%);
-        pointer-events: none;
-    }
-
-    /* --- TITLE --- */
+    /* TITLE */
     h1 {
-        margin-top: 15px;
-        font-size: 34px;
-        font-weight: bold;
+        font-size: 7vw;
         color: #00eaff;
-        text-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff;
+        text-shadow: 0 0 12px #00eaff, 0 0 25px #00eaff;
+        margin: 0;
         animation: pulse 2.5s infinite ease-in-out;
     }
 
@@ -65,78 +41,70 @@
         100% { text-shadow: 0 0 10px #00eaff; }
     }
 
-    /* --- SECTION LABELS --- */
+    /* SECTION LABELS */
     .sectionLabel {
-        margin-top: 10px;
-        font-size: 22px;
+        font-size: 5vw;
         color: #88ff88;
         text-shadow: 0 0 8px #00ff55;
+        margin-bottom: 5px;
     }
 
-    /* --- BUTTONS --- */
+    /* BUTTONS – wide + tall */
     .btn {
-        width: 85%;
-        max-width: 380px;
-        padding: 18px;
-        margin: 8px auto;
-        font-size: 22px;
+        width: 85vw;
+        padding: 3vh 0;
+        font-size: 5.5vw;
         border: none;
         border-radius: 12px;
         background: #111;
         color: white;
         cursor: pointer;
-        display: block;
-        box-shadow: 0 0 10px #00eaff inset, 0 0 10px #00eaff;
+        box-shadow: 0 0 12px #00eaff inset, 0 0 12px #00eaff;
         transition: 0.15s;
+        margin: 6px 0;
     }
 
     .btn:active {
         transform: scale(0.96);
-        box-shadow: 0 0 4px #00eaff inset, 0 0 4px #00eaff;
+        box-shadow: 0 0 6px #00eaff inset, 0 0 6px #00eaff;
     }
 
     .btn.selected {
         background: #00aaff;
-        box-shadow: 0 0 15px #00eaff inset, 0 0 20px #00eaff;
+        box-shadow: 0 0 18px #00eaff inset, 0 0 22px #00eaff;
     }
 
-    /* --- RED BALL BUTTON --- */
+    /* RED BALL BUTTON */
     .btnRed {
         background: #aa0000;
-        box-shadow: 0 0 12px #ff4444 inset, 0 0 18px #ff4444;
+        box-shadow: 0 0 14px #ff4444 inset, 0 0 18px #ff4444;
     }
 
     .btnRed:active {
-        box-shadow: 0 0 6px #ff4444 inset, 0 0 6px #ff4444;
+        box-shadow: 0 0 8px #ff4444 inset, 0 0 8px #ff4444;
     }
 
-    /* --- SCENARIO BOX --- */
+    /* SCENARIO BOX – large */
     #scenarioBox {
-        margin-top: 10px;
-        padding: 20px;
-        width: 90%;
-        max-width: 450px;
-        min-height: 140px;
+        width: 90vw;
+        min-height: 18vh;
         background: #222;
-        border-radius: 10px;
-        font-size: 24px;
+        border-radius: 12px;
+        padding: 20px;
+        font-size: 5.5vw;
         line-height: 1.4;
-        margin-left: auto;
-        margin-right: auto;
+        box-shadow: 0 0 10px #444 inset;
         opacity: 0;
         transition: opacity 0.4s ease-in-out;
-        box-shadow: 0 0 10px #444 inset;
     }
 
-    /* --- AD BANNER --- */
+    /* AD BANNER */
     #adBanner {
-        position: absolute;
-        bottom: 0;
         width: 100%;
         padding: 10px;
         background: #111;
-        font-size: 14px;
         opacity: 0.6;
+        font-size: 3.5vw;
         text-align: center;
     }
 </style>
@@ -144,31 +112,33 @@
 
 <body>
 
-<div id="greenOverlay"></div>
+<div id="app">
 
-<h1>Cricket Nets Scenarios</h1>
+    <h1>Cricket Nets Scenarios</h1>
 
-<div class="sectionLabel">Match Type</div>
-<button class="btn" onclick="selectFormat('test')">Test</button>
-<button class="btn" onclick="selectFormat('odi')">One Dayer</button>
-<button class="btn" onclick="selectFormat('t20')">T20</button>
+    <div class="sectionLabel">Match Type</div>
+    <button class="btn" onclick="selectFormat('test')">Test</button>
+    <button class="btn" onclick="selectFormat('odi')">One Dayer</button>
+    <button class="btn" onclick="selectFormat('t20')">T20</button>
 
-<div class="sectionLabel">Choose Your Situation</div>
-<button class="btn" onclick="selectRole('batting')">Batting</button>
-<button class="btn" onclick="selectRole('fast')">Fast Bowl</button>
-<button class="btn" onclick="selectRole('swing')">Swing Bowl</button>
-<button class="btn" onclick="selectRole('offspin')">Offspin</button>
-<button class="btn" onclick="selectRole('legspin')">Legspin</button>
+    <div class="sectionLabel">Choose Your Situation</div>
+    <button class="btn" onclick="selectRole('batting')">Batting</button>
+    <button class="btn" onclick="selectRole('fast')">Fast Bowl</button>
+    <button class="btn" onclick="selectRole('swing')">Swing Bowl</button>
+    <button class="btn" onclick="selectRole('offspin')">Offspin</button>
+    <button class="btn" onclick="selectRole('legspin')">Legspin</button>
 
-<div class="sectionLabel">Generate Scenario</div>
-<button class="btn btnRed" onclick="generateScenario()">Generate Scenario</button>
+    <div class="sectionLabel">Generate Scenario</div>
+    <button class="btn btnRed" onclick="generateScenario()">Generate Scenario</button>
 
-<div id="scenarioBox">Your scenario will appear here.</div>
+    <div id="scenarioBox">Your scenario will appear here.</div>
+
+</div>
 
 <div id="adBanner">Ad banner goes here</div>
 
 <script>
-/* --- KEEP SCREEN AWAKE --- */
+/* KEEP SCREEN AWAKE */
 let wakeLock;
 async function keepAwake() {
     try {
@@ -179,7 +149,7 @@ async function keepAwake() {
 }
 document.addEventListener("click", keepAwake);
 
-/* --- LOGIC --- */
+/* LOGIC */
 let selectedFormat = null;
 let selectedRole = null;
 
