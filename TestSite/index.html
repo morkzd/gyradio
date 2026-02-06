@@ -2,41 +2,60 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Cricket Scenario Coach</title>
+<title>Cricket Nets Coach</title>
+
 <style>
     body {
+        margin: 0;
+        padding: 0;
         font-family: Arial, sans-serif;
-        margin: 20px;
-        background: #f2f2f2;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(to bottom, #87CEEB 33%, #3fa63f 33%);
         text-align: center;
     }
-    h1 { margin-bottom: 10px; }
+
+    h1 {
+        margin-top: 20px;
+        font-size: 32px;
+        color: white;
+        text-shadow: 0 0 8px #00eaff, 0 0 12px #00eaff;
+    }
+
     .btn {
-        padding: 10px 15px;
-        margin: 5px;
+        padding: 12px 18px;
+        margin: 6px;
         font-size: 16px;
         border: none;
-        border-radius: 6px;
-        background: #333;
+        border-radius: 8px;
+        background: #111;
         color: white;
         cursor: pointer;
+        box-shadow: 0 0 6px #00eaff, 0 0 12px #00eaff inset;
     }
+
     .btn.selected {
-        background: #0077cc;
+        background: #00aaff;
+        box-shadow: 0 0 10px #00eaff, 0 0 20px #00eaff inset;
     }
+
     #scenarioBox {
-        margin-top: 30px;
+        margin: 20px auto;
+        width: 90%;
+        background: #e6d2a2;
         padding: 20px;
-        background: white;
-        border-radius: 8px;
+        border-radius: 10px;
         min-height: 120px;
         font-size: 18px;
         line-height: 1.4;
+        box-shadow: 0 0 6px #b48a3c inset;
     }
+
     #adBanner {
-        margin-top: 30px;
+        margin-top: auto;
         padding: 10px;
-        background: #ddd;
+        background: rgba(255,255,255,0.6);
         font-size: 14px;
     }
 </style>
@@ -44,7 +63,7 @@
 
 <body>
 
-<h1>Cricket Scenario Coach</h1>
+<h1>Cricket Nets Coach</h1>
 
 <!-- FORMAT BUTTONS -->
 <div>
@@ -54,7 +73,7 @@
 </div>
 
 <!-- ROLE BUTTONS -->
-<div style="margin-top: 10px;">
+<div>
     <button class="btn" onclick="selectRole('batting')">Batting</button>
     <button class="btn" onclick="selectRole('fast')">Fast Bowl</button>
     <button class="btn" onclick="selectRole('swing')">Swing Bowl</button>
@@ -63,7 +82,7 @@
 </div>
 
 <!-- GENERATE BUTTON -->
-<div style="margin-top: 20px;">
+<div>
     <button class="btn" onclick="generateScenario()">Generate Scenario</button>
 </div>
 
@@ -77,7 +96,6 @@
 let selectedFormat = null;
 let selectedRole = null;
 
-// Simple example scenarios
 const scenarios = {
     batting: {
         test: [
@@ -111,7 +129,6 @@ const scenarios = {
     ]
 };
 
-// Button selection logic
 function selectFormat(format) {
     selectedFormat = format;
     highlightButtons();
@@ -122,14 +139,12 @@ function selectRole(role) {
     highlightButtons();
 }
 
-// Highlight selected buttons
 function highlightButtons() {
     document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('selected'));
     if (selectedFormat) document.querySelector(`[onclick="selectFormat('${selectedFormat}')"]`).classList.add('selected');
     if (selectedRole) document.querySelector(`[onclick="selectRole('${selectedRole}')"]`).classList.add('selected');
 }
 
-// Generate scenario
 function generateScenario() {
     if (!selectedRole) {
         document.getElementById("scenarioBox").innerText = "Please select a role first.";
@@ -150,10 +165,6 @@ function generateScenario() {
 
     const scenario = list[Math.floor(Math.random() * list.length)];
     document.getElementById("scenarioBox").innerText = scenario;
-
-    // Placeholder audio (replace with real files)
-    // new Audio("crowd.mp3").play();
-    // setTimeout(() => new Audio("commentary.mp3").play(), 500);
 }
 </script>
 
