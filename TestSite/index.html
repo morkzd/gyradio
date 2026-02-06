@@ -71,11 +71,6 @@
         transition: 0.15s;
     }
 
-    .pillBtn:active {
-        transform: scale(0.96);
-        box-shadow: 0 0 6px #00eaff inset, 0 0 6px #00eaff;
-    }
-
     .pillBtn.selected {
         background: #00aaff;
         box-shadow: 0 0 15px #00eaff inset, 0 0 20px #00eaff;
@@ -96,11 +91,6 @@
         margin: 5px 0;
     }
 
-    .btn:active {
-        transform: scale(0.96);
-        box-shadow: 0 0 6px #00eaff inset, 0 0 6px #00eaff;
-    }
-
     .btn.selected {
         background: #00aaff;
         box-shadow: 0 0 18px #00eaff inset, 0 0 22px #00eaff;
@@ -111,11 +101,11 @@
         width: 90vw;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 5px; /* same as main button spacing */
+        gap: 5px;
     }
 
     .btnSmall {
-        padding: 1.8vh 0; /* same height as main buttons */
+        padding: 1.8vh 0;
         font-size: 4.8vw;
         border: none;
         border-radius: 12px;
@@ -124,11 +114,6 @@
         cursor: pointer;
         box-shadow: 0 0 12px #00eaff inset, 0 0 12px #00eaff;
         transition: 0.15s;
-    }
-
-    .btnSmall:active {
-        transform: scale(0.96);
-        box-shadow: 0 0 6px #00eaff inset, 0 0 6px #00eaff;
     }
 
     .btnSmall.selected {
@@ -142,16 +127,12 @@
         box-shadow: 0 0 14px #ff4444 inset, 0 0 18px #ff4444;
     }
 
-    .btnRed:active {
-        box-shadow: 0 0 8px #ff4444 inset, 0 0 8px #ff4444;
-    }
-
-    /* SCENARIO BOX — TALLER + MORE TEXT-FRIENDLY */
+    /* SCENARIO BOX — TALLER + SCROLLABLE */
     #scenarioBox {
         width: 90vw;
-        min-height: 20vh; /* increased height */
-        max-height: 28vh; /* prevents overflow */
-        overflow-y: auto; /* allows long scenarios */
+        min-height: 20vh;
+        max-height: 28vh;
+        overflow-y: auto;
         background: #222;
         border-radius: 12px;
         padding: 20px;
@@ -162,10 +143,10 @@
         transition: opacity 0.4s ease-in-out;
     }
 
-    /* AD BANNER (fixed at bottom) */
+    /* AD BANNER */
     #adBanner {
         width: 100%;
-        height: 50px; /* standard AdMob banner height */
+        height: 50px;
         background: #111;
         opacity: 0.8;
         font-size: 3.5vw;
@@ -216,13 +197,29 @@
 /* KEEP SCREEN AWAKE */
 let wakeLock;
 async function keepAwake() {
-    try {
-        wakeLock = await navigator.wakeLock.request('screen');
-    } catch (err) {
-        console.log("Wake lock not supported", err);
-    }
+    try { wakeLock = await navigator.wakeLock.request('screen'); }
+    catch (err) { console.log("Wake lock not supported", err); }
 }
 document.addEventListener("click", keepAwake);
+
+/* SPEECH SYNTHESIS */
+function speak(text) {
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 1;
+    utter.pitch = 1;
+    utter.volume = 1;
+
+    const voices = speechSynthesis.getVoices();
+    const preferred = voices.find(v =>
+        v.name.toLowerCase().includes("male") ||
+        v.name.toLowerCase().includes("deep") ||
+        v.name.toLowerCase().includes("english")
+    );
+    if (preferred) utter.voice = preferred;
+
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utter);
+}
 
 /* LOGIC */
 let selectedFormat = null;
@@ -239,7 +236,7 @@ const scenarios = {
             "Required rate climbing. Look for singles, punish loose balls."
         ],
         t20: [
-            "Final over. 12 needed. Expect wide yorkers.",
+            "Final over. Twelve needed. Expect wide yorkers.",
             "Powerplay. Field is up. Target straight boundaries."
         ]
     },
@@ -272,9 +269,16 @@ function selectRole(role) {
 }
 
 function highlightButtons() {
-    document.querySelectorAll('.btn, .btnSmall, .pillBtn').forEach(btn => btn.classList.remove('selected'));
-    if (selectedFormat) document.querySelector(`[onclick="selectFormat('${selectedFormat}')"]`).classList.add('selected');
-    if (selectedRole) document.querySelector(`[onclick="selectRole('${selectedRole}')"]`).classList.add('selected');
+    document.querySelectorAll('.btn, .btnSmall, .pillBtn')
+        .forEach(btn => btn.classList.remove('selected'));
+
+    if (selectedFormat)
+        document.querySelector(`[onclick="selectFormat('${selectedFormat}')"]`)
+            .classList.add('selected');
+
+    if (selectedRole)
+        document.querySelector(`[onclick="selectRole('${selectedRole}')"]`)
+            .classList.add('selected');
 }
 
 function generateScenario() {
@@ -285,6 +289,7 @@ function generateScenario() {
         if (!selectedRole) {
             box.innerText = "Please select a role first.";
             box.style.opacity = 1;
+            speak("Please select a role first.");
             return;
         }
 
@@ -294,6 +299,7 @@ function generateScenario() {
             if (!selectedFormat) {
                 box.innerText = "Please select a format for batting.";
                 box.style.opacity = 1;
+                speak("Please select a format for batting.");
                 return;
             }
             list = scenarios.batting[selectedFormat];
@@ -304,6 +310,7 @@ function generateScenario() {
         const scenario = list[Math.floor(Math.random() * list.length)];
         box.innerText = scenario;
         box.style.opacity = 1;
+        speak(scenario);
     }, 200);
 }
 </script>
