@@ -15,15 +15,16 @@
         color: white;
     }
 
-    /* MAIN CONTAINER */
+    /* MAIN APP AREA (subtract banner height) */
     #app {
-        height: 100vh;
+        height: calc(100vh - 50px);
         display: flex;
         flex-direction: column;
         justify-content: space-evenly;
         align-items: center;
         text-align: center;
         padding: 5px 0;
+        box-sizing: border-box;
     }
 
     /* TITLE */
@@ -110,11 +111,11 @@
         width: 90vw;
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 5px; /* SAME GAP AS MAIN BUTTONS */
+        gap: 5px; /* same as main button spacing */
     }
 
     .btnSmall {
-        padding: 1.8vh 0; /* SAME HEIGHT AS MAIN BUTTONS */
+        padding: 1.8vh 0; /* same height as main buttons */
         font-size: 4.8vw;
         border: none;
         border-radius: 12px;
@@ -145,28 +146,34 @@
         box-shadow: 0 0 8px #ff4444 inset, 0 0 8px #ff4444;
     }
 
-    /* SCENARIO BOX */
+    /* SCENARIO BOX — TALLER + MORE TEXT-FRIENDLY */
     #scenarioBox {
         width: 90vw;
-        min-height: 14vh;
+        min-height: 20vh; /* increased height */
+        max-height: 28vh; /* prevents overflow */
+        overflow-y: auto; /* allows long scenarios */
         background: #222;
         border-radius: 12px;
         padding: 20px;
-        font-size: 5vw;
-        line-height: 1.4;
+        font-size: 4.8vw;
+        line-height: 1.45;
         box-shadow: 0 0 10px #444 inset;
         opacity: 0;
         transition: opacity 0.4s ease-in-out;
     }
 
-    /* AD BANNER */
+    /* AD BANNER (fixed at bottom) */
     #adBanner {
         width: 100%;
-        padding: 10px;
+        height: 50px; /* standard AdMob banner height */
         background: #111;
-        opacity: 0.6;
+        opacity: 0.8;
         font-size: 3.5vw;
         text-align: center;
+        line-height: 50px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
     }
 </style>
 </head>
