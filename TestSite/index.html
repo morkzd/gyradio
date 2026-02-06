@@ -23,7 +23,7 @@
         justify-content: space-evenly;
         align-items: center;
         text-align: center;
-        padding: 10px 0;
+        padding: 5px 0;
     }
 
     /* TITLE */
@@ -49,11 +49,42 @@
         margin-bottom: 5px;
     }
 
-    /* BUTTONS – wide + tall */
+    /* MATCH TYPE ROW */
+    #matchRow {
+        display: flex;
+        justify-content: center;
+        gap: 3vw;
+        width: 90vw;
+    }
+
+    .pillBtn {
+        flex: 1;
+        padding: 2vh 0;
+        font-size: 4.5vw;
+        border: none;
+        border-radius: 50px;
+        background: #111;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 0 10px #00eaff inset, 0 0 10px #00eaff;
+        transition: 0.15s;
+    }
+
+    .pillBtn:active {
+        transform: scale(0.96);
+        box-shadow: 0 0 6px #00eaff inset, 0 0 6px #00eaff;
+    }
+
+    .pillBtn.selected {
+        background: #00aaff;
+        box-shadow: 0 0 15px #00eaff inset, 0 0 20px #00eaff;
+    }
+
+    /* MAIN BUTTONS – slightly reduced height */
     .btn {
         width: 85vw;
-        padding: 3vh 0;
-        font-size: 5.5vw;
+        padding: 2.2vh 0;
+        font-size: 5vw;
         border: none;
         border-radius: 12px;
         background: #111;
@@ -61,7 +92,7 @@
         cursor: pointer;
         box-shadow: 0 0 12px #00eaff inset, 0 0 12px #00eaff;
         transition: 0.15s;
-        margin: 6px 0;
+        margin: 5px 0;
     }
 
     .btn:active {
@@ -87,11 +118,11 @@
     /* SCENARIO BOX – large */
     #scenarioBox {
         width: 90vw;
-        min-height: 18vh;
+        min-height: 16vh;
         background: #222;
         border-radius: 12px;
         padding: 20px;
-        font-size: 5.5vw;
+        font-size: 5vw;
         line-height: 1.4;
         box-shadow: 0 0 10px #444 inset;
         opacity: 0;
@@ -117,9 +148,12 @@
     <h1>Cricket Nets Scenarios</h1>
 
     <div class="sectionLabel">Match Type</div>
-    <button class="btn" onclick="selectFormat('test')">Test</button>
-    <button class="btn" onclick="selectFormat('odi')">One Dayer</button>
-    <button class="btn" onclick="selectFormat('t20')">T20</button>
+
+    <div id="matchRow">
+        <button class="pillBtn" onclick="selectFormat('test')">Test</button>
+        <button class="pillBtn" onclick="selectFormat('odi')">One Day</button>
+        <button class="pillBtn" onclick="selectFormat('t20')">T20</button>
+    </div>
 
     <div class="sectionLabel">Choose Your Situation</div>
     <button class="btn" onclick="selectRole('batting')">Batting</button>
@@ -197,7 +231,7 @@ function selectRole(role) {
 }
 
 function highlightButtons() {
-    document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('selected'));
+    document.querySelectorAll('.btn, .pillBtn').forEach(btn => btn.classList.remove('selected'));
     if (selectedFormat) document.querySelector(`[onclick="selectFormat('${selectedFormat}')"]`).classList.add('selected');
     if (selectedRole) document.querySelector(`[onclick="selectRole('${selectedRole}')"]`).classList.add('selected');
 }
