@@ -1,223 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Kamakazimania</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <style>
+<meta charset="UTF-8">
+<title>Debate Trainer</title>
+
+<style>
     body {
-      margin: 0;
-      background: skyblue;
-      overflow: hidden;
-      font-family: sans-serif;
-      color: white;
-      text-align: center;
+        margin: 0;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        background: #111;
+        color: white;
     }
 
-    #title {
-      font-size: 48px;
-      margin-top: 20px;
+    h1 {
+        text-align: center;
+        color: #00eaff;
+        text-shadow: 0 0 10px #00eaff;
     }
 
-    #score, #highscore {
-      font-size: 18px;
-      margin: 4px;
+    textarea {
+        width: 100%;
+        height: 120px;
+        font-size: 16px;
+        padding: 10px;
+        border-radius: 8px;
+        border: none;
+        outline: none;
+        resize: none;
     }
 
-    canvas {
-      display: block;
-      margin: 0 auto;
-      touch-action: none;
+    select, button {
+        width: 100%;
+        padding: 12px;
+        margin-top: 10px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
     }
 
-    .touch-zone {
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      width: 50%;
-      z-index: 10;
+    button {
+        background: #00aaff;
+        color: white;
+        font-weight: bold;
+        box-shadow: 0 0 10px #00eaff;
     }
 
-    #left-zone {
-      left: 0;
+    #responseBox {
+        margin-top: 20px;
+        padding: 15px;
+        background: #222;
+        border-radius: 8px;
+        min-height: 100px;
+        font-size: 18px;
+        line-height: 1.4;
+        box-shadow: 0 0 10px #333 inset;
     }
-
-    #right-zone {
-      right: 0;
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <div id="title">Kamakazimania</div>
-  <div id="score">Score: 0</div>
-  <div id="highscore">High Score: 0</div>
-  <canvas id="game"></canvas>
-  <div id="left-zone" class="touch-zone"></div>
-  <div id="right-zone" class="touch-zone"></div>
 
-  <script>
-    const canvas = document.getElementById('game');
-    const ctx = canvas.getContext('2d');
+<h1>Debate Trainer</h1>
 
-    let player = { x: 0, y: 0, width: 0, height: 0 };
-    let bullets = [];
-    let planes = [];
-let explosions = [];
-    let score = 0;
-    let highscore = 0;
-    let keys = {};
-    let planeSpeed = 1;
-    let spawnRate = 2000;
+<textarea id="userOpinion" placeholder="Enter your opinion here..."></textarea>
 
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      player.width = canvas.width * 0.1;
-      player.height = canvas.height * 0.03;
-      player.x = canvas.width / 2 - player.width / 2;
-      player.y = canvas.height * 0.7;
-    }
+<select id="mode">
+    <option value="devil">Devil's Advocate</option>
+    <option value="socratic">Socratic Questions</option>
+    <option value="fallacy">Fallacy Finder</option>
+    <option value="strengthen">Strengthen Your Argument</option>
+</select>
 
-    window.addEventListener('resize', () => {
-      resizeCanvas();
-    });
+<button onclick="generateResponse()">Challenge Me</button>
 
-    document.addEventListener('DOMContentLoaded', () => {
-      resizeCanvas();
-function drawExplosions() {
-  explosions.forEach((e, i) => {
-    ctx.fillStyle = 'orange';
-    ctx.beginPath();
-    ctx.arc(e.x, e.y + 10, 15, 0, Math.PI * 2);
-    ctx.fill();
-    e.timer--;
-    if (e.timer <= 0) explosions.splice(i, 1);
-  });
+<div id="responseBox">Your critique will appear here.</div>
+
+<script>
+/* ——— SPEECH SYNTHESIS ——— */
+function speak(text) {
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 1;
+    utter.pitch = 1;
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utter);
 }
 
-      update();
-    });
+/* ——— CRITIQUE LIBRARY ——— */
+const critiques = {
+    devil: [
+        "What assumptions are you making here?",
+        "Could the opposite also be true? Why or why not?",
+        "What evidence contradicts your position?",
+        "Who benefits from your claim? Who might be harmed?",
+        "Is your argument based on correlation or causation?"
+    ],
+    socratic: [
+        "Why do you believe this is true?",
+        "What would someone who disagrees say?",
+        "How could you test whether your claim is accurate?",
+        "What are the strongest counter‑arguments?",
+        "What definitions are you relying on?"
+    ],
+    fallacy: [
+        "Are you generalising from too few examples?",
+        "Is this argument relying on emotion rather than evidence?",
+        "Are you assuming intent without proof?",
+        "Is there a false dilemma hidden in your reasoning?",
+        "Could this be a slippery slope argument?"
+    ],
+    strengthen: [
+        "What evidence could you add to make this stronger?",
+        "Can you clarify your main point more precisely?",
+        "What real‑world examples support your claim?",
+        "How would you address the strongest criticism?",
+        "What assumptions need to be made explicit?"
+    ]
+};
 
-    document.addEventListener('keydown', e => keys[e.key] = true);
-    document.addEventListener('keyup', e => keys[e.key] = false);
+/* ——— GENERATE RESPONSE ——— */
+function generateResponse() {
+    const opinion = document.getElementById("userOpinion").value.trim();
+    const mode = document.getElementById("mode").value;
+    const box = document.getElementById("responseBox");
 
-    document.getElementById('left-zone').addEventListener('touchstart', () => keys['ArrowLeft'] = true);
-    document.getElementById('left-zone').addEventListener('touchend', () => keys['ArrowLeft'] = false);
-    document.getElementById('right-zone').addEventListener('touchstart', () => keys['ArrowRight'] = true);
-    document.getElementById('right-zone').addEventListener('touchend', () => keys['ArrowRight'] = false);
-
-    function drawPlayer() {
-      ctx.fillStyle = '#fff';
-      ctx.fillRect(player.x, player.y, player.width, player.height);
+    if (!opinion) {
+        box.innerText = "Please enter an opinion first.";
+        speak("Please enter an opinion first.");
+        return;
     }
 
-    function drawBullets() {
-      ctx.fillStyle = '#fff';
-      bullets.forEach(b => {
-        ctx.fillRect(b.x, b.y, 4, 10);
-        b.y -= 5;
-      });
-      bullets = bullets.filter(b => b.y > 0);
-    }
-function drawPlane(p) {
-  ctx.fillStyle = '#333';
-  // Body
-  ctx.fillRect(p.x - 3, p.y, 6, 30);         // Wider and taller
-  // Wings
-  ctx.fillRect(p.x - 15, p.y + 17, 30, 6);    // Wider and thicker
-  // Tail
-  ctx.fillRect(p.x - 7, p.y + 4, 14, 4);    // Wider and lower
+    const list = critiques[mode];
+    const prompt = list[Math.floor(Math.random() * list.length)];
+
+    const response = `You said: "${opinion}"\n\nChallenge: ${prompt}`;
+
+    box.innerText = response;
+    speak(prompt);
 }
+</script>
 
-    function drawPlanes() {
-  ctx.fillStyle = '#333';
-  planes.forEach(p => {
-    drawPlane(p);
-
-
-    p.y += planeSpeed;
-    p.x += p.dx;
-
-    // Bounce off edges
-    if (p.x < 15 || p.x > canvas.width - 15) {
-      p.dx *= -1;
-    }
-
-    if (p.y > canvas.height) {
-      resetGame();
-    }
-  });
-}
-
-
-    function checkCollisions() {
-      bullets.forEach(b => {
-        planes.forEach((p, pi) => {
-          if (b.x > p.x - 15 && b.x < p.x + 15 && b.y < p.y + 20 && b.y > p.y) {
-explosions.push({ x: p.x, y: p.y, timer: 10 });
-            planes.splice(pi, 1);
-            score += 10;
-            document.getElementById('score').innerText = 'Score: ' + score;
-            if (score > highscore) {
-              highscore = score;
-              document.getElementById('highscore').innerText = 'High Score: ' + highscore;
-            }
-          }
-        });
-      });
-    }
-
-    function spawnPlane() {
-  let margin = canvas.width * 0.1;
-  let x = margin + Math.random() * (canvas.width - margin * 2);
-  let dx = (Math.random() - 0.5) * planeSpeed * 0.5; // swerve based on speed
-  planes.push({ x: x, y: 0, dx: dx });
-}
-
-
-
-    function resetGame() {
-      score = 0;
-      planeSpeed = 1;
-      spawnRate = 2000;
-      bullets = [];
-      planes = [];
-      document.getElementById('score').innerText = 'Score: 0';
-    }
-
-    setInterval(() => {
-      bullets.push({
-        x: player.x + player.width / 2 - 2,
-        y: player.y - 10
-      });
-    }, 300);
-
-    setInterval(() => {
-      spawnPlane();
-    }, spawnRate);
-
-    setInterval(() => {
-      planeSpeed += 0.2;
-      spawnRate = Math.max(500, spawnRate - 100);
-    }, 10000);
-
-
-    function update() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      if (keys['ArrowLeft']) player.x -= 5;
-      if (keys['ArrowRight']) player.x += 5;
-      player.x = Math.max(0, Math.min(canvas.width - player.width, player.x));
-
-      drawPlayer();
-      drawBullets();
-      drawPlanes();
-      checkCollisions();
-
-      requestAnimationFrame(update);
-    }
-  </script>
 </body>
 </html>
-
-
