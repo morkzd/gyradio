@@ -15,7 +15,7 @@
         color: white;
     }
 
-    /* MAIN CONTAINER – evenly spaced layout */
+    /* MAIN CONTAINER */
     #app {
         height: 100vh;
         display: flex;
@@ -59,7 +59,7 @@
 
     .pillBtn {
         flex: 1;
-        padding: 2vh 0;
+        padding: 1.6vh 0;
         font-size: 4.5vw;
         border: none;
         border-radius: 50px;
@@ -80,10 +80,10 @@
         box-shadow: 0 0 15px #00eaff inset, 0 0 20px #00eaff;
     }
 
-    /* MAIN BUTTONS – slightly reduced height */
+    /* MAIN BUTTONS */
     .btn {
         width: 85vw;
-        padding: 1.7vh 0;
+        padding: 1.8vh 0;
         font-size: 5vw;
         border: none;
         border-radius: 12px;
@@ -92,7 +92,7 @@
         cursor: pointer;
         box-shadow: 0 0 12px #00eaff inset, 0 0 12px #00eaff;
         transition: 0.15s;
-        margin: 2px 0;
+        margin: 5px 0;
     }
 
     .btn:active {
@@ -101,6 +101,36 @@
     }
 
     .btn.selected {
+        background: #00aaff;
+        box-shadow: 0 0 18px #00eaff inset, 0 0 22px #00eaff;
+    }
+
+    /* BOWLING GRID */
+    #bowlGrid {
+        width: 90vw;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px; /* SAME GAP AS MAIN BUTTONS */
+    }
+
+    .btnSmall {
+        padding: 1.8vh 0; /* SAME HEIGHT AS MAIN BUTTONS */
+        font-size: 4.8vw;
+        border: none;
+        border-radius: 12px;
+        background: #111;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 0 12px #00eaff inset, 0 0 12px #00eaff;
+        transition: 0.15s;
+    }
+
+    .btnSmall:active {
+        transform: scale(0.96);
+        box-shadow: 0 0 6px #00eaff inset, 0 0 6px #00eaff;
+    }
+
+    .btnSmall.selected {
         background: #00aaff;
         box-shadow: 0 0 18px #00eaff inset, 0 0 22px #00eaff;
     }
@@ -115,10 +145,10 @@
         box-shadow: 0 0 8px #ff4444 inset, 0 0 8px #ff4444;
     }
 
-    /* SCENARIO BOX – large */
+    /* SCENARIO BOX */
     #scenarioBox {
         width: 90vw;
-        min-height: 16vh;
+        min-height: 14vh;
         background: #222;
         border-radius: 12px;
         padding: 20px;
@@ -156,11 +186,15 @@
     </div>
 
     <div class="sectionLabel">Choose Your Situation</div>
+
     <button class="btn" onclick="selectRole('batting')">Batting</button>
-    <button class="btn" onclick="selectRole('fast')">Fast Bowl</button>
-    <button class="btn" onclick="selectRole('swing')">Swing Bowl</button>
-    <button class="btn" onclick="selectRole('offspin')">Offspin</button>
-    <button class="btn" onclick="selectRole('legspin')">Legspin</button>
+
+    <div id="bowlGrid">
+        <button class="btnSmall" onclick="selectRole('fast')">Fast Bowl</button>
+        <button class="btnSmall" onclick="selectRole('swing')">Swing Bowl</button>
+        <button class="btnSmall" onclick="selectRole('offspin')">Offspin</button>
+        <button class="btnSmall" onclick="selectRole('legspin')">Legspin</button>
+    </div>
 
     <div class="sectionLabel">Generate Scenario</div>
     <button class="btn btnRed" onclick="generateScenario()">Generate Scenario</button>
@@ -231,7 +265,7 @@ function selectRole(role) {
 }
 
 function highlightButtons() {
-    document.querySelectorAll('.btn, .pillBtn').forEach(btn => btn.classList.remove('selected'));
+    document.querySelectorAll('.btn, .btnSmall, .pillBtn').forEach(btn => btn.classList.remove('selected'));
     if (selectedFormat) document.querySelector(`[onclick="selectFormat('${selectedFormat}')"]`).classList.add('selected');
     if (selectedRole) document.querySelector(`[onclick="selectRole('${selectedRole}')"]`).classList.add('selected');
 }
@@ -269,5 +303,3 @@ function generateScenario() {
 
 </body>
 </html>
-
-
