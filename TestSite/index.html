@@ -5,20 +5,53 @@
 <title>Cricket Nets Scenarios</title>
 
 <style>
-    body {
+    /* --- GLOBAL LAYOUT --- */
+    html, body {
         margin: 0;
         padding: 0;
-        background: #000;
+        height: 100%;
+        overflow: hidden;
         font-family: Arial, sans-serif;
         color: white;
-        text-align: center;
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
+        background: black;
     }
 
+    /* --- STARFIELD BACKGROUND --- */
+    body::before, body::after {
+        content: "";
+        position: absolute;
+        top: 0; left: 0;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(white 1px, transparent 1px);
+        background-size: 3px 3px;
+        opacity: 0.15;
+        animation: drift 60s linear infinite;
+    }
+
+    body::after {
+        opacity: 0.08;
+        animation-duration: 120s;
+    }
+
+    @keyframes drift {
+        from { transform: translate(0,0); }
+        to { transform: translate(-200px, -200px); }
+    }
+
+    /* --- GREEN OVERLAY (GRASS) --- */
+    #greenOverlay {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,80,0,0.6) 100%);
+        pointer-events: none;
+    }
+
+    /* --- TITLE --- */
     h1 {
-        margin-top: 25px;
+        margin-top: 15px;
         font-size: 34px;
         font-weight: bold;
         color: #00eaff;
@@ -32,17 +65,27 @@
         100% { text-shadow: 0 0 10px #00eaff; }
     }
 
+    /* --- SECTION LABELS --- */
+    .sectionLabel {
+        margin-top: 10px;
+        font-size: 22px;
+        color: #88ff88;
+        text-shadow: 0 0 8px #00ff55;
+    }
+
+    /* --- BUTTONS --- */
     .btn {
         width: 85%;
-        max-width: 350px;
-        padding: 15px;
+        max-width: 380px;
+        padding: 18px;
         margin: 8px auto;
-        font-size: 20px;
+        font-size: 22px;
         border: none;
-        border-radius: 10px;
+        border-radius: 12px;
         background: #111;
         color: white;
         cursor: pointer;
+        display: block;
         box-shadow: 0 0 10px #00eaff inset, 0 0 10px #00eaff;
         transition: 0.15s;
     }
@@ -57,15 +100,26 @@
         box-shadow: 0 0 15px #00eaff inset, 0 0 20px #00eaff;
     }
 
+    /* --- RED BALL BUTTON --- */
+    .btnRed {
+        background: #aa0000;
+        box-shadow: 0 0 12px #ff4444 inset, 0 0 18px #ff4444;
+    }
+
+    .btnRed:active {
+        box-shadow: 0 0 6px #ff4444 inset, 0 0 6px #ff4444;
+    }
+
+    /* --- SCENARIO BOX --- */
     #scenarioBox {
-        margin-top: 20px;
+        margin-top: 10px;
         padding: 20px;
         width: 90%;
         max-width: 450px;
         min-height: 140px;
         background: #222;
         border-radius: 10px;
-        font-size: 22px;
+        font-size: 24px;
         line-height: 1.4;
         margin-left: auto;
         margin-right: auto;
@@ -74,42 +128,58 @@
         box-shadow: 0 0 10px #444 inset;
     }
 
+    /* --- AD BANNER --- */
     #adBanner {
-        margin-top: auto;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
         padding: 10px;
         background: #111;
         font-size: 14px;
         opacity: 0.6;
+        text-align: center;
     }
 </style>
 </head>
 
 <body>
 
+<div id="greenOverlay"></div>
+
 <h1>Cricket Nets Scenarios</h1>
 
-<!-- FORMAT BUTTONS -->
+<div class="sectionLabel">Match Type</div>
 <button class="btn" onclick="selectFormat('test')">Test</button>
 <button class="btn" onclick="selectFormat('odi')">One Dayer</button>
 <button class="btn" onclick="selectFormat('t20')">T20</button>
 
-<!-- ROLE BUTTONS -->
+<div class="sectionLabel">Choose Your Situation</div>
 <button class="btn" onclick="selectRole('batting')">Batting</button>
 <button class="btn" onclick="selectRole('fast')">Fast Bowl</button>
 <button class="btn" onclick="selectRole('swing')">Swing Bowl</button>
 <button class="btn" onclick="selectRole('offspin')">Offspin</button>
 <button class="btn" onclick="selectRole('legspin')">Legspin</button>
 
-<!-- GENERATE BUTTON -->
-<button class="btn" onclick="generateScenario()">Generate Scenario</button>
+<div class="sectionLabel">Generate Scenario</div>
+<button class="btn btnRed" onclick="generateScenario()">Generate Scenario</button>
 
-<!-- SCENARIO OUTPUT -->
 <div id="scenarioBox">Your scenario will appear here.</div>
 
-<!-- AD BANNER PLACEHOLDER -->
 <div id="adBanner">Ad banner goes here</div>
 
 <script>
+/* --- KEEP SCREEN AWAKE --- */
+let wakeLock;
+async function keepAwake() {
+    try {
+        wakeLock = await navigator.wakeLock.request('screen');
+    } catch (err) {
+        console.log("Wake lock not supported", err);
+    }
+}
+document.addEventListener("click", keepAwake);
+
+/* --- LOGIC --- */
 let selectedFormat = null;
 let selectedRole = null;
 
