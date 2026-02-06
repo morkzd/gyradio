@@ -1,388 +1,161 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Glory Years Radio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
-
-  <style>
-    /* ------------------------------
-       GLOBAL + BACKGROUND
-    ------------------------------ */
-    html, body {
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      overflow-x: hidden;
-      font-family: 'Press Start 2P', monospace, sans-serif;
-      background: radial-gradient(circle at 50% 0%, #0a0f1f, #000 70%);
-      color: #fff;
+<meta charset="UTF-8">
+<title>Cricket Scenario Coach</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background: #f2f2f2;
+        text-align: center;
     }
-
-    .container {
-      width: 90vw;
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 4vh 4vw 6vh;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      background: rgba(0, 0, 0, 0.35);
-      border-radius: 14px;
-      backdrop-filter: blur(6px);
-      box-shadow: 0 0 25px rgba(0, 255, 255, 0.08);
+    h1 { margin-bottom: 10px; }
+    .btn {
+        padding: 10px 15px;
+        margin: 5px;
+        font-size: 16px;
+        border: none;
+        border-radius: 6px;
+        background: #333;
+        color: white;
+        cursor: pointer;
     }
-
-    /* ------------------------------
-       HEADER
-    ------------------------------ */
-    h1 {
-      font-size: 2.6vh;
-      margin: 1vh 0 0.5vh;
-      text-align: center;
-      letter-spacing: 0.18em;
-      text-shadow: 0 0 8px #00eaff, 0 0 14px #00eaff;
+    .btn.selected {
+        background: #0077cc;
     }
-
-    .tagline {
-      font-family: Arial, sans-serif;
-      font-size: 1.5vh;
-      color: #a8d8ff;
-      text-align: center;
-      margin-bottom: 2vh;
-      text-shadow: 0 0 6px rgba(0, 200, 255, 0.4);
+    #scenarioBox {
+        margin-top: 30px;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        min-height: 120px;
+        font-size: 18px;
+        line-height: 1.4;
     }
-
-    /* ------------------------------
-       LIVE LABEL
-    ------------------------------ */
-    .live-label {
-      font-size: 1.6vh;
-      background: rgba(0, 20, 30, 0.8);
-      padding: 0.5vh 1.2vh;
-      border-radius: 6px;
-      margin-bottom: 1.5vh;
-      border: 1px solid rgba(0, 255, 255, 0.4);
-      box-shadow: 0 0 12px #00ffff, inset 0 0 8px rgba(0, 255, 255, 0.3);
-      opacity: 0.7;
-      transition: opacity 0.3s ease;
+    #adBanner {
+        margin-top: 30px;
+        padding: 10px;
+        background: #ddd;
+        font-size: 14px;
     }
-
-    .live-label.active {
-      opacity: 1;
-      animation: pulseGlow 1.8s infinite ease-in-out;
-    }
-
-    @keyframes pulseGlow {
-      0% { box-shadow: 0 0 10px #00ffff; }
-      50% { box-shadow: 0 0 20px #00ffff; }
-      100% { box-shadow: 0 0 10px #00ffff; }
-    }
-
-    /* ------------------------------
-       VIDEO PLAYER
-    ------------------------------ */
-    .video-container {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      margin-bottom: 2vh;
-      background-color: #111;
-      border-radius: 10px;
-      overflow: hidden;
-
-      border: 1px solid rgba(0, 255, 255, 0.25);
-      box-shadow:
-        0 0 18px rgba(0, 255, 255, 0.25),
-        inset 0 0 12px rgba(0, 255, 255, 0.15);
-    }
-
-    .video-container iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    /* ------------------------------
-       BUTTONS
-    ------------------------------ */
-    .button-column {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5vh;
-      margin-top: 1vh;
-    }
-
-    .main-button,
-    .secondary-button {
-      width: 100%;
-      padding: 1.5vh;
-      font-size: 1.8vh;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      text-align: center;
-      transition: transform 0.15s ease, filter 0.15s ease;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-    }
-
-    .main-button {
-      background: linear-gradient(90deg, #00aaff, #66e0ff, #00aaff);
-      background-size: 300% 300%;
-      animation: shimmer 10s ease infinite;
-      border: 1px solid rgba(0, 255, 255, 0.4);
-      box-shadow:
-        0 0 12px rgba(0, 255, 255, 0.4),
-        inset 0 0 10px rgba(0, 255, 255, 0.2);
-    }
-
-    .secondary-button {
-      background: linear-gradient(90deg, #ff4fa3, #ff7cc7, #ff4fa3);
-      background-size: 300% 300%;
-      animation: shimmer 12s ease infinite;
-      border: 1px solid rgba(255, 105, 180, 0.4);
-      box-shadow:
-        0 0 12px rgba(255, 105, 180, 0.4),
-        inset 0 0 10px rgba(255, 105, 180, 0.2);
-    }
-
-    .main-button:hover,
-    .secondary-button:hover {
-      transform: scale(1.05);
-      filter: brightness(1.15);
-    }
-
-    @keyframes shimmer {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* ------------------------------
-       FOOTER
-    ------------------------------ */
-    .footer-note {
-      font-family: Arial, sans-serif;
-      font-size: 1.1vh;
-      color: #88aacc;
-      text-align: center;
-      margin-top: 4vh;
-      text-shadow: 0 0 6px rgba(0, 200, 255, 0.3);
-    }
-
-    .privacy-link {
-      font-family: Arial, sans-serif;
-      font-size: 1.1vh;
-      color: #00eaff;
-      text-align: center;
-      margin-top: 1vh;
-      cursor: pointer;
-      text-decoration: underline;
-      text-shadow: 0 0 6px rgba(0, 255, 255, 0.4);
-    }
-
-    /* ------------------------------
-       PRIVACY MODAL
-    ------------------------------ */
-    #privacyModal {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.85);
-      z-index: 10;
-      color: #fff;
-      font-family: Arial, sans-serif;
-    }
-
-    #privacyModal .modal-content {
-      max-width: 600px;
-      margin: 10vh auto;
-      background: rgba(0, 0, 0, 0.85);
-      padding: 20px;
-      border-radius: 8px;
-
-      border: 1px solid rgba(0, 255, 255, 0.4);
-      box-shadow:
-        0 0 25px rgba(0, 255, 255, 0.4),
-        inset 0 0 15px rgba(0, 255, 255, 0.2);
-    }
-
-    #privacyModal button {
-      margin-top: 1rem;
-      padding: 10px 20px;
-      background: #0ff;
-      color: #000;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-  </style>
+</style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>GLORY YEARS RADIO</h1>
-    <div class="tagline">Music from the good old days</div>
-    <div class="live-label" id="liveLabel">RADIO STATION OFF AIR</div>
 
-    <!-- Only this button is visible at first -->
-    <div class="button-column">
-      <button class="main-button" id="playRadioBtn">▶ Play Glory Years Radio</button>
-    </div>
+<h1>Cricket Scenario Coach</h1>
 
-    <!-- Hidden until radio starts -->
-    <div id="afterStart" style="display:none; width:100%;">
-      <div class="video-container">
-        <iframe id="player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-      </div>
+<!-- FORMAT BUTTONS -->
+<div>
+    <button class="btn" onclick="selectFormat('test')">Test</button>
+    <button class="btn" onclick="selectFormat('odi')">One Dayer</button>
+    <button class="btn" onclick="selectFormat('t20')">T20</button>
+</div>
 
-      <div class="button-column">
-        <button class="secondary-button" id="playlistsBtn">📻 Playlists</button>
-        <button class="secondary-button" id="sleepTimerBtn">⏲️ Sleep Timer (30 minutes)</button>
-        <button class="secondary-button" id="carModeBtn">🚗 Car Mode</button>
-        <button class="secondary-button" id="merchBtn">🛍️ Glory Years Merchandise</button>
-      </div>
+<!-- ROLE BUTTONS -->
+<div style="margin-top: 10px;">
+    <button class="btn" onclick="selectRole('batting')">Batting</button>
+    <button class="btn" onclick="selectRole('fast')">Fast Bowl</button>
+    <button class="btn" onclick="selectRole('swing')">Swing Bowl</button>
+    <button class="btn" onclick="selectRole('offspin')">Offspin</button>
+    <button class="btn" onclick="selectRole('legspin')">Legspin</button>
+</div>
 
-      <div class="footer-note">A simple radio for the glory years.</div>
-      <div class="privacy-link" id="privacyLink">Privacy Policy</div>
-    </div>
-  </div>
+<!-- GENERATE BUTTON -->
+<div style="margin-top: 20px;">
+    <button class="btn" onclick="generateScenario()">Generate Scenario</button>
+</div>
 
-  <!-- Privacy Modal -->
-  <div id="privacyModal">
-    <div class="modal-content">
-      <h2>Privacy Policy</h2>
-      <p>
-        Glory Years Radio does not collect personal data or track users.  
-        All content is streamed anonymously.  
-        We respect your privacy and do not use cookies or analytics tools.  
-        For questions, contact us via the official site.
-      </p>
-      <button id="closePrivacyBtn">Close</button>
-    </div>
-  </div>
+<!-- SCENARIO OUTPUT -->
+<div id="scenarioBox">Your scenario will appear here.</div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const player = document.getElementById('player');
-      const liveLabel = document.getElementById('liveLabel');
-      const playRadioBtn = document.getElementById('playRadioBtn');
-      const sleepTimerBtn = document.getElementById('sleepTimerBtn');
-      const carModeBtn = document.getElementById('carModeBtn');
-      const merchBtn = document.getElementById('merchBtn');
-      const playlistsBtn = document.getElementById('playlistsBtn');
+<!-- AD BANNER PLACEHOLDER -->
+<div id="adBanner">Ad banner goes here</div>
 
-      const privacyLink = document.getElementById('privacyLink');
-      const privacyModal = document.getElementById('privacyModal');
-      const closePrivacyBtn = document.getElementById('closePrivacyBtn');
+<script>
+let selectedFormat = null;
+let selectedRole = null;
 
-      /* ------------------------------
-         PLAY RADIO (PSEUDO-LIVE)
-      ------------------------------ */
-      playRadioBtn.addEventListener('click', async () => {
-        try {
-          // Reveal the rest of the UI instantly
-          document.getElementById('afterStart').style.display = 'block';
+// Simple example scenarios
+const scenarios = {
+    batting: {
+        test: [
+            "Day 3, final session. The ball is reversing. Play late and straight.",
+            "New ball just taken. Leave anything outside off stump."
+        ],
+        odi: [
+            "Overs 35–40. Rotate strike and target the short boundary.",
+            "Required rate climbing. Look for singles, punish loose balls."
+        ],
+        t20: [
+            "Final over. 12 needed. Expect wide yorkers.",
+            "Powerplay. Field is up. Target straight boundaries."
+        ]
+    },
+    fast: [
+        "Final ball of the over. Bowl full at the toes to prevent a single.",
+        "New ball. Hit the top of off stump with a hint of away movement."
+    ],
+    swing: [
+        "Overcast conditions. Pitch it up and let the ball do the work.",
+        "Left-hander on strike. Shape it across him, set the slip trap."
+    ],
+    offspin: [
+        "Right-hander set. Bowl outside off and bring him forward.",
+        "New batter in. Toss it up and attack the pads."
+    ],
+    legspin: [
+        "Set him up with googlies, then bowl the big leg-break.",
+        "Deep into the spell. Bowl slower and tempt the big shot."
+    ]
+};
 
-          const now = new Date();
-          const hour = now.getHours();
-          const secondsIntoHour = now.getMinutes() * 60 + now.getSeconds();
+// Button selection logic
+function selectFormat(format) {
+    selectedFormat = format;
+    highlightButtons();
+}
 
-          const response = await fetch(
-            'https://www.gyradio.com/data/gy_radio_bumpers.json?ts=' + Date.now()
-          );
-          const bumpers = await response.json();
+function selectRole(role) {
+    selectedRole = role;
+    highlightButtons();
+}
 
-          const blockIndex = hour % bumpers.length;
-          const { videoId, playlistId, index } = bumpers[blockIndex];
+// Highlight selected buttons
+function highlightButtons() {
+    document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('selected'));
+    if (selectedFormat) document.querySelector(`[onclick="selectFormat('${selectedFormat}')"]`).classList.add('selected');
+    if (selectedRole) document.querySelector(`[onclick="selectRole('${selectedRole}')"]`).classList.add('selected');
+}
 
-          const embedUrl =
-            `https://www.youtube.com/embed/${videoId}` +
-            `?list=${playlistId}` +
-            `&index=${index}` +
-            `&start=${secondsIntoHour}` +
-            `&autoplay=1&loop=1`;
+// Generate scenario
+function generateScenario() {
+    if (!selectedRole) {
+        document.getElementById("scenarioBox").innerText = "Please select a role first.";
+        return;
+    }
 
-          player.src = embedUrl;
+    let list;
 
-          liveLabel.textContent = "GLORY YEARS RADIO — ON AIR";
-          liveLabel.classList.add('active');
-        } catch (error) {
-          liveLabel.textContent = "RADIO STATION OFF AIR";
-          liveLabel.classList.remove('active');
+    if (selectedRole === "batting") {
+        if (!selectedFormat) {
+            document.getElementById("scenarioBox").innerText = "Please select a format for batting.";
+            return;
         }
-      });
+        list = scenarios.batting[selectedFormat];
+    } else {
+        list = scenarios[selectedRole];
+    }
 
-      /* ------------------------------
-         PLAYLISTS BUTTON
-      ------------------------------ */
-      playlistsBtn.addEventListener('click', () => {
-        window.location.href = '/playlists/';
-      });
+    const scenario = list[Math.floor(Math.random() * list.length)];
+    document.getElementById("scenarioBox").innerText = scenario;
 
-      /* ------------------------------
-         SLEEP TIMER
-      ------------------------------ */
-      sleepTimerBtn.addEventListener('click', () => {
-        let remaining = 1800;
-        sleepTimerBtn.disabled = true;
+    // Placeholder audio (replace with real files)
+    // new Audio("crowd.mp3").play();
+    // setTimeout(() => new Audio("commentary.mp3").play(), 500);
+}
+</script>
 
-        const updateLabel = () => {
-          const mins = Math.floor(remaining / 60);
-          const secs = remaining % 60;
-          sleepTimerBtn.textContent =
-            `⏲️ Sleep Timer: ${mins}:${secs.toString().padStart(2, '0')}`;
-        };
-
-        updateLabel();
-
-        const interval = setInterval(() => {
-          remaining--;
-          updateLabel();
-
-          if (remaining <= 0) {
-            clearInterval(interval);
-            player.src = "";
-            liveLabel.textContent = "RADIO STATION OFF AIR";
-            liveLabel.classList.remove('active');
-            sleepTimerBtn.textContent = "⏲️ Sleep Timer (30 minutes)";
-            sleepTimerBtn.disabled = false;
-          }
-        }, 1000);
-      });
-
-      /* ------------------------------
-         CAR MODE
-      ------------------------------ */
-      carModeBtn.addEventListener('click', () => {
-        window.open('https://www.gyradio.com/car/', '_blank');
-      });
-
-      /* ------------------------------
-         MERCH
-      ------------------------------ */
-      merchBtn.addEventListener('click', () => {
-        alert("The Glory Years Radio merchandise store is currently under construction.");
-      });
-
-      /* ------------------------------
-         PRIVACY MODAL
-      ------------------------------ */
-      privacyLink.addEventListener('click', () => {
-        privacyModal.style.display = 'block';
-      });
-
-      closePrivacyBtn.addEventListener('click', () => {
-        privacyModal.style.display = 'none';
-      });
-    });
-  </script>
 </body>
 </html>
