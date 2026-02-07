@@ -340,8 +340,8 @@ function startDuel() {
     // user interaction happened here → allow audio
     audioEnabled = true;
 
-    playerA = document.getElementById("p1").value || "Player A";
-    playerB = document.getElementById("p2").value || "Player B";
+    playerA = document.getElementById("p1").value || "Player A - bowl first";
+    playerB = document.getElementById("p2").value || "Player B - bat first";
 
     if (!balls) balls = 20;
     ballsLeft = balls;
@@ -349,13 +349,8 @@ function startDuel() {
     document.getElementById("setupScreen").style.display = "none";
     document.getElementById("duelScreen").style.display = "block";
 
-    if (Math.random() < 0.5) {
-        currentBowler = playerA;
-        currentBatter = playerB;
-    } else {
-        currentBowler = playerB;
-        currentBatter = playerA;
-    }
+    currentBowler = playerA;
+    currentBatter = playerB;
 
     updateBallCount();
     generateScenario();
@@ -459,6 +454,7 @@ function endDuel() {
 
 </body>
 </html>
+
 
 
 
