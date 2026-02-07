@@ -19,7 +19,7 @@
         height: calc(100vh - 50px);
         display: flex;
         flex-direction: column;
-        justify-content: center; /* CENTER THE SETUP SCREEN */
+        justify-content: center; /* centered setup */
         align-items: center;
         text-align: center;
         box-sizing: border-box;
@@ -147,6 +147,19 @@
         text-align: left;
         box-shadow: 0 0 15px #00ff99;
     }
+
+    #switchScreen h2,
+    #finalScreen h2 {
+        font-size: 7vw;
+        margin-bottom: 15px;
+    }
+
+    #switchText,
+    #finalText {
+        font-size: 5vw;
+        line-height: 1.5;
+        margin-bottom: 20px;
+    }
 </style>
 </head>
 
@@ -186,7 +199,7 @@
 
         <button class="btnRed" style="margin-top:20px;" onclick="startDuel()">Start Duel</button>
 
-        <!-- BOWLING PRACTICE BUTTON (NOW ON MAIN PAGE ONLY) -->
+        <!-- BOWLING PRACTICE ON MAIN PAGE ONLY -->
         <button class="pillBtn" onclick="window.location.href='https://www.gyradio.com/TestSite/bowling'">
             Bowling Practice
         </button>
@@ -224,10 +237,7 @@
 <div id="adBanner">Ad banner goes here</div>
 
 <script>
-    speechSynthesis.onvoiceschanged = () => {
-    speechSynthesis.getVoices();
-};
-
+/* RULES MODAL */
 function openRules() {
     document.getElementById("rulesModal").style.display = "flex";
 }
@@ -235,6 +245,45 @@ function closeRules() {
     document.getElementById("rulesModal").style.display = "none";
 }
 
+/* SPEECH SETUP */
+let voicesLoaded = false;
+let audioEnabled = false;
+
+function initVoices() {
+    const v = speechSynthesis.getVoices();
+    if (v && v.length > 0) {
+        voicesLoaded = true;
+    }
+}
+speechSynthesis.onvoiceschanged = initVoices;
+initVoices();
+
+function speak(text) {
+    if (!audioEnabled) return;
+
+    const voices = speechSynthesis.getVoices();
+    if (voices && voices.length > 0) {
+        voicesLoaded = true;
+    }
+    if (!voicesLoaded) return;
+
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 1;
+    utter.pitch = 1;
+    utter.volume = 1;
+
+    const preferred =
+        voices.find(v => v.name.toLowerCase().includes("male")) ||
+        voices.find(v => v.lang && v.lang.toLowerCase().startsWith("en")) ||
+        voices[0];
+
+    if (preferred) utter.voice = preferred;
+
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utter);
+}
+
+/* GAME STATE */
 let balls = 0;
 let ballsLeft = 0;
 
@@ -263,6 +312,9 @@ function setBalls(n) {
 }
 
 function startDuel() {
+    // user interaction happened here → allow audio
+    audioEnabled = true;
+
     playerA = document.getElementById("p1").value || "Player A";
     playerB = document.getElementById("p2").value || "Player B";
 
@@ -296,9 +348,14 @@ function generateScenario() {
 
     setTimeout(() => {
         const s = scenarios[Math.floor(Math.random() * scenarios.length)];
+        const text = `Bowler: ${s.bowler}. Batter: ${s.batter}.`;
+
         box.innerHTML =
             `<b>Bowler:</b> ${s.bowler}<br><br><b>Batter:</b> ${s.batter}`;
         box.style.opacity = 1;
+
+        // automatic speech every scenario
+        speak(text);
     }, 200);
 }
 
@@ -377,4 +434,3 @@ function endDuel() {
 
 </body>
 </html>
-
