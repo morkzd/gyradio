@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -30,7 +30,7 @@
         font-size: 7vw;
         color: #00eaff;
         text-shadow: 0 0 12px #00eaff, 0 0 25px #00eaff;
-        margin: 0 0 10px 0;
+        margin: 0 0 15px 0;
         animation: pulse 2.5s infinite ease-in-out;
     }
 
@@ -135,6 +135,37 @@
         bottom: 0;
         left: 0;
     }
+
+    /* MODAL */
+    #rulesModal {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0,0,0,0.8);
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    #rulesContent {
+        background: #222;
+        padding: 20px;
+        border-radius: 12px;
+        width: 85vw;
+        max-height: 70vh;
+        overflow-y: auto;
+        font-size: 4.5vw;
+        text-align: left;
+        box-shadow: 0 0 15px #00ff99;
+    }
+
+    #closeRules {
+        margin-top: 15px;
+        width: 100%;
+    }
 </style>
 </head>
 
@@ -144,17 +175,24 @@
 
     <h1>Cricket Nets Duel</h1>
 
-    <!-- RULES (setup only) -->
-    <div id="rulesBlock" style="width:85vw; font-size:4vw; color:#ccffcc; margin-bottom:10px;">
-        <b>Rules:</b><br>
-        Place the phone out of harms way near the bowling crease. Each ball bowled both players are set tasks. The bowler MUST achieve their task or the point automatically goes to the batsman.
-        (As they may not get the chance to achieve their task.) The bowler does the scoring. Hit TIE if both tasks are met. When no balls remain switch roles. The scoreboard goes dark in innings 2 for suspense.
-     Recommendation: Use a bluetooth speaker so the batsman hears the tasks read aloud.<br>
-        <b>GOOD LUCK!</b>
+    <!-- RULES BUTTON -->
+    <button class="pillBtn" onclick="openRules()">Rules</button>
+
+    <!-- RULES MODAL -->
+    <div id="rulesModal">
+        <div id="rulesContent">
+            <b>Rules:</b><br><br>
+            • Bowler and batter must attempt the scenario goals.<br><br>
+            • If the bowler fails their goal, the point automatically goes to the batter.<br><br>
+            • Switch roles after Balls Remaining hits 0.<br><br>
+            • Second innings score is hidden for suspense.<br><br>
+            <b>GOOD LUCK!</b>
+            <button id="closeRules" class="btnRed" onclick="closeRules()">Close</button>
+        </div>
     </div>
 
     <!-- SETUP SCREEN -->
-    <div id="setupScreen">
+    <div id="setupScreen" style="margin-top:20px;">
 
         <div class="sectionLabel">Player Names</div>
         <input id="p1" placeholder="Player A">
@@ -165,11 +203,14 @@
         <button class="btn" onclick="setBalls(40)">40 Balls</button>
         <button class="btn" onclick="setBalls(60)">60 Balls</button>
 
-        <button class="btnRed" style="margin-top:20px;" onclick="startDuel()">Start Duel</button>
+        <!-- FIXED FULL-WIDTH START BUTTON -->
+        <div style="margin-top:25px;">
+            <button class="btnRed" onclick="startDuel()">Start Duel</button>
+        </div>
     </div>
 
     <!-- DUEL SCREEN -->
-    <div id="duelScreen" style="display:none; margin-top:10px;">
+    <div id="duelScreen" style="display:none; margin-top:20px;">
         <div id="ballCount" class="sectionLabel"></div>
 
         <div id="scenarioBox"></div>
@@ -180,8 +221,9 @@
 
         <div id="scoreboard"></div>
 
-        <div style="height:20px;"></div>
+        <div style="height:25px;"></div>
 
+        <!-- RESTORED BOWLING PRACTICE BUTTON -->
         <button class="pillBtn" onclick="window.location.href='https://www.gyradio.com/TestSite/bowling'">
             Bowling Practice
         </button>
@@ -206,6 +248,14 @@
 <div id="adBanner">Ad banner goes here</div>
 
 <script>
+/* RULES MODAL */
+function openRules() {
+    document.getElementById("rulesModal").style.display = "flex";
+}
+function closeRules() {
+    document.getElementById("rulesModal").style.display = "none";
+}
+
 /* WAKE LOCK */
 let wakeLock = null;
 
@@ -276,8 +326,8 @@ function startDuel() {
     if (!balls) balls = 20;
     ballsLeft = balls;
 
-    // Remove rules
-    document.getElementById("rulesBlock").style.display = "none";
+    document.getElementById("setupScreen").style.display = "none";
+    document.getElementById("duelScreen").style.display = "block";
 
     // Randomise roles
     if (Math.random() < 0.5) {
@@ -287,9 +337,6 @@ function startDuel() {
         currentBowler = playerB;
         currentBatter = playerA;
     }
-
-    document.getElementById("setupScreen").style.display = "none";
-    document.getElementById("duelScreen").style.display = "block";
 
     updateBallCount();
     generateScenario();
@@ -392,5 +439,3 @@ function endDuel() {
 
 </body>
 </html>
-
-
