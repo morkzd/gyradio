@@ -340,8 +340,8 @@ function startDuel() {
     // user interaction happened here → allow audio
     audioEnabled = true;
 
-    playerA = document.getElementById("p1").value || "Player A - bowl first";
-    playerB = document.getElementById("p2").value || "Player B - bat first";
+    playerA = document.getElementById("p1").value || "Player A";
+    playerB = document.getElementById("p2").value || "Player B";
 
     if (!balls) balls = 20;
     ballsLeft = balls;
@@ -454,6 +454,7 @@ function endDuel() {
 
 </body>
 </html>
+
 
 
 
