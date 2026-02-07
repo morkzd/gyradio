@@ -183,8 +183,8 @@ function speak(text) {
 /* BOWLING SCENARIOS ONLY */
 const scenarios = {
     fast: [
-        "Hit the top of off stump with a tight channel.",
-        "Bowl directly at the centre of middle stump and build pressure.",
+        "Hit the top of off stump.",
+        "Bowl directly at the centre of middle stump.",
         "Use subtle seam movement to challenge the batter.",
         "Finish the over with a yorker aimed at the toes.",
         "Try to unsettle the batsman with a bouncer over leg stump.",
@@ -207,7 +207,7 @@ const scenarios = {
         "Last ball of the match. They need 2 to win, 1 to tie. What will be your tactics?",
         "Last ball of the match. It's a tie. Keeper's up. Aim to make the batsman miss a slow ball.",
         "You're the first bowling change. The captain needs a wicket. Knock those stumps down.",
-        "It's a powerplay. Don't give them anything to hit.",
+        "It's a free hit. Use change of pace to limit the damage.",
         "You've been all over the place. Just look for accuracy over speed.",
         "You're very predictable. Try a slower ball, but too slow will be too easy to spot.",
         "Your rhythm has been great. Time for a toe-crusher. Go hard at the toes.",
@@ -219,19 +219,36 @@ const scenarios = {
         "There's a real L.B.W. chance if you can get your pace and aim right.",
         "The batsman is walking across his stumps. Follow them and shorten them up.",
         "The captain has set a field for the ramp. Aim for middle and leg, just short of a good length.",
-        "The captain has set a field for a hook shot. Short, leg and fool with a slower ball.",
+        "The captain has set a field for a hook shot. Bowl short, leg side, roll the fingers over the ball.",
         "Final ball. The field is all up to protect a single. Give the batsman nothing.",
         "First ball of the game. Gun for that L.B.W.",
-        "Cross-seam deliveries to disrupt timing."
+        "Bowl a cross-seam delivery to disrupt timing."
     ],
 
     swing: [
-        "Pitch it up and let the ball swing.",
-        "Set the batter up with outswing before surprising them with one that nips back.",
+        "Pitch it up outside off stump, draw an off drive.",
+        "Scramble the seam to ensure no swing and up the speed.",
         "Bowl full and outside off to tempt the drive.",
-        "Use late swing to attack the stumps.",
-        "Hide the shiny side and disguise your movement.",
-        "Aim for the corridor of uncertainty and let the ball talk."
+        "Use swing to aim for middle stump. Pitch the ball where appropriate.",
+        "The captain has set a field for a legside chip. Pitch it middle stump. Any swing at all may produce a top edge.",
+        "The captain has set a field for a cut shot in the hope of an edge to slips. Shape away with pace.",
+        "First ball after drinks. Nothing crazy, just keep it on the stumps off side.",
+        "Bowl wide of the crease and angle into the stumps with swing.",
+        "The number 11 is desperate to get off strike. Make him miss by bowling wide of off and fast.",
+        "Last ball of the game. 2 to win, 1 to tie. Use change of pace to bamboozle with the keeper up.",
+        "Last ball of the game. 1 to win. Keeper is up with his gloves set outside off stump. Aim for his gloves with a slower ball.",
+        "Long on and long off are deep on the boundary. Lure the batsman into a big drive downtown.",
+        "The captain has set a field for a wide offside drive. Use shape to lure an edge.",
+        "The batsmen are eager to take a quick single. Cramp the batsman up aiming for the tip of middle stump.",
+        "Test match. Aim for leg stump, not too full, not too short. A catcher is in close.",
+        "Hit the seam hard in an attempt at a cutter just outside off stump.",
+        "First ball of the innings in a test. Make it shave the outside of off stump.",
+        "You've just been hit for 3 sixes. Go with a yorker to stop the bleeding.",
+        "The captain has set a field for a hook shot. Go short, slow and leg side.",
+        "Bowl wide of the crease either side. Angle into the stumps.",
+        "The captain wants you to lure the batsman into charging and going big.",
+        "L.B.W. is on the cards with the number 10 batsman. Find their pads.",
+        "Last ball of the over. Nothing leg side, graze the off stump."
     ],
 
     offspin: [
@@ -315,6 +332,7 @@ function generateScenario() {
 
 </body>
 </html>
+
 
 
 
