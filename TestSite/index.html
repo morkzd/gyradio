@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Cricket Nets Duel – Bowling Practice</title>
+<title>Cricket Nets Duel</title>
 
 <style>
     html, body {
@@ -40,14 +40,7 @@
         100% { text-shadow: 0 0 10px #00eaff; }
     }
 
-    .sectionLabel {
-        font-size: 5vw;
-        color: #88ff88;
-        text-shadow: 0 0 8px #00ff55;
-        margin-bottom: 5px;
-    }
-
-    .btn, .btnSmall, .pillBtn {
+    .btn, .pillBtn {
         border: none;
         cursor: pointer;
         transition: 0.15s;
@@ -71,27 +64,27 @@
         margin: 5px 0;
     }
 
-    .btnSmall {
-        padding: 1.8vh 0;
-        font-size: 4.8vw;
-        border-radius: 12px;
-    }
-
-    .selected {
-        background: #00aaff !important;
-        box-shadow: 0 0 18px #00eaff inset, 0 0 22px #00eaff !important;
-    }
-
-    #bowlGrid {
-        width: 90vw;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 5px;
-    }
-
     .btnRed {
         background: #aa0000;
         box-shadow: 0 0 14px #ff4444 inset, 0 0 18px #ff4444;
+    }
+
+    .sectionLabel {
+        font-size: 5vw;
+        color: #88ff88;
+        text-shadow: 0 0 8px #00ff55;
+        margin-bottom: 5px;
+    }
+
+    input {
+        width: 80vw;
+        padding: 12px;
+        font-size: 4.5vw;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        margin-bottom: 10px;
+        text-align: center;
     }
 
     #scenarioBox {
@@ -107,6 +100,13 @@
         box-shadow: 0 0 10px #444 inset;
         opacity: 0;
         transition: opacity 0.4s ease-in-out;
+    }
+
+    #scoreboard {
+        font-size: 5vw;
+        margin-top: 10px;
+        color: #00ffcc;
+        text-shadow: 0 0 10px #00ffcc;
     }
 
     #adBanner {
@@ -128,97 +128,99 @@
 
 <div id="app">
 
-    <h1>Bowling Practice</h1>
+    <h1>Cricket Nets Duel</h1>
 
-    <button class="pillBtn" onclick="window.location.href='https://www.gyradio.com/TestSite/'">
-        Return to Main Menu
+    <button class="pillBtn" onclick="window.location.href='https://www.gyradio.com/TestSite/bowling'">
+        Bowling Practice
     </button>
 
-    <div class="sectionLabel">Choose Your Bowling Type</div>
+    <div id="setupScreen">
 
-    <div id="bowlGrid">
-        <button class="btnSmall" onclick="selectRole('fast')">Fast Bowl</button>
-        <button class="btnSmall" onclick="selectRole('swing')">Swing Bowl</button>
-        <button class="btnSmall" onclick="selectRole('offspin')">Offspin</button>
-        <button class="btnSmall" onclick="selectRole('legspin')">Legspin</button>
+        <div class="sectionLabel">Player Names</div>
+        <input id="p1" placeholder="Player A">
+        <input id="p2" placeholder="Player B">
+
+        <div class="sectionLabel">Balls Per Innings</div>
+        <button class="btn" onclick="setBalls(30)">30 Balls</button>
+        <button class="btn" onclick="setBalls(40)">40 Balls</button>
+        <button class="btn" onclick="setBalls(50)">50 Balls</button>
+        <button class="btn" onclick="setBalls(60)">60 Balls</button>
+
+        <button class="btnRed" onclick="startDuel()">Start Duel</button>
     </div>
 
-    <div class="sectionLabel">Generate Scenario</div>
-    <button class="btn btnRed" onclick="generateScenario()">Generate Scenario</button>
+    <div id="duelScreen" style="display:none;">
+        <div id="ballCount" class="sectionLabel"></div>
 
-    <div id="scenarioBox">Your scenario will appear here.</div>
+        <div id="scenarioBox">Scenario will appear here.</div>
+
+        <button class="btn" onclick="scorePoint('bowler')">Bowler Wins</button>
+        <button class="btn" onclick="scorePoint('batter')">Batter Wins</button>
+        <button class="btn" onclick="scorePoint('tie')">Tie</button>
+
+        <div id="scoreboard"></div>
+    </div>
+
+    <div id="switchScreen" style="display:none;">
+        <h2>Switch Roles!</h2>
+        <p id="switchText"></p>
+        <button class="btnRed" onclick="startInnings2()">Start Innings 2</button>
+    </div>
+
+    <div id="finalScreen" style="display:none;">
+        <h2>Final Results</h2>
+        <div id="finalText"></div>
+        <button class="btn" onclick="location.reload()">Play Again</button>
+    </div>
 
 </div>
 
 <div id="adBanner">Ad banner goes here</div>
 
 <script>
-/* KEEP SCREEN AWAKE */
-let wakeLock;
-async function keepAwake() {
-    try { wakeLock = await navigator.wakeLock.request('screen'); }
-    catch (err) { console.log("Wake lock not supported", err); }
-}
-document.addEventListener("click", keepAwake);
+let balls = 0;
+let ballsLeft = 0;
 
-/* SPEECH SYNTHESIS */
-function speak(text) {
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.rate = 1;
-    utter.pitch = 1;
-    utter.volume = 1;
+let playerA = "Player A";
+let playerB = "Player B";
 
-    const voices = speechSynthesis.getVoices();
-    const preferred = voices.find(v =>
-        v.name.toLowerCase().includes("male") ||
-        v.name.toLowerCase().includes("deep") ||
-        v.name.toLowerCase().includes("english")
-    );
-    if (preferred) utter.voice = preferred;
+let innings = 1;
 
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utter);
+let scoreA = 0;
+let scoreB = 0;
+let ties = 0;
+
+const scenarios = [
+    { bowler: "Aim for the top of off stump.", batter: "Play a defensive shot." },
+    { bowler: "Bowl a slower ball.", batter: "Try to hit straight down the ground." },
+    { bowler: "Bowl wide of off stump.", batter: "Leave the ball." },
+    { bowler: "Bowl a yorker.", batter: "Try to dig it out safely." },
+    { bowler: "Bowl short.", batter: "Play a controlled pull shot." }
+];
+
+function setBalls(n) {
+    balls = n;
 }
 
-/* BOWLING SCENARIOS ONLY */
-const scenarios = {
-    fast: [
-        "Hit the top of off stump with a tight channel.",
-        "Bowl a heavy length and build pressure.",
-        "Use subtle seam movement to challenge the batter.",
-        "Finish the over with a yorker aimed at the toes."
-    ],
-    swing: [
-        "Pitch it up and let the ball swing.",
-        "Set the batter up with outswing, then bring one back in.",
-        "Bowl full and challenge the forward defence.",
-        "Use late swing to attack the stumps."
-    ],
-    offspin: [
-        "Bowl outside off and tempt the forward defence.",
-        "Attack the pads with a close field.",
-        "Vary your flight to draw the batter forward.",
-        "Bowl into the pitch to limit scoring."
-    ],
-    legspin: [
-        "Toss it up and look for drift.",
-        "Bowl your stock leg‑break and build pressure.",
-        "Use the googly as a surprise weapon.",
-        "Slow it down to tempt the big shot."
-    ]
-};
+function startDuel() {
+    playerA = document.getElementById("p1").value || "Player A";
+    playerB = document.getElementById("p2").value || "Player B";
 
-let selectedRole = null;
+    if (!balls) balls = 30;
 
-function selectRole(role) {
-    selectedRole = role;
-    highlightButtons();
+    ballsLeft = balls;
+
+    document.getElementById("setupScreen").style.display = "none";
+    document.getElementById("duelScreen").style.display = "block";
+
+    updateBallCount();
+    generateScenario();
+    updateScoreboard();
 }
 
-function highlightButtons() {
-    document.querySelectorAll('.btnSmall').forEach(btn => btn.classList.remove('selected'));
-    if (selectedRole)
-        document.querySelector(`[onclick="selectRole('${selectedRole}')"]`).classList.add('selected');
+function updateBallCount() {
+    document.getElementById("ballCount").innerText =
+        `Balls Remaining: ${ballsLeft}`;
 }
 
 function generateScenario() {
@@ -226,22 +228,85 @@ function generateScenario() {
     box.style.opacity = 0;
 
     setTimeout(() => {
-        if (!selectedRole) {
-            box.innerText = "Please select a bowling type.";
-            box.style.opacity = 1;
-            speak("Please select a bowling type.");
-            return;
-        }
-
-        const list = scenarios[selectedRole];
-        const scenario = list[Math.floor(Math.random() * list.length)];
-
-        box.innerText = scenario;
+        const s = scenarios[Math.floor(Math.random() * scenarios.length)];
+        box.innerHTML =
+            `<b>Bowler:</b> ${s.bowler}<br><br><b>Batter:</b> ${s.batter}`;
         box.style.opacity = 1;
-        speak(scenario);
     }, 200);
+}
+
+function scorePoint(winner) {
+    if (innings === 1) {
+        if (winner === "bowler") scoreA++;
+        if (winner === "batter") scoreB++;
+        if (winner === "tie") ties++;
+    } else {
+        if (winner === "bowler") scoreB++;
+        if (winner === "batter") scoreA++;
+        if (winner === "tie") ties++;
+    }
+
+    ballsLeft--;
+
+    if (ballsLeft <= 0) {
+        if (innings === 1) {
+            switchRoles();
+        } else {
+            endDuel();
+        }
+        return;
+    }
+
+    updateBallCount();
+    generateScenario();
+    updateScoreboard();
+}
+
+function updateScoreboard() {
+    if (innings === 1) {
+        document.getElementById("scoreboard").innerHTML =
+            `${playerA}: ${scoreA} | ${playerB}: ${scoreB} | Ties: ${ties}`;
+    } else {
+        document.getElementById("scoreboard").innerHTML = "";
+    }
+}
+
+function switchRoles() {
+    innings = 2;
+    ballsLeft = balls;
+
+    document.getElementById("duelScreen").style.display = "none";
+    document.getElementById("switchScreen").style.display = "block";
+
+    document.getElementById("switchText").innerText =
+        `${playerB} now bowls. ${playerA} now bats.`;
+}
+
+function startInnings2() {
+    document.getElementById("switchScreen").style.display = "none";
+    document.getElementById("duelScreen").style.display = "block";
+
+    updateBallCount();
+    generateScenario();
+}
+
+function endDuel() {
+    document.getElementById("duelScreen").style.display = "none";
+    document.getElementById("finalScreen").style.display = "block";
+
+    let winner = "It's a tie!";
+    if (scoreA > scoreB) winner = `${playerA} wins!`;
+    if (scoreB > scoreA) winner = `${playerB} wins!`;
+
+    document.getElementById("finalText").innerHTML =
+        `<b>${playerA}:</b> ${scoreA}<br>
+         <b>${playerB}:</b> ${scoreB}<br>
+         <b>Ties:</b> ${ties}<br><br>
+         <h3>${winner}</h3>`;
 }
 </script>
 
 </body>
 </html>
+
+
