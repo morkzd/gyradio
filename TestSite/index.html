@@ -224,6 +224,10 @@
 <div id="adBanner">Ad banner goes here</div>
 
 <script>
+    speechSynthesis.onvoiceschanged = () => {
+    speechSynthesis.getVoices();
+};
+
 function openRules() {
     document.getElementById("rulesModal").style.display = "flex";
 }
@@ -373,3 +377,4 @@ function endDuel() {
 
 </body>
 </html>
+
