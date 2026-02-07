@@ -130,9 +130,10 @@
 
     <h1>Cricket Nets Duel</h1>
 
-    <button class="pillBtn" onclick="window.location.href='https://www.gyradio.com/TestSite/bowling'">
-        Bowling Practice
-    </button>
+    <div style="width:85vw; font-size:4vw; color:#ccffcc; margin-bottom:10px;">
+        Change roles after the ball count hits zero.<br>
+        If the bowler fails the task, the point automatically goes to the batsman.
+    </div>
 
     <div id="setupScreen">
 
@@ -146,7 +147,7 @@
         <button class="btn" onclick="setBalls(50)">50 Balls</button>
         <button class="btn" onclick="setBalls(60)">60 Balls</button>
 
-        <button class="btnRed" onclick="startDuel()">Start Duel</button>
+        <button class="btnRed" style="margin-top:15px;" onclick="startDuel()">Start Duel</button>
     </div>
 
     <div id="duelScreen" style="display:none;">
@@ -159,6 +160,10 @@
         <button class="btn" onclick="scorePoint('tie')">Tie</button>
 
         <div id="scoreboard"></div>
+
+        <button class="pillBtn" onclick="window.location.href='https://www.gyradio.com/TestSite/bowling'">
+            Bowling Practice
+        </button>
     </div>
 
     <div id="switchScreen" style="display:none;">
@@ -178,6 +183,46 @@
 <div id="adBanner">Ad banner goes here</div>
 
 <script>
+/* WAKE LOCK — more robust version */
+let wakeLock = null;
+
+async function requestWakeLock() {
+    try {
+        wakeLock = await navigator.wakeLock.request("screen");
+        wakeLock.addEventListener("release", () => {
+            requestWakeLock();
+        });
+    } catch (err) {
+        console.log("Wake lock error:", err);
+    }
+}
+
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+        requestWakeLock();
+    }
+});
+
+/* SPEECH SYNTHESIS */
+function speak(text) {
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 1;
+    utter.pitch = 1;
+    utter.volume = 1;
+
+    const voices = speechSynthesis.getVoices();
+    const preferred = voices.find(v =>
+        v.name.toLowerCase().includes("male") ||
+        v.name.toLowerCase().includes("deep") ||
+        v.name.toLowerCase().includes("english")
+    );
+    if (preferred) utter.voice = preferred;
+
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utter);
+}
+
+/* GAME LOGIC */
 let balls = 0;
 let ballsLeft = 0;
 
@@ -203,6 +248,8 @@ function setBalls(n) {
 }
 
 function startDuel() {
+    requestWakeLock();
+
     playerA = document.getElementById("p1").value || "Player A";
     playerB = document.getElementById("p2").value || "Player B";
 
@@ -229,9 +276,13 @@ function generateScenario() {
 
     setTimeout(() => {
         const s = scenarios[Math.floor(Math.random() * scenarios.length)];
+        const text = `Bowler: ${s.bowler}. Batter: ${s.batter}.`;
+
         box.innerHTML =
             `<b>Bowler:</b> ${s.bowler}<br><br><b>Batter:</b> ${s.batter}`;
         box.style.opacity = 1;
+
+        speak(text);
     }, 200);
 }
 
@@ -308,5 +359,3 @@ function endDuel() {
 
 </body>
 </html>
-
-
