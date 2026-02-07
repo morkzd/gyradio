@@ -109,6 +109,19 @@
         text-shadow: 0 0 10px #00ffcc;
     }
 
+    #switchScreen h2,
+    #finalScreen h2 {
+        font-size: 6vw;
+        margin-bottom: 10px;
+    }
+
+    #switchText,
+    #finalText {
+        font-size: 4.5vw;
+        line-height: 1.4;
+        margin-bottom: 15px;
+    }
+
     #adBanner {
         width: 100%;
         height: 50px;
@@ -131,10 +144,15 @@
     <h1>Cricket Nets Duel</h1>
 
     <div style="width:85vw; font-size:4vw; color:#ccffcc; margin-bottom:10px;">
-        Change roles after the ball count hits zero.<br>
-        If the bowler fails the task, the point automatically goes to the batsman.
+        <b>Rules:</b><br>
+        The bowler and batsman must achieve the goals set.<br>
+        If the bowler fails to achieve the goal the point automatically goes to the batsman regardless.<br>
+        Players switch roles after Balls Remaining hits 0.<br>
+        The score GOES HIDDEN in the second innings for suspense.<br>
+        <b>GOOD LUCK!</b>
     </div>
 
+    <!-- SETUP SCREEN -->
     <div id="setupScreen">
 
         <div class="sectionLabel">Player Names</div>
@@ -142,14 +160,14 @@
         <input id="p2" placeholder="Player B">
 
         <div class="sectionLabel">Balls Per Innings</div>
-        <button class="btn" onclick="setBalls(30)">30 Balls</button>
+        <button class="btn" onclick="setBalls(20)">20 Balls</button>
         <button class="btn" onclick="setBalls(40)">40 Balls</button>
-        <button class="btn" onclick="setBalls(50)">50 Balls</button>
         <button class="btn" onclick="setBalls(60)">60 Balls</button>
 
         <button class="btnRed" style="margin-top:15px;" onclick="startDuel()">Start Duel</button>
     </div>
 
+    <!-- DUEL SCREEN -->
     <div id="duelScreen" style="display:none;">
         <div id="ballCount" class="sectionLabel"></div>
 
@@ -161,17 +179,21 @@
 
         <div id="scoreboard"></div>
 
+        <div style="height:10px;"></div>
+
         <button class="pillBtn" onclick="window.location.href='https://www.gyradio.com/TestSite/bowling'">
             Bowling Practice
         </button>
     </div>
 
+    <!-- SWITCH ROLES SCREEN -->
     <div id="switchScreen" style="display:none;">
         <h2>Switch Roles!</h2>
         <p id="switchText"></p>
         <button class="btnRed" onclick="startInnings2()">Start Innings 2</button>
     </div>
 
+    <!-- FINAL RESULTS SCREEN -->
     <div id="finalScreen" style="display:none;">
         <h2>Final Results</h2>
         <div id="finalText"></div>
@@ -183,7 +205,7 @@
 <div id="adBanner">Ad banner goes here</div>
 
 <script>
-/* WAKE LOCK — more robust version */
+/* WAKE LOCK — robust */
 let wakeLock = null;
 
 async function requestWakeLock() {
@@ -222,7 +244,7 @@ function speak(text) {
     speechSynthesis.speak(utter);
 }
 
-/* GAME LOGIC */
+/* GAME STATE */
 let balls = 0;
 let ballsLeft = 0;
 
@@ -234,6 +256,9 @@ let innings = 1;
 let scoreA = 0;
 let scoreB = 0;
 let ties = 0;
+
+let currentBowler = null;
+let currentBatter = null;
 
 const scenarios = [
     { bowler: "Aim for the top of off stump.", batter: "Play a defensive shot." },
@@ -253,9 +278,17 @@ function startDuel() {
     playerA = document.getElementById("p1").value || "Player A";
     playerB = document.getElementById("p2").value || "Player B";
 
-    if (!balls) balls = 30;
-
+    if (!balls) balls = 20;
     ballsLeft = balls;
+
+    // Randomise who bowls/bats first
+    if (Math.random() < 0.5) {
+        currentBowler = playerA;
+        currentBatter = playerB;
+    } else {
+        currentBowler = playerB;
+        currentBatter = playerA;
+    }
 
     document.getElementById("setupScreen").style.display = "none";
     document.getElementById("duelScreen").style.display = "block";
@@ -288,12 +321,22 @@ function generateScenario() {
 
 function scorePoint(winner) {
     if (innings === 1) {
-        if (winner === "bowler") scoreA++;
-        if (winner === "batter") scoreB++;
+        if (winner === "bowler") {
+            // bowler is whoever is bowling this innings
+            if (currentBowler === playerA) scoreA++; else scoreB++;
+        }
+        if (winner === "batter") {
+            if (currentBatter === playerA) scoreA++; else scoreB++;
+        }
         if (winner === "tie") ties++;
     } else {
-        if (winner === "bowler") scoreB++;
-        if (winner === "batter") scoreA++;
+        // innings 2: roles swapped, but we still track by player
+        if (winner === "bowler") {
+            if (currentBowler === playerA) scoreA++; else scoreB++;
+        }
+        if (winner === "batter") {
+            if (currentBatter === playerA) scoreA++; else scoreB++;
+        }
         if (winner === "tie") ties++;
     }
 
@@ -326,11 +369,16 @@ function switchRoles() {
     innings = 2;
     ballsLeft = balls;
 
+    // Swap roles
+    const oldBowler = currentBowler;
+    currentBowler = currentBatter;
+    currentBatter = oldBowler;
+
     document.getElementById("duelScreen").style.display = "none";
     document.getElementById("switchScreen").style.display = "block";
 
     document.getElementById("switchText").innerText =
-        `${playerB} now bowls. ${playerA} now bats.`;
+        `${currentBowler} now bowls. ${currentBatter} now bats.`;
 }
 
 function startInnings2() {
