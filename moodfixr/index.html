@@ -10,9 +10,10 @@
         margin: 0;
         padding: 0;
         height: 100%;
-        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         background: #000;
-        color: #fdfdfd;
+        font-family: system-ui, sans-serif;
+        color: #fff;
+        overflow: hidden;
     }
 
     #app {
@@ -20,14 +21,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        box-sizing: border-box;
         padding: 12px;
+        box-sizing: border-box;
     }
 
     .screen {
         width: 100%;
         max-width: 480px;
-        box-sizing: border-box;
     }
 
     .hidden {
@@ -37,507 +37,313 @@
     h1 {
         text-align: center;
         font-size: 8vw;
-        margin: 0 0 8px 0;
+        margin: 0 0 12px 0;
         color: #ffffff;
-        text-shadow: 0 0 12px #00eaff, 0 0 24px #00eaff;
+        text-shadow: 0 0 8px #444;
     }
 
     .tagline {
         text-align: center;
-        font-size: 3.8vw;
-        opacity: 0.85;
-        margin-bottom: 18px;
+        font-size: 4vw;
+        opacity: 0.8;
+        margin-bottom: 20px;
     }
 
     .moodGrid {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(2, 1fr);
         gap: 10px;
         margin-bottom: 16px;
     }
 
     .moodBtn {
         border: none;
-        border-radius: 999px;
-        padding: 12px 10px;
-        font-size: 4.2vw;
+        border-radius: 12px;
+        padding: 14px 10px;
+        font-size: 4.5vw;
         cursor: pointer;
-        color: #fff;
-        background: #111;
-        box-shadow: 0 0 10px #00eaff55 inset, 0 0 10px #00eaff55;
-        transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+        color: #000;
+        background: #ddd;
+        transition: transform 0.1s ease, background 0.2s ease;
     }
 
     .moodBtn:active {
         transform: scale(0.96);
-        box-shadow: 0 0 16px #00eaffaa inset, 0 0 16px #00eaffaa;
-    }
-
-    .moodBtn.angry {
-        background: radial-gradient(circle at top, #ff4b4b, #5a0000);
-    }
-    .moodBtn.sad {
-        background: radial-gradient(circle at top, #4b6cff, #001133);
-    }
-    .moodBtn.anxious {
-        background: radial-gradient(circle at top, #3fd1ff, #003344);
-    }
-    .moodBtn.excited {
-        background: radial-gradient(circle at top, #ff9a3c, #ff2e92);
-    }
-    .moodBtn.flat {
-        background: radial-gradient(circle at top, #c0a6ff, #3b2a5a);
     }
 
     .sponsor {
         text-align: center;
         font-size: 3.2vw;
-        opacity: 0.7;
-        margin-top: 10px;
-    }
-
-    .sponsor span {
-        opacity: 0.9;
-        font-weight: 500;
+        opacity: 0.6;
+        margin-top: 12px;
     }
 
     /* MOOD VIEW */
 
-    #moodViewWrapper {
+    #moodView {
         position: relative;
         width: 100%;
-        max-width: 480px;
-        height: 80vh;
-        margin: 0 auto;
+        height: 85vh;
         border-radius: 20px;
         overflow: hidden;
-        box-shadow: 0 0 20px #000;
-        background: #000;
-    }
-
-    #moodBackground {
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(circle at top, #222, #000);
-        animation: shimmerBase 18s infinite alternate ease-in-out;
-        filter: blur(0px);
-    }
-
-    #moodOverlay {
-        position: absolute;
-        inset: -20%;
-        opacity: 0.7;
-        mix-blend-mode: screen;
-        background: conic-gradient(from 0deg, #ff9a3c, #ff2e92, #3fd1ff, #4bff88, #ff9a3c);
-        animation: swirl 30s infinite linear;
-    }
-
-    @keyframes shimmerBase {
-        0% { filter: blur(0px); transform: scale(1); }
-        50% { filter: blur(4px); transform: scale(1.05); }
-        100% { filter: blur(2px); transform: scale(1.02); }
-    }
-
-    @keyframes swirl {
-        0% { transform: rotate(0deg) scale(1.1); }
-        50% { transform: rotate(180deg) scale(1.15); }
-        100% { transform: rotate(360deg) scale(1.1); }
-    }
-
-    #moodContent {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 16px;
-        box-sizing: border-box;
-        text-align: center;
-        color: #ffffff;
-        text-shadow: 0 0 10px #000;
-    }
-
-    #moodLabel {
-        font-size: 4vw;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        opacity: 0.85;
-        margin-bottom: 10px;
+        background: #222;
+        transition: background 2s linear;
     }
 
     #quoteBox {
-        max-width: 90%;
-        font-size: 4.6vw;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 85%;
+        padding: 14px 18px;
+        background: rgba(0,0,0,0.35);
+        border-radius: 12px;
+        text-align: center;
+        font-size: 4.8vw;
         line-height: 1.4;
-        padding: 10px 14px;
-        border-radius: 14px;
-        background: rgba(0, 0, 0, 0.45);
-        box-shadow: 0 0 16px rgba(0,0,0,0.7);
         opacity: 0;
-        transform: translateY(8px);
-        transition: opacity 0.8s ease, transform 0.8s ease;
+        transition: opacity 1.2s ease;
     }
 
     #quoteBox.visible {
         opacity: 1;
-        transform: translateY(0);
     }
 
-    #quoteText {
-        margin: 0;
-    }
-
-    #quoteMoodTag {
-        margin-top: 6px;
-        font-size: 3.2vw;
-        opacity: 0.8;
-    }
-
-    #moodControls {
+    #footerNote {
         position: absolute;
         bottom: 10px;
-        left: 0;
-        right: 0;
-        display: flex;
-        justify-content: center;
-        gap: 8px;
-        padding: 0 10px;
-        box-sizing: border-box;
-    }
-
-    .controlBtn {
-        border: none;
-        border-radius: 999px;
-        padding: 6px 10px;
-        font-size: 3.2vw;
-        cursor: pointer;
-        color: #fff;
-        background: rgba(0,0,0,0.6);
-        box-shadow: 0 0 10px rgba(0,0,0,0.7);
-        backdrop-filter: blur(6px);
-        transition: transform 0.12s ease, background 0.12s ease;
-    }
-
-    .controlBtn:active {
-        transform: scale(0.95);
-        background: rgba(0,0,0,0.85);
-    }
-
-    #soundToggleBtn {
-        min-width: 80px;
+        width: 100%;
+        text-align: center;
+        font-size: 3vw;
+        opacity: 0.6;
     }
 
     #backBtn {
-        min-width: 90px;
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 8px;
+        background: rgba(0,0,0,0.4);
+        color: #fff;
+        font-size: 3.5vw;
+        cursor: pointer;
     }
 
     #nextQuoteBtn {
-        min-width: 90px;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 8px;
+        background: rgba(0,0,0,0.4);
+        color: #fff;
+        font-size: 3.5vw;
+        cursor: pointer;
     }
 
-    @media (min-width: 480px) {
-        h1 { font-size: 32px; }
-        .tagline { font-size: 16px; }
-        .moodBtn { font-size: 18px; }
-        .sponsor { font-size: 14px; }
-        #moodLabel { font-size: 16px; }
-        #quoteBox { font-size: 20px; }
-        #quoteMoodTag { font-size: 14px; }
-        .controlBtn { font-size: 14px; }
-    }
 </style>
 </head>
 <body>
 
 <div id="app">
+
     <!-- LANDING SCREEN -->
     <div id="landingScreen" class="screen">
         <h1>Mood Fixr</h1>
-        <div class="tagline">
-            Pick how you feel. We’ll set the mood.
-        </div>
+        <div class="tagline">Pick how you feel. We'll soften or lift it.</div>
 
         <div class="moodGrid">
-            <button class="moodBtn angry"   onclick="selectMood('angry')">Angry</button>
-            <button class="moodBtn sad"     onclick="selectMood('sad')">Sad</button>
-            <button class="moodBtn anxious" onclick="selectMood('anxious')">Anxious</button>
-            <button class="moodBtn excited" onclick="selectMood('excited')">Excited</button>
-            <button class="moodBtn flat"    onclick="selectMood('flat')" style="grid-column: span 2;">
-                Flat / Meh
-            </button>
+            <button class="moodBtn" onclick="selectMood('angry')">Angry</button>
+            <button class="moodBtn" onclick="selectMood('sad')">Sad</button>
+            <button class="moodBtn" onclick="selectMood('anxious')">Anxious</button>
+            <button class="moodBtn" onclick="selectMood('excited')">Excited</button>
+            <button class="moodBtn" onclick="selectMood('flat')" style="grid-column: span 2;">Flat / Meh</button>
         </div>
 
         <div class="sponsor">
-            This app stays free thanks to <span>Your Supporter Here</span>.
+            This app stays free thanks to your support.<br>
+            <span style="opacity:0.8;">Only use in brief periods.</span>
         </div>
     </div>
 
     <!-- MOOD SCREEN -->
     <div id="moodScreen" class="screen hidden">
-        <div id="moodViewWrapper">
-            <div id="moodBackground"></div>
-            <div id="moodOverlay"></div>
+        <div id="moodView"></div>
 
-            <div id="moodContent">
-                <div id="moodLabel"></div>
-                <div id="quoteBox">
-                    <p id="quoteText"></p>
-                    <div id="quoteMoodTag"></div>
-                </div>
-            </div>
-
-            <div id="moodControls">
-                <button id="backBtn" class="controlBtn" onclick="goBack()">Change mood</button>
-                <button id="nextQuoteBtn" class="controlBtn" onclick="showNextQuote()">Next quote</button>
-                <button id="soundToggleBtn" class="controlBtn" onclick="toggleSound()">Sound: OFF</button>
-            </div>
+        <div id="quoteBox">
+            <div id="quoteText"></div>
         </div>
+
+        <button id="backBtn" onclick="goBack()">Back</button>
+        <button id="nextQuoteBtn" onclick="nextQuote()">Next</button>
+
+        <div id="footerNote">Only use in brief periods.</div>
     </div>
+
 </div>
 
 <script>
-/* MOOD DATA */
+/* CALM COLOUR PALETTES */
 
-const moodConfigs = {
+const moods = {
     angry: {
-        label: "Angry",
-        gradientBase: "radial-gradient(circle at top, #ff4b4b, #5a0000 60%, #000000 100%)",
-        overlay: "conic-gradient(from 0deg, #ff4b4b, #ff9a3c, #ff2e92, #ff4b4b)",
+        colours: ["#f2c6c6", "#e8a8a8", "#d98f8f"],
         quotes: [
-            "Let the fire settle before you act.",
-            "You’re allowed to feel this. It will pass.",
-            "Breathe out the heat, breathe in the calm.",
-            "Pause. You don’t have to respond right now."
+            "Let the heat soften.",
+            "You’re allowed to pause.",
+            "This feeling will pass.",
+            "Breathe out the tension."
         ]
     },
     sad: {
-        label: "Sad",
-        gradientBase: "radial-gradient(circle at top, #4b6cff, #001133 60%, #000000 100%)",
-        overlay: "conic-gradient(from 0deg, #4b6cff, #3fd1ff, #a3b8ff, #4b6cff)",
+        colours: ["#fff4d6", "#f7eac2", "#f0dfad"],
         quotes: [
-            "It’s okay to feel this way.",
-            "This moment is heavy, but it isn’t forever.",
-            "You don’t have to be strong every second.",
-            "Some days are for resting your heart."
+            "It’s okay to feel this.",
+            "Be gentle with yourself.",
+            "This moment is temporary.",
+            "You’re not alone in this."
         ]
     },
     anxious: {
-        label: "Anxious",
-        gradientBase: "radial-gradient(circle at top, #3fd1ff, #007a7a 60%, #000000 100%)",
-        overlay: "conic-gradient(from 0deg, #3fd1ff, #4bff88, #a3ffe0, #3fd1ff)",
+        colours: ["#d6f2e1", "#c2e8d4", "#aedfc7"],
         quotes: [
-            "One breath at a time.",
-            "Right now, in this moment, you are safe.",
-            "You don’t have to solve everything today.",
-            "Let your shoulders drop. Unclench your jaw."
+            "One slow breath at a time.",
+            "You are safe right now.",
+            "Let your shoulders drop.",
+            "You don’t need to solve everything today."
         ]
     },
     excited: {
-        label: "Excited",
-        gradientBase: "radial-gradient(circle at top, #ff9a3c, #ff2e92 60%, #1a0020 100%)",
-        overlay: "conic-gradient(from 0deg, #ff9a3c, #ff2e92, #ffe66d, #ff9a3c)",
+        colours: ["#f7d1ff", "#fcd8c8", "#f7c4ff"],
         quotes: [
-            "Carpe diem — seize the day.",
-            "Ride the wave. This energy is a gift.",
-            "Lean into the joy. You’re allowed to enjoy this.",
-            "Channel this spark into something you love."
+            "Enjoy the spark.",
+            "Let the joy flow gently.",
+            "You can ride this wave.",
+            "Let excitement warm you, not overwhelm you."
         ]
     },
     flat: {
-        label: "Flat / Meh",
-        gradientBase: "radial-gradient(circle at top, #c0a6ff, #3b2a5a 60%, #000000 100%)",
-        overlay: "conic-gradient(from 0deg, #c0a6ff, #a3ffe0, #ffe66d, #c0a6ff)",
+        colours: ["#dcd7e8", "#cfcbdc", "#c3bfd1"],
         quotes: [
-            "Even small steps count.",
-            "You don’t have to feel amazing to keep going.",
-            "Existing is enough for today.",
-            "You’re doing better than you think."
+            "Existing is enough today.",
+            "Small steps count.",
+            "You’re doing better than you think.",
+            "Soft moments matter too."
         ]
     }
 };
 
-let currentMoodKey = null;
-let currentQuoteIndex = 0;
-let quoteTimer = null;
+let currentMood = null;
+let currentIndex = 0;
+let hueShift = 0;
 
-/* DOM ELEMENTS */
-
-const landingScreen = document.getElementById("landingScreen");
-const moodScreen = document.getElementById("moodScreen");
-const moodBackground = document.getElementById("moodBackground");
-const moodOverlay = document.getElementById("moodOverlay");
-const moodLabel = document.getElementById("moodLabel");
-const quoteBox = document.getElementById("quoteBox");
-const quoteText = document.getElementById("quoteText");
-const quoteMoodTag = document.getElementById("quoteMoodTag");
-const soundToggleBtn = document.getElementById("soundToggleBtn");
-
-/* MOOD SELECTION */
+/* SELECT MOOD */
 
 function selectMood(key) {
-    currentMoodKey = key;
-    const config = moodConfigs[key];
-    if (!config) return;
+    currentMood = moods[key];
+    currentIndex = 0;
+    hueShift = 0;
 
-    landingScreen.classList.add("hidden");
-    moodScreen.classList.remove("hidden");
+    document.getElementById("landingScreen").classList.add("hidden");
+    document.getElementById("moodScreen").classList.remove("hidden");
 
-    moodBackground.style.background = config.gradientBase;
-    moodOverlay.style.background = config.overlay;
-
-    moodLabel.textContent = config.label.toUpperCase();
-    quoteMoodTag.textContent = config.label + " • Mood Fixr";
-
-    currentQuoteIndex = 0;
-    showQuoteWithFade();
-
-    clearInterval(quoteTimer);
-    quoteTimer = setInterval(showNextQuote, 9000);
-
-    startAmbientSoundForMood(key);
+    updateBackground();
+    showQuote();
 }
+
+/* UPDATE BACKGROUND */
+
+function updateBackground() {
+    const view = document.getElementById("moodView");
+    const base = currentMood.colours[currentIndex % currentMood.colours.length];
+
+    view.style.background = adjustHue(base, hueShift);
+}
+
+/* HUE SHIFTING */
+
+function adjustHue(hex, shift) {
+    let c = hexToHSL(hex);
+    c.h = (c.h + shift + 360) % 360;
+    return `hsl(${c.h}, ${c.s}%, ${c.l}%)`;
+}
+
+function hexToHSL(H) {
+    let r = 0, g = 0, b = 0;
+    if (H.length == 4) {
+        r = "0x" + H[1] + H[1];
+        g = "0x" + H[2] + H[2];
+        b = "0x" + H[3] + H[3];
+    } else {
+        r = "0x" + H[1] + H[2];
+        g = "0x" + H[3] + H[4];
+        b = "0x" + H[5] + H[6];
+    }
+    r /= 255; g /= 255; b /= 255;
+    let cmin = Math.min(r,g,b),
+        cmax = Math.max(r,g,b),
+        delta = cmax - cmin,
+        h = 0, s = 0, l = 0;
+
+    if (delta == 0) h = 0;
+    else if (cmax == r) h = ((g - b) / delta) % 6;
+    else if (cmax == g) h = (b - r) / delta + 2;
+    else h = (r - g) / delta + 4;
+
+    h = Math.round(h * 60);
+    if (h < 0) h += 360;
+
+    l = (cmax + cmin) / 2;
+    s = delta == 0 ? 0 : delta / (1 - Math.abs(2*l - 1));
+    s = +(s * 100).toFixed(1);
+    l = +(l * 100).toFixed(1);
+
+    return {h, s, l};
+}
+
+/* TAP TO SHIFT HUE */
+
+document.getElementById("moodView").addEventListener("click", (e) => {
+    const x = e.clientX;
+    const mid = window.innerWidth / 2;
+
+    if (x < mid) hueShift -= 8;
+    else hueShift += 8;
+
+    updateBackground();
+});
 
 /* QUOTES */
 
-function showQuoteWithFade() {
-    const config = moodConfigs[currentMoodKey];
-    if (!config) return;
+function showQuote() {
+    const box = document.getElementById("quoteBox");
+    const text = document.getElementById("quoteText");
 
-    const quotes = config.quotes;
-    if (!quotes || quotes.length === 0) return;
-
-    quoteBox.classList.remove("visible");
+    box.classList.remove("visible");
 
     setTimeout(() => {
-        quoteText.textContent = quotes[currentQuoteIndex];
-        quoteBox.classList.add("visible");
-    }, 250);
+        text.textContent = currentMood.quotes[currentIndex % currentMood.quotes.length];
+        box.classList.add("visible");
+    }, 200);
 }
 
-function showNextQuote() {
-    const config = moodConfigs[currentMoodKey];
-    if (!config) return;
-
-    const quotes = config.quotes;
-    if (!quotes || quotes.length === 0) return;
-
-    currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
-    showQuoteWithFade();
+function nextQuote() {
+    currentIndex++;
+    updateBackground();
+    showQuote();
 }
 
-/* NAVIGATION */
+/* BACK */
 
 function goBack() {
-    moodScreen.classList.add("hidden");
-    landingScreen.classList.remove("hidden");
-    quoteBox.classList.remove("visible");
-    clearInterval(quoteTimer);
-    stopAmbientSound();
+    document.getElementById("moodScreen").classList.add("hidden");
+    document.getElementById("landingScreen").classList.remove("hidden");
 }
 
-/* AMBIENT SOUND (Web Audio, no files) */
-
-let audioCtx = null;
-let ambientOsc = null;
-let ambientGain = null;
-let soundOn = false;
-
-function initAudio() {
-    if (!audioCtx) {
-        try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        } catch (e) {
-            audioCtx = null;
-        }
-    }
-}
-
-function startAmbientSoundForMood(key) {
-    if (!soundOn) return;
-    if (!audioCtx) initAudio();
-    if (!audioCtx) return;
-
-    stopAmbientSound();
-
-    ambientOsc = audioCtx.createOscillator();
-    ambientGain = audioCtx.createGain();
-
-    let baseFreq = 220;
-    let type = "sine";
-
-    if (key === "anxious" || key === "sad") {
-        baseFreq = 174;
-        type = "sine";
-    } else if (key === "angry") {
-        baseFreq = 196;
-        type = "triangle";
-    } else if (key === "excited") {
-        baseFreq = 261.63;
-        type = "sawtooth";
-    } else if (key === "flat") {
-        baseFreq = 210;
-        type = "sine";
-    }
-
-    ambientOsc.type = type;
-    ambientOsc.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
-
-    ambientGain.gain.setValueAtTime(0, audioCtx.currentTime);
-    ambientGain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 2);
-
-    ambientOsc.connect(ambientGain);
-    ambientGain.connect(audioCtx.destination);
-
-    ambientOsc.start();
-
-    const lfo = audioCtx.createOscillator();
-    const lfoGain = audioCtx.createGain();
-    lfo.frequency.setValueAtTime(0.05, audioCtx.currentTime);
-    lfoGain.gain.setValueAtTime(20, audioCtx.currentTime);
-    lfo.connect(lfoGain);
-    lfoGain.connect(ambientOsc.frequency);
-    lfo.start();
-    ambientOsc._lfo = lfo;
-}
-
-function stopAmbientSound() {
-    if (ambientOsc && audioCtx) {
-        try {
-            ambientGain.gain.cancelScheduledValues(audioCtx.currentTime);
-            ambientGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
-            const oscToStop = ambientOsc;
-            const lfoToStop = ambientOsc._lfo;
-            setTimeout(() => {
-                try { oscToStop.stop(); } catch(e){}
-                try { lfoToStop && lfoToStop.stop(); } catch(e){}
-            }, 600);
-        } catch (e) {}
-    }
-    ambientOsc = null;
-    ambientGain = null;
-}
-
-function toggleSound() {
-    soundOn = !soundOn;
-    soundToggleBtn.textContent = soundOn ? "Sound: ON" : "Sound: OFF";
-
-    if (!soundOn) {
-        stopAmbientSound();
-    } else {
-        if (currentMoodKey) {
-            startAmbientSoundForMood(currentMoodKey);
-        }
-    }
-}
-
-document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-        stopAmbientSound();
-    } else if (soundOn && currentMoodKey) {
-        startAmbientSoundForMood(currentMoodKey);
-    }
-});
 </script>
 
 </body>
