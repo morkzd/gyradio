@@ -368,7 +368,7 @@
 <body>
 
 <div id="app">
-    <h1>Nets Duel</h1>
+    <h1>Crcket Netz Duel</h1>
 
     <!-- RULES MODAL -->
     <div id="rulesModalOverlay">
@@ -451,13 +451,13 @@
                 <div id="zoneTopOff" class="zone yellow" data-zone="topOff">OFF BACK</div>
                 <div id="zoneTopLeg" class="zone blue" data-zone="topLeg">LEG BACK</div>
 
-                <div id="zoneLeft1" class="zone blue" data-zone="left1">LEFT 1</div>
-                <div id="zoneLeft2" class="zone yellow" data-zone="left2">LEFT 2</div>
-                <div id="zoneLeft3" class="zone blue" data-zone="left3">LEFT 3</div>
+                <div id="zoneLeft1" class="zone blue" data-zone="left1">OFF 1</div>
+                <div id="zoneLeft2" class="zone yellow" data-zone="left2">OFF 2</div>
+                <div id="zoneLeft3" class="zone blue" data-zone="left3">OFF 3</div>
 
-                <div id="zoneRight1" class="zone yellow" data-zone="right1">RIGHT 1</div>
-                <div id="zoneRight2" class="zone blue" data-zone="right2">RIGHT 2</div>
-                <div id="zoneRight3" class="zone yellow" data-zone="right3">RIGHT 3</div>
+                <div id="zoneRight1" class="zone yellow" data-zone="right1">LEG 1 1</div>
+                <div id="zoneRight2" class="zone blue" data-zone="right2">LEG 2</div>
+                <div id="zoneRight3" class="zone yellow" data-zone="right3">LEG 3</div>
 
                 <div id="zoneBottom" class="zone blue" data-zone="bottom">STRAIGHT</div>
 
@@ -684,50 +684,50 @@ function getOutcome(zoneKey, isHard) {
         case "topOff":
             runs = isHard ? 4 : 1;
             text = isHard
-                ? playerName + " smashes it over the keeper for 4!"
+                ? playerName + " lifts it over the keeper for 4!"
                 : playerName + " dabs it fine on the off side for 1.";
             break;
         case "topLeg":
             runs = isHard ? 4 : 1;
             text = isHard
-                ? playerName + " hooks it fine past leg for 4!"
+                ? playerName + " ramp shot past fine leg for 4!"
                 : playerName + " glances it down leg for a single.";
             break;
         case "left1":
             runs = isHard ? 6 : 2;
             text = isHard
-                ? playerName + " launches a big pull shot for 6!"
-                : playerName + " nudges it behind square for 2.";
+                ? playerName + " launches a big cut shot for 6!"
+                : playerName + " nudges it behind point for 2.";
             break;
         case "left2":
             runs = isHard ? 4 : 2;
             text = isHard
-                ? playerName + " whips it through mid-wicket for 4!"
-                : playerName + " works it into the leg side for 2.";
+                ? playerName + " whips it through mid-off for 4!"
+                : playerName + " works it into the covers for 2.";
             break;
         case "left3":
             runs = isHard ? 3 : 1;
             text = isHard
-                ? playerName + " drags it to deep leg for 3."
+                ? playerName + " drives it past long off for 3."
                 : playerName + " tucks it off the pads for 1.";
             break;
         case "right1":
             runs = isHard ? 6 : 2;
             text = isHard
-                ? playerName + " lofts it over point for 6!"
-                : playerName + " guides it behind point for 2.";
+                ? playerName + " hooks it over square leg for 6!"
+                : playerName + " guides it in front of fine leg for 2.";
             break;
         case "right2":
             runs = isHard ? 4 : 2;
             text = isHard
-                ? playerName + " drives square through the off side for 4!"
-                : playerName + " pushes it into the covers for 2.";
+                ? playerName + " drives square through mid wicket for 4!"
+                : playerName + " pushes it towards cow corner for 2.";
             break;
         case "right3":
             runs = isHard ? 3 : 1;
             text = isHard
-                ? playerName + " carves it out to deep cover for 3."
-                : playerName + " steers it to cover for a single.";
+                ? playerName + " carves it out to deep mid-wicket for 3."
+                : playerName + " steers it to mid on for a single.";
             break;
         case "bottom":
             runs = isHard ? 4 : 1;
@@ -783,3 +783,4 @@ function nextPlayer() {
 
 </body>
 </html>
+
