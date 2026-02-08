@@ -1,246 +1,543 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Cricket Nets Duel – Bowling Practice</title>
+<title>Mood Fixr</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
     html, body {
         margin: 0;
         padding: 0;
         height: 100%;
-        overflow: hidden;
-        font-family: Arial, sans-serif;
-        background: linear-gradient(to bottom, #000000 0%, #003300 100%);
-        color: white;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #000;
+        color: #fdfdfd;
     }
 
     #app {
-        height: calc(100vh - 50px);
+        height: 100vh;
         display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
         align-items: center;
-        text-align: center;
-        padding: 5px 0;
+        justify-content: center;
+        box-sizing: border-box;
+        padding: 12px;
+    }
+
+    .screen {
+        width: 100%;
+        max-width: 480px;
         box-sizing: border-box;
     }
 
+    .hidden {
+        display: none;
+    }
+
     h1 {
-        font-size: 7vw;
-        color: #00eaff;
-        text-shadow: 0 0 12px #00eaff, 0 0 25px #00eaff;
-        margin: 0;
-        animation: pulse 2.5s infinite ease-in-out;
-    }
-
-    @keyframes pulse {
-        0% { text-shadow: 0 0 10px #00eaff; }
-        50% { text-shadow: 0 0 25px #00eaff; }
-        100% { text-shadow: 0 0 10px #00eaff; }
-    }
-
-    .sectionLabel {
-        font-size: 5vw;
-        color: #88ff88;
-        text-shadow: 0 0 8px #00ff55;
-        margin-bottom: 5px;
-    }
-
-    .btn, .btnSmall, .pillBtn {
-        border: none;
-        cursor: pointer;
-        transition: 0.15s;
-        color: white;
-        background: #111;
-        box-shadow: 0 0 12px #00eaff inset, 0 0 12px #00eaff;
-    }
-
-    .pillBtn {
-        width: 85vw;
-        padding: 1.6vh 0;
-        font-size: 4.5vw;
-        border-radius: 50px;
-    }
-
-    .btn {
-        width: 85vw;
-        padding: 1.8vh 0;
-        font-size: 5vw;
-        border-radius: 12px;
-        margin: 5px 0;
-    }
-
-    .btnSmall {
-        padding: 1.8vh 0;
-        font-size: 4.8vw;
-        border-radius: 12px;
-    }
-
-    .selected {
-        background: #00aaff !important;
-        box-shadow: 0 0 18px #00eaff inset, 0 0 22px #00eaff !important;
-    }
-
-    #bowlGrid {
-        width: 90vw;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 5px;
-    }
-
-    .btnRed {
-        background: #aa0000;
-        box-shadow: 0 0 14px #ff4444 inset, 0 0 18px #ff4444;
-    }
-
-    #scenarioBox {
-        width: 90vw;
-        min-height: 20vh;
-        max-height: 28vh;
-        overflow-y: auto;
-        background: #222;
-        border-radius: 12px;
-        padding: 20px;
-        font-size: 4.8vw;
-        line-height: 1.45;
-        box-shadow: 0 0 10px #444 inset;
-        opacity: 0;
-        transition: opacity 0.4s ease-in-out;
-    }
-
-    #adBanner {
-        width: 100%;
-        height: 50px;
-        background: #111;
-        opacity: 0.8;
-        font-size: 3.5vw;
         text-align: center;
-        line-height: 50px;
+        font-size: 8vw;
+        margin: 0 0 8px 0;
+        color: #ffffff;
+        text-shadow: 0 0 12px #00eaff, 0 0 24px #00eaff;
+    }
+
+    .tagline {
+        text-align: center;
+        font-size: 3.8vw;
+        opacity: 0.85;
+        margin-bottom: 18px;
+    }
+
+    .moodGrid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 16px;
+    }
+
+    .moodBtn {
+        border: none;
+        border-radius: 999px;
+        padding: 12px 10px;
+        font-size: 4.2vw;
+        cursor: pointer;
+        color: #fff;
+        background: #111;
+        box-shadow: 0 0 10px #00eaff55 inset, 0 0 10px #00eaff55;
+        transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
+    }
+
+    .moodBtn:active {
+        transform: scale(0.96);
+        box-shadow: 0 0 16px #00eaffaa inset, 0 0 16px #00eaffaa;
+    }
+
+    .moodBtn.angry {
+        background: radial-gradient(circle at top, #ff4b4b, #5a0000);
+    }
+    .moodBtn.sad {
+        background: radial-gradient(circle at top, #4b6cff, #001133);
+    }
+    .moodBtn.anxious {
+        background: radial-gradient(circle at top, #3fd1ff, #003344);
+    }
+    .moodBtn.excited {
+        background: radial-gradient(circle at top, #ff9a3c, #ff2e92);
+    }
+    .moodBtn.flat {
+        background: radial-gradient(circle at top, #c0a6ff, #3b2a5a);
+    }
+
+    .sponsor {
+        text-align: center;
+        font-size: 3.2vw;
+        opacity: 0.7;
+        margin-top: 10px;
+    }
+
+    .sponsor span {
+        opacity: 0.9;
+        font-weight: 500;
+    }
+
+    /* MOOD VIEW */
+
+    #moodViewWrapper {
+        position: relative;
+        width: 100%;
+        max-width: 480px;
+        height: 80vh;
+        margin: 0 auto;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 0 20px #000;
+        background: #000;
+    }
+
+    #moodBackground {
         position: absolute;
-        bottom: 0;
+        inset: 0;
+        background: radial-gradient(circle at top, #222, #000);
+        animation: shimmerBase 18s infinite alternate ease-in-out;
+        filter: blur(0px);
+    }
+
+    #moodOverlay {
+        position: absolute;
+        inset: -20%;
+        opacity: 0.7;
+        mix-blend-mode: screen;
+        background: conic-gradient(from 0deg, #ff9a3c, #ff2e92, #3fd1ff, #4bff88, #ff9a3c);
+        animation: swirl 30s infinite linear;
+    }
+
+    @keyframes shimmerBase {
+        0% { filter: blur(0px); transform: scale(1); }
+        50% { filter: blur(4px); transform: scale(1.05); }
+        100% { filter: blur(2px); transform: scale(1.02); }
+    }
+
+    @keyframes swirl {
+        0% { transform: rotate(0deg) scale(1.1); }
+        50% { transform: rotate(180deg) scale(1.15); }
+        100% { transform: rotate(360deg) scale(1.1); }
+    }
+
+    #moodContent {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+        box-sizing: border-box;
+        text-align: center;
+        color: #ffffff;
+        text-shadow: 0 0 10px #000;
+    }
+
+    #moodLabel {
+        font-size: 4vw;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        opacity: 0.85;
+        margin-bottom: 10px;
+    }
+
+    #quoteBox {
+        max-width: 90%;
+        font-size: 4.6vw;
+        line-height: 1.4;
+        padding: 10px 14px;
+        border-radius: 14px;
+        background: rgba(0, 0, 0, 0.45);
+        box-shadow: 0 0 16px rgba(0,0,0,0.7);
+        opacity: 0;
+        transform: translateY(8px);
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    #quoteBox.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    #quoteText {
+        margin: 0;
+    }
+
+    #quoteMoodTag {
+        margin-top: 6px;
+        font-size: 3.2vw;
+        opacity: 0.8;
+    }
+
+    #moodControls {
+        position: absolute;
+        bottom: 10px;
         left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+
+    .controlBtn {
+        border: none;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 3.2vw;
+        cursor: pointer;
+        color: #fff;
+        background: rgba(0,0,0,0.6);
+        box-shadow: 0 0 10px rgba(0,0,0,0.7);
+        backdrop-filter: blur(6px);
+        transition: transform 0.12s ease, background 0.12s ease;
+    }
+
+    .controlBtn:active {
+        transform: scale(0.95);
+        background: rgba(0,0,0,0.85);
+    }
+
+    #soundToggleBtn {
+        min-width: 80px;
+    }
+
+    #backBtn {
+        min-width: 90px;
+    }
+
+    #nextQuoteBtn {
+        min-width: 90px;
+    }
+
+    @media (min-width: 480px) {
+        h1 { font-size: 32px; }
+        .tagline { font-size: 16px; }
+        .moodBtn { font-size: 18px; }
+        .sponsor { font-size: 14px; }
+        #moodLabel { font-size: 16px; }
+        #quoteBox { font-size: 20px; }
+        #quoteMoodTag { font-size: 14px; }
+        .controlBtn { font-size: 14px; }
     }
 </style>
 </head>
-
 <body>
 
 <div id="app">
+    <!-- LANDING SCREEN -->
+    <div id="landingScreen" class="screen">
+        <h1>Mood Fixr</h1>
+        <div class="tagline">
+            Pick how you feel. We’ll set the mood.
+        </div>
 
-    <h1>Bowling Practice</h1>
+        <div class="moodGrid">
+            <button class="moodBtn angry"   onclick="selectMood('angry')">Angry</button>
+            <button class="moodBtn sad"     onclick="selectMood('sad')">Sad</button>
+            <button class="moodBtn anxious" onclick="selectMood('anxious')">Anxious</button>
+            <button class="moodBtn excited" onclick="selectMood('excited')">Excited</button>
+            <button class="moodBtn flat"    onclick="selectMood('flat')" style="grid-column: span 2;">
+                Flat / Meh
+            </button>
+        </div>
 
-    <button class="pillBtn" onclick="window.location.href='https://www.gyradio.com/TestSite/'">
-        Return to Main Menu
-    </button>
-
-    <div class="sectionLabel">Choose Your Bowling Type</div>
-
-    <div id="bowlGrid">
-        <button class="btnSmall" onclick="selectRole('fast')">Fast Bowl</button>
-        <button class="btnSmall" onclick="selectRole('swing')">Swing Bowl</button>
-        <button class="btnSmall" onclick="selectRole('offspin')">Offspin</button>
-        <button class="btnSmall" onclick="selectRole('legspin')">Legspin</button>
+        <div class="sponsor">
+            This app stays free thanks to <span>Your Supporter Here</span>.
+        </div>
     </div>
 
-    <div class="sectionLabel">Generate Scenario</div>
-    <button class="btn btnRed" onclick="generateScenario()">Generate Scenario</button>
+    <!-- MOOD SCREEN -->
+    <div id="moodScreen" class="screen hidden">
+        <div id="moodViewWrapper">
+            <div id="moodBackground"></div>
+            <div id="moodOverlay"></div>
 
-    <div id="scenarioBox">Your scenario will appear here.</div>
+            <div id="moodContent">
+                <div id="moodLabel"></div>
+                <div id="quoteBox">
+                    <p id="quoteText"></p>
+                    <div id="quoteMoodTag"></div>
+                </div>
+            </div>
 
+            <div id="moodControls">
+                <button id="backBtn" class="controlBtn" onclick="goBack()">Change mood</button>
+                <button id="nextQuoteBtn" class="controlBtn" onclick="showNextQuote()">Next quote</button>
+                <button id="soundToggleBtn" class="controlBtn" onclick="toggleSound()">Sound: OFF</button>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div id="adBanner">Ad banner goes here</div>
-
 <script>
-/* KEEP SCREEN AWAKE */
-let wakeLock;
-async function keepAwake() {
-    try { wakeLock = await navigator.wakeLock.request('screen'); }
-    catch (err) { console.log("Wake lock not supported", err); }
-}
-document.addEventListener("click", keepAwake);
+/* MOOD DATA */
 
-/* SPEECH SYNTHESIS */
-function speak(text) {
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.rate = 1;
-    utter.pitch = 1;
-    utter.volume = 1;
-
-    const voices = speechSynthesis.getVoices();
-    const preferred = voices.find(v =>
-        v.name.toLowerCase().includes("male") ||
-        v.name.toLowerCase().includes("deep") ||
-        v.name.toLowerCase().includes("english")
-    );
-    if (preferred) utter.voice = preferred;
-
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utter);
-}
-
-/* BOWLING SCENARIOS ONLY */
-const scenarios = {
-    fast: [
-        "Hit the top of off stump with a tight channel.",
-        "Bowl a heavy length and build pressure.",
-        "Use subtle seam movement to challenge the batter.",
-        "Finish the over with a yorker aimed at the toes."
-    ],
-    swing: [
-        "Pitch it up and let the ball swing.",
-        "Set the batter up with outswing, then bring one back in.",
-        "Bowl full and challenge the forward defence.",
-        "Use late swing to attack the stumps."
-    ],
-    offspin: [
-        "Bowl outside off and tempt the forward defence.",
-        "Attack the pads with a close field.",
-        "Vary your flight to draw the batter forward.",
-        "Bowl into the pitch to limit scoring."
-    ],
-    legspin: [
-        "Toss it up and look for drift.",
-        "Bowl your stock leg‑break and build pressure.",
-        "Use the googly as a surprise weapon.",
-        "Slow it down to tempt the big shot."
-    ]
+const moodConfigs = {
+    angry: {
+        label: "Angry",
+        gradientBase: "radial-gradient(circle at top, #ff4b4b, #5a0000 60%, #000000 100%)",
+        overlay: "conic-gradient(from 0deg, #ff4b4b, #ff9a3c, #ff2e92, #ff4b4b)",
+        quotes: [
+            "Let the fire settle before you act.",
+            "You’re allowed to feel this. It will pass.",
+            "Breathe out the heat, breathe in the calm.",
+            "Pause. You don’t have to respond right now."
+        ]
+    },
+    sad: {
+        label: "Sad",
+        gradientBase: "radial-gradient(circle at top, #4b6cff, #001133 60%, #000000 100%)",
+        overlay: "conic-gradient(from 0deg, #4b6cff, #3fd1ff, #a3b8ff, #4b6cff)",
+        quotes: [
+            "It’s okay to feel this way.",
+            "This moment is heavy, but it isn’t forever.",
+            "You don’t have to be strong every second.",
+            "Some days are for resting your heart."
+        ]
+    },
+    anxious: {
+        label: "Anxious",
+        gradientBase: "radial-gradient(circle at top, #3fd1ff, #007a7a 60%, #000000 100%)",
+        overlay: "conic-gradient(from 0deg, #3fd1ff, #4bff88, #a3ffe0, #3fd1ff)",
+        quotes: [
+            "One breath at a time.",
+            "Right now, in this moment, you are safe.",
+            "You don’t have to solve everything today.",
+            "Let your shoulders drop. Unclench your jaw."
+        ]
+    },
+    excited: {
+        label: "Excited",
+        gradientBase: "radial-gradient(circle at top, #ff9a3c, #ff2e92 60%, #1a0020 100%)",
+        overlay: "conic-gradient(from 0deg, #ff9a3c, #ff2e92, #ffe66d, #ff9a3c)",
+        quotes: [
+            "Carpe diem — seize the day.",
+            "Ride the wave. This energy is a gift.",
+            "Lean into the joy. You’re allowed to enjoy this.",
+            "Channel this spark into something you love."
+        ]
+    },
+    flat: {
+        label: "Flat / Meh",
+        gradientBase: "radial-gradient(circle at top, #c0a6ff, #3b2a5a 60%, #000000 100%)",
+        overlay: "conic-gradient(from 0deg, #c0a6ff, #a3ffe0, #ffe66d, #c0a6ff)",
+        quotes: [
+            "Even small steps count.",
+            "You don’t have to feel amazing to keep going.",
+            "Existing is enough for today.",
+            "You’re doing better than you think."
+        ]
+    }
 };
 
-let selectedRole = null;
+let currentMoodKey = null;
+let currentQuoteIndex = 0;
+let quoteTimer = null;
 
-function selectRole(role) {
-    selectedRole = role;
-    highlightButtons();
+/* DOM ELEMENTS */
+
+const landingScreen = document.getElementById("landingScreen");
+const moodScreen = document.getElementById("moodScreen");
+const moodBackground = document.getElementById("moodBackground");
+const moodOverlay = document.getElementById("moodOverlay");
+const moodLabel = document.getElementById("moodLabel");
+const quoteBox = document.getElementById("quoteBox");
+const quoteText = document.getElementById("quoteText");
+const quoteMoodTag = document.getElementById("quoteMoodTag");
+const soundToggleBtn = document.getElementById("soundToggleBtn");
+
+/* MOOD SELECTION */
+
+function selectMood(key) {
+    currentMoodKey = key;
+    const config = moodConfigs[key];
+    if (!config) return;
+
+    landingScreen.classList.add("hidden");
+    moodScreen.classList.remove("hidden");
+
+    moodBackground.style.background = config.gradientBase;
+    moodOverlay.style.background = config.overlay;
+
+    moodLabel.textContent = config.label.toUpperCase();
+    quoteMoodTag.textContent = config.label + " • Mood Fixr";
+
+    currentQuoteIndex = 0;
+    showQuoteWithFade();
+
+    clearInterval(quoteTimer);
+    quoteTimer = setInterval(showNextQuote, 9000);
+
+    startAmbientSoundForMood(key);
 }
 
-function highlightButtons() {
-    document.querySelectorAll('.btnSmall').forEach(btn => btn.classList.remove('selected'));
-    if (selectedRole)
-        document.querySelector(`[onclick="selectRole('${selectedRole}')"]`).classList.add('selected');
-}
+/* QUOTES */
 
-function generateScenario() {
-    const box = document.getElementById("scenarioBox");
-    box.style.opacity = 0;
+function showQuoteWithFade() {
+    const config = moodConfigs[currentMoodKey];
+    if (!config) return;
+
+    const quotes = config.quotes;
+    if (!quotes || quotes.length === 0) return;
+
+    quoteBox.classList.remove("visible");
 
     setTimeout(() => {
-        if (!selectedRole) {
-            box.innerText = "Please select a bowling type.";
-            box.style.opacity = 1;
-            speak("Please select a bowling type.");
-            return;
-        }
-
-        const list = scenarios[selectedRole];
-        const scenario = list[Math.floor(Math.random() * list.length)];
-
-        box.innerText = scenario;
-        box.style.opacity = 1;
-        speak(scenario);
-    }, 200);
+        quoteText.textContent = quotes[currentQuoteIndex];
+        quoteBox.classList.add("visible");
+    }, 250);
 }
+
+function showNextQuote() {
+    const config = moodConfigs[currentMoodKey];
+    if (!config) return;
+
+    const quotes = config.quotes;
+    if (!quotes || quotes.length === 0) return;
+
+    currentQuoteIndex = (currentQuoteIndex + 1) % quotes.length;
+    showQuoteWithFade();
+}
+
+/* NAVIGATION */
+
+function goBack() {
+    moodScreen.classList.add("hidden");
+    landingScreen.classList.remove("hidden");
+    quoteBox.classList.remove("visible");
+    clearInterval(quoteTimer);
+    stopAmbientSound();
+}
+
+/* AMBIENT SOUND (Web Audio, no files) */
+
+let audioCtx = null;
+let ambientOsc = null;
+let ambientGain = null;
+let soundOn = false;
+
+function initAudio() {
+    if (!audioCtx) {
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+            audioCtx = null;
+        }
+    }
+}
+
+function startAmbientSoundForMood(key) {
+    if (!soundOn) return;
+    if (!audioCtx) initAudio();
+    if (!audioCtx) return;
+
+    stopAmbientSound();
+
+    ambientOsc = audioCtx.createOscillator();
+    ambientGain = audioCtx.createGain();
+
+    let baseFreq = 220;
+    let type = "sine";
+
+    if (key === "anxious" || key === "sad") {
+        baseFreq = 174;
+        type = "sine";
+    } else if (key === "angry") {
+        baseFreq = 196;
+        type = "triangle";
+    } else if (key === "excited") {
+        baseFreq = 261.63;
+        type = "sawtooth";
+    } else if (key === "flat") {
+        baseFreq = 210;
+        type = "sine";
+    }
+
+    ambientOsc.type = type;
+    ambientOsc.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
+
+    ambientGain.gain.setValueAtTime(0, audioCtx.currentTime);
+    ambientGain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 2);
+
+    ambientOsc.connect(ambientGain);
+    ambientGain.connect(audioCtx.destination);
+
+    ambientOsc.start();
+
+    const lfo = audioCtx.createOscillator();
+    const lfoGain = audioCtx.createGain();
+    lfo.frequency.setValueAtTime(0.05, audioCtx.currentTime);
+    lfoGain.gain.setValueAtTime(20, audioCtx.currentTime);
+    lfo.connect(lfoGain);
+    lfoGain.connect(ambientOsc.frequency);
+    lfo.start();
+    ambientOsc._lfo = lfo;
+}
+
+function stopAmbientSound() {
+    if (ambientOsc && audioCtx) {
+        try {
+            ambientGain.gain.cancelScheduledValues(audioCtx.currentTime);
+            ambientGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.5);
+            const oscToStop = ambientOsc;
+            const lfoToStop = ambientOsc._lfo;
+            setTimeout(() => {
+                try { oscToStop.stop(); } catch(e){}
+                try { lfoToStop && lfoToStop.stop(); } catch(e){}
+            }, 600);
+        } catch (e) {}
+    }
+    ambientOsc = null;
+    ambientGain = null;
+}
+
+function toggleSound() {
+    soundOn = !soundOn;
+    soundToggleBtn.textContent = soundOn ? "Sound: ON" : "Sound: OFF";
+
+    if (!soundOn) {
+        stopAmbientSound();
+    } else {
+        if (currentMoodKey) {
+            startAmbientSoundForMood(currentMoodKey);
+        }
+    }
+}
+
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        stopAmbientSound();
+    } else if (soundOn && currentMoodKey) {
+        startAmbientSoundForMood(currentMoodKey);
+    }
+});
 </script>
 
 </body>
