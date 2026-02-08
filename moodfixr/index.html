@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Cricket Nets Duel – Bowling Practice</title>
+
+<style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, #000000 0%, #003300 100%);
+        color: white;
+    }
+
+    #app {
+        height: calc(100vh - 50px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        align-items: center;
+        text-align: center;
+        padding: 5px 0;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        font-size: 7vw;
+        color: #00eaff;
+        text-shadow: 0 0 12px #00eaff, 0 0 25px #00eaff;
+        margin: 0;
+        animation: pulse 2.5s infinite ease-in-out;
+    }
+
+    @keyframes pulse {
+        0% { text-shadow: 0 0 10px #00eaff; }
+        50% { text-shadow: 0 0 25px #00eaff; }
+        100% { text-shadow: 0 0 10px #00eaff; }
+    }
+
+    .sectionLabel {
+        font-size: 5vw;
+        color: #88ff88;
+        text-shadow: 0 0 8px #00ff55;
+        margin-bottom: 5px;
+    }
+
+    .btn, .btnSmall, .pillBtn {
+        border: none;
+        cursor: pointer;
+        transition: 0.15s;
+        color: white;
+        background: #111;
+        box-shadow: 0 0 12px #00eaff inset, 0 0 12px #00eaff;
+    }
+
+    .pillBtn {
+        width: 85vw;
+        padding: 1.6vh 0;
+        font-size: 4.5vw;
+        border-radius: 50px;
+    }
+
+    .btn {
+        width: 85vw;
+        padding: 1.8vh 0;
+        font-size: 5vw;
+        border-radius: 12px;
+        margin: 5px 0;
+    }
+
+    .btnSmall {
+        padding: 1.8vh 0;
+        font-size: 4.8vw;
+        border-radius: 12px;
+    }
+
+    .selected {
+        background: #00aaff !important;
+        box-shadow: 0 0 18px #00eaff inset, 0 0 22px #00eaff !important;
+    }
+
+    #bowlGrid {
+        width: 90vw;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+    }
+
+    .btnRed {
+        background: #aa0000;
+        box-shadow: 0 0 14px #ff4444 inset, 0 0 18px #ff4444;
+    }
+
+    #scenarioBox {
+        width: 90vw;
+        min-height: 20vh;
+        max-height: 28vh;
+        overflow-y: auto;
+        background: #222;
+        border-radius: 12px;
+        padding: 20px;
+        font-size: 4.8vw;
+        line-height: 1.45;
+        box-shadow: 0 0 10px #444 inset;
+        opacity: 0;
+        transition: opacity 0.4s ease-in-out;
+    }
+
+    #adBanner {
+        width: 100%;
+        height: 50px;
+        background: #111;
+        opacity: 0.8;
+        font-size: 3.5vw;
+        text-align: center;
+        line-height: 50px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+    <h1>Bowling Practice</h1>
+
+    <button class="pillBtn" onclick="window.location.href='https://www.gyradio.com/TestSite/'">
+        Return to Main Menu
+    </button>
+
+    <div class="sectionLabel">Choose Your Bowling Type</div>
+
+    <div id="bowlGrid">
+        <button class="btnSmall" onclick="selectRole('fast')">Fast Bowl</button>
+        <button class="btnSmall" onclick="selectRole('swing')">Swing Bowl</button>
+        <button class="btnSmall" onclick="selectRole('offspin')">Offspin</button>
+        <button class="btnSmall" onclick="selectRole('legspin')">Legspin</button>
+    </div>
+
+    <div class="sectionLabel">Generate Scenario</div>
+    <button class="btn btnRed" onclick="generateScenario()">Generate Scenario</button>
+
+    <div id="scenarioBox">Your scenario will appear here.</div>
+
+</div>
+
+<div id="adBanner">Ad banner goes here</div>
+
+<script>
+/* KEEP SCREEN AWAKE */
+let wakeLock;
+async function keepAwake() {
+    try { wakeLock = await navigator.wakeLock.request('screen'); }
+    catch (err) { console.log("Wake lock not supported", err); }
+}
+document.addEventListener("click", keepAwake);
+
+/* SPEECH SYNTHESIS */
+function speak(text) {
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 1;
+    utter.pitch = 1;
+    utter.volume = 1;
+
+    const voices = speechSynthesis.getVoices();
+    const preferred = voices.find(v =>
+        v.name.toLowerCase().includes("male") ||
+        v.name.toLowerCase().includes("deep") ||
+        v.name.toLowerCase().includes("english")
+    );
+    if (preferred) utter.voice = preferred;
+
+    speechSynthesis.cancel();
+    speechSynthesis.speak(utter);
+}
+
+/* BOWLING SCENARIOS ONLY */
+const scenarios = {
+    fast: [
+        "Hit the top of off stump with a tight channel.",
+        "Bowl a heavy length and build pressure.",
+        "Use subtle seam movement to challenge the batter.",
+        "Finish the over with a yorker aimed at the toes."
+    ],
+    swing: [
+        "Pitch it up and let the ball swing.",
+        "Set the batter up with outswing, then bring one back in.",
+        "Bowl full and challenge the forward defence.",
+        "Use late swing to attack the stumps."
+    ],
+    offspin: [
+        "Bowl outside off and tempt the forward defence.",
+        "Attack the pads with a close field.",
+        "Vary your flight to draw the batter forward.",
+        "Bowl into the pitch to limit scoring."
+    ],
+    legspin: [
+        "Toss it up and look for drift.",
+        "Bowl your stock leg‑break and build pressure.",
+        "Use the googly as a surprise weapon.",
+        "Slow it down to tempt the big shot."
+    ]
+};
+
+let selectedRole = null;
+
+function selectRole(role) {
+    selectedRole = role;
+    highlightButtons();
+}
+
+function highlightButtons() {
+    document.querySelectorAll('.btnSmall').forEach(btn => btn.classList.remove('selected'));
+    if (selectedRole)
+        document.querySelector(`[onclick="selectRole('${selectedRole}')"]`).classList.add('selected');
+}
+
+function generateScenario() {
+    const box = document.getElementById("scenarioBox");
+    box.style.opacity = 0;
+
+    setTimeout(() => {
+        if (!selectedRole) {
+            box.innerText = "Please select a bowling type.";
+            box.style.opacity = 1;
+            speak("Please select a bowling type.");
+            return;
+        }
+
+        const list = scenarios[selectedRole];
+        const scenario = list[Math.floor(Math.random() * list.length)];
+
+        box.innerText = scenario;
+        box.style.opacity = 1;
+        speak(scenario);
+    }, 200);
+}
+</script>
+
+</body>
+</html>
