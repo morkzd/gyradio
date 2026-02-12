@@ -308,16 +308,21 @@
         margin-top: 8px;
     }
 
-    #voiceToggleBtn {
+    #voiceToggleBtn,
+    #deadBallBtn,
+    #wideBtn {
         font-size: 3.4vw;
         padding: 6px 10px;
     }
 
     #wideBtn {
-        font-size: 3.4vw;
-        padding: 6px 10px;
         background: #444;
         box-shadow: 0 0 10px #ffffff44;
+    }
+
+    #deadBallBtn {
+        background: #225522;
+        box-shadow: 0 0 10px #4dff8844;
     }
 
     /* RULES MODAL */
@@ -366,43 +371,51 @@
 </style>
 </head>
 <body>
-
 <div id="app">
     <h1>Cricket Nets Duel</h1>
-
     <!-- RULES MODAL -->
     <div id="rulesModalOverlay">
         <div id="rulesModal">
             <h2>How to Play</h2>
-            <p><strong>What you need:</strong></p>
+            <p>Cricket Nets Duel is a fast scoring game you can play in nets, backyards, driveways, or anywhere you can swing a bat.</p>
+
+            <p><strong>Setup</strong></p>
             <ul>
-                <li>3 or more players (batter, bowler, scorer).</li>
-                <li>4 objects to divide the nets (cones, bottles, rocks, etc.).</li>
-            </ul>
-            <p><strong>Setup:</strong></p>
-            <ul>
-                <li>Use the 4 markers to split the side nets into 6 zones.</li>
-                <li>Behind the stumps is split into off side and leg side.</li>
-                <li>In front of the batter is the straight zone.</li>
-            </ul>
-            <p><strong>How a turn works:</strong></p>
-            <ul>
+                <li>2 or more players (batter, bowler, scorer).</li>
+                <li>Use 4 markers to divide the area into 6 side zones, 2 behind, and 1 straight zone.</li>
                 <li>Each player gets a set number of balls (e.g. 30).</li>
-                <li>One player bats, one bowls, one scores.</li>
-                <li>After each ball, the scorer taps where the ball went on the phone.</li>
-                <li>Choose soft or hard shot when asked. Scorer decides.</li>
             </ul>
-            <p><strong>Special zones:</strong></p>
+
+            <p><strong>How a ball works</strong></p>
             <ul>
-                <li><span style="color:#4dff88;">Green zone</span> = double runs (bonus).</li>
+                <li>Bowler delivers, batter hits, scorer taps the zone where the ball went.</li>
+                <li>Choose soft or hard shot when asked.</li>
+            </ul>
+
+            <p><strong>Special zones</strong></p>
+            <ul>
+                <li><span style="color:#4dff88;">Green zone</span> = double runs.</li>
                 <li><span style="color:#ff4d4d;">Red zone</span> = danger zone (automatic out).</li>
             </ul>
-            <p><strong>Extras:</strong></p>
+
+            <p><strong>Extras</strong></p>
             <ul>
-                <li>If it's a wide, tap the "Wide +1" button. Add 1 run, no ball lost.</li>
-                <li>Wickets can also happen on some shots. Balls remaining on the pitch are rebowled.</li>
+                <li><strong>Wide +1</strong>: Add 1 run, no ball lost.</li>
+                <li><strong>Dead Ball Bonus</strong>: If the ball stops untouched on the pitch, tap the button. Next ball is a Free Hit: all zones are green and that ball does not reduce balls remaining.</li>
             </ul>
-            <p>Rotate roles so everyone gets to bat, bowl, and score. Highest total wins!</p>
+
+            <p><strong>Wickets</strong></p>
+            <ul>
+                <li>Danger zone = out.</li>
+                <li>Some shots have a chance of run out or catch.</li>
+                <li>Balls that stop on the pitch (without Dead Ball Bonus) are rebowled.</li>
+            </ul>
+
+            <p><strong>Winning</strong></p>
+            <ul>
+                <li>Rotate roles. Highest score wins.</li>
+            </ul>
+
             <button id="closeRulesBtn" class="btn" onclick="closeRules()">Close</button>
         </div>
     </div>
@@ -480,13 +493,13 @@
 
         <div id="controlsRow">
             <button id="voiceToggleBtn" class="btn" onclick="toggleVoice()">Voice: ON</button>
+            <button id="deadBallBtn" class="btn" onclick="activateDeadBallBonus()">Dead Ball Bonus</button>
             <button id="wideBtn" class="btn" onclick="addWide()">Wide +1</button>
         </div>
 
         <div id="scoreLog"></div>
     </div>
 </div>
-
 <script>
 /* STATE */
 let players = [];
@@ -498,6 +511,9 @@ let currentScore = 0;
 let voiceOn = true;
 let multiplierZoneId = null;
 let dangerZoneId = null;
+
+let freeHitActive = false;      // next ball is a free hit
+let deadBallArmed = false;      // Dead Ball Bonus has been activated
 
 /* SPEECH SYNTHESIS */
 function speak(text) {
@@ -564,6 +580,8 @@ function startGame() {
 function startPlayerTurn() {
     ballsLeft = ballsPerPlayer;
     currentScore = 0;
+    freeHitActive = false;
+    deadBallArmed = false;
     updateInfoPanel("Tap where the ball went.");
     document.getElementById("nextPlayerBtn").style.display = "none";
     document.getElementById("scoreLog").scrollTop = document.getElementById("scoreLog").scrollHeight;
@@ -617,6 +635,36 @@ function setNewSpecialZones() {
         "Red zone (danger out): " + dangerLabel;
 }
 
+/* FREE HIT VISUALS */
+function applyFreeHitMode() {
+    const zones = document.querySelectorAll(".zone");
+    zones.forEach(z => {
+        z.classList.remove("danger");
+        z.classList.add("multiplier");
+    });
+
+    document.getElementById("multiplierInfo").innerText =
+        "FREE HIT! All zones are power zones.";
+    document.getElementById("dangerInfo").innerText = "";
+}
+
+function clearFreeHitMode() {
+    const zones = document.querySelectorAll(".zone");
+    zones.forEach(z => {
+        z.classList.remove("multiplier");
+    });
+}
+
+/* DEAD BALL BONUS BUTTON */
+function activateDeadBallBonus() {
+    if (ballsLeft <= 0) return;
+    if (freeHitActive) return; // already in free hit
+    deadBallArmed = true;
+    freeHitActive = true;
+    applyFreeHitMode();
+    updateInfoPanel("Dead Ball Bonus! Next ball is a FREE HIT.");
+}
+
 /* ZONE CLICK HANDLER */
 document.querySelectorAll(".zone").forEach(zone => {
     zone.addEventListener("click", () => {
@@ -632,18 +680,18 @@ document.querySelectorAll(".zone").forEach(zone => {
         const isDanger = (zoneId === dangerZoneId);
         const isMultiplier = (zoneId === multiplierZoneId);
 
-        if (isDanger) {
+        if (isDanger && !freeHitActive) {
             outcome.runs = 0;
             outcome.text = players[currentPlayerIndex] +
                 " hits it straight to the fielder in the danger zone. OUT!";
         } else {
-            if (isMultiplier && outcome.runs > 0) {
+            if ((isMultiplier || freeHitActive) && outcome.runs > 0) {
                 outcome.runs *= 2;
                 outcome.text += " Power zone! Runs doubled.";
             }
 
             const wicketRoll = Math.random();
-            if (!isDanger) {
+            if (!isDanger && !freeHitActive) {
                 if (!isHard && wicketRoll < 0.05) {
                     outcome.runs = 0;
                     outcome.text = players[currentPlayerIndex] +
@@ -657,82 +705,147 @@ document.querySelectorAll(".zone").forEach(zone => {
         }
 
         currentScore += outcome.runs;
-        ballsLeft--;
+
+        // Only reduce balls if this is not a Free Hit
+        if (!freeHitActive) {
+            ballsLeft--;
+        }
 
         zone.classList.add("flash");
         setTimeout(() => zone.classList.remove("flash"), 200);
 
         updateInfoPanel(outcome.text);
 
-        if (ballsLeft <= 0) {
-            endPlayerTurn();
-        } else {
+        // After the ball, if this was a Free Hit, clear it
+        if (freeHitActive) {
+            freeHitActive = false;
+            deadBallArmed = false;
+            clearFreeHitMode();
             setNewSpecialZones();
+        } else {
+            if (ballsLeft <= 0) {
+                endPlayerTurn();
+            } else {
+                setNewSpecialZones();
+            }
         }
     });
 });
 
-/* OUTCOME LOGIC */
+/* OUTCOME LOGIC (with hooks for multiple outcomes) */
 function getOutcome(zoneKey, isHard) {
     let runs = 0;
     let text = "";
-
     const playerName = players[currentPlayerIndex];
 
     switch (zoneKey) {
         case "topOff":
-            runs = isHard ? 4 : 1;
-            text = isHard
-                ? playerName + " lifts it over the keeper for 4!"
-                : playerName + " dabs it fine on the off side for 1.";
+            if (!isHard) {
+                const options = [
+                    { runs: 1, text: playerName + " dabs it fine on the off side for 1." },
+                    { runs: 0, text: playerName + " lets it go. No run." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 4;
+                text = playerName + " lifts it over the keeper for 4!";
+            }
             break;
         case "topLeg":
-            runs = isHard ? 4 : 1;
-            text = isHard
-                ? playerName + " performs a ramp shot past fine leg for 4!"
-                : playerName + " glances it down leg for a single.";
+            if (!isHard) {
+                const options = [
+                    { runs: 1, text: playerName + " glances it down leg for a single." },
+                    { runs: 0, text: playerName + " misses the glance. No run." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 4;
+                text = playerName + " performs a ramp shot past fine leg for 4!";
+            }
             break;
         case "left1":
-            runs = isHard ? 6 : 2;
-            text = isHard
-                ? playerName + " launches a big cut shot for 6!"
-                : playerName + " nudges it behind point for 2.";
+            if (!isHard) {
+                const options = [
+                    { runs: 2, text: playerName + " nudges it behind point for 2." },
+                    { runs: 1, text: playerName + " steers it late for a single." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 6;
+                text = playerName + " launches a big cut shot for 6!";
+            }
             break;
         case "left2":
-            runs = isHard ? 4 : 2;
-            text = isHard
-                ? playerName + " whips it through mid-off for 4!"
-                : playerName + " works it into the covers for 2.";
+            if (!isHard) {
+                const options = [
+                    { runs: 2, text: playerName + " works it into the covers for 2." },
+                    { runs: 1, text: playerName + " mistimes it but they scramble a single." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 4;
+                text = playerName + " whips it through mid-off for 4!";
+            }
             break;
         case "left3":
-            runs = isHard ? 3 : 1;
-            text = isHard
-                ? playerName + " drives it past long off for 3."
-                : playerName + " tucks it off the pads for 1.";
+            if (!isHard) {
+                const options = [
+                    { runs: 1, text: playerName + " tucks it off the pads for 1." },
+                    { runs: 0, text: playerName + " blocks it. No run." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 3;
+                text = playerName + " drives it past long off for 3.";
+            }
             break;
         case "right1":
-            runs = isHard ? 6 : 2;
-            text = isHard
-                ? playerName + " hooks it over square leg for 6!"
-                : playerName + " guides it in front of fine leg for 2.";
+            if (!isHard) {
+                const options = [
+                    { runs: 2, text: playerName + " guides it in front of fine leg for 2." },
+                    { runs: 1, text: playerName + " nudges it around the corner for 1." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 6;
+                text = playerName + " hooks it over square leg for 6!";
+            }
             break;
         case "right2":
-            runs = isHard ? 4 : 2;
-            text = isHard
-                ? playerName + " drives square through mid wicket for 4!"
-                : playerName + " pushes it towards cow corner for 2.";
+            if (!isHard) {
+                const options = [
+                    { runs: 2, text: playerName + " pushes it towards cow corner for 2." },
+                    { runs: 1, text: playerName + " clips it off the pads for a single." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 4;
+                text = playerName + " drives square through mid wicket for 4!";
+            }
             break;
         case "right3":
-            runs = isHard ? 3 : 1;
-            text = isHard
-                ? playerName + " carves it out to deep mid-wicket for 3."
-                : playerName + " steers it to mid on for a single.";
+            if (!isHard) {
+                const options = [
+                    { runs: 1, text: playerName + " steers it to mid on for a single." },
+                    { runs: 0, text: playerName + " defends solidly. No run." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 3;
+                text = playerName + " carves it out to deep mid-wicket for 3.";
+            }
             break;
         case "bottom":
-            runs = isHard ? 4 : 1;
-            text = isHard
-                ? playerName + " smashes a straight drive for 4!"
-                : playerName + " blocks it back down the pitch for 1.";
+            if (!isHard) {
+                const options = [
+                    { runs: 1, text: playerName + " blocks it back down the pitch for 1." },
+                    { runs: 0, text: playerName + " dead-bats it. No run." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 4;
+                text = playerName + " smashes a straight drive for 4!";
+            }
             break;
         default:
             runs = 0;
