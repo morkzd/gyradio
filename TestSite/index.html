@@ -865,9 +865,7 @@ function manualOut() {
     if (ballsLeft <= 0) return;
 
     ballsLeft--;  // ball counts
-    updateInfoPanel(players[currentPlayerIndex] + " is OUT!");
-
-    endPlayerTurn(true); // prevents the “turn is over” voice line
+    updateInfoPanel("No runs added.");
 }
 
 
@@ -907,6 +905,7 @@ function nextPlayer() {
 
 </body>
 </html>
+
 
 
 
