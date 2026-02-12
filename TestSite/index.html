@@ -866,6 +866,11 @@ function manualOut() {
 
     ballsLeft--;  // ball counts
     updateInfoPanel("No runs added.");
+
+    // If that was the last ball, end the turn
+    if (ballsLeft <= 0) {
+        endPlayerTurn();
+    }
 }
 
 
@@ -905,6 +910,7 @@ function nextPlayer() {
 
 </body>
 </html>
+
 
 
 
