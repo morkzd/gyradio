@@ -861,25 +861,28 @@ function addWide() {
     currentScore += 1;
     updateInfoPanel("Wide ball. +1 run, no ball lost.");
 }
-    function manualOut() {
+function manualOut() {
     if (ballsLeft <= 0) return;
 
     ballsLeft--;  // ball counts
     updateInfoPanel(players[currentPlayerIndex] + " is OUT!");
 
-    endPlayerTurn();
+    endPlayerTurn(true); // prevents the “turn is over” voice line
 }
 
 
 /* END OF PLAYER TURN */
-function endPlayerTurn() {
+function endPlayerTurn(skipMessage = false) {
     const playerName = players[currentPlayerIndex];
     const log = document.getElementById("scoreLog");
     const entry = document.createElement("div");
     entry.innerText = playerName + " scored " + currentScore + " runs (" + ballsPerPlayer + " balls).";
     log.appendChild(entry);
 
-    updateInfoPanel(playerName + "'s turn is over.");
+    // Only speak "turn is over" if NOT a manual out
+    if (!skipMessage) {
+        updateInfoPanel(playerName + "'s turn is over.");
+    }
 
     if (currentPlayerIndex < players.length - 1) {
         document.getElementById("nextPlayerBtn").style.display = "block";
@@ -904,6 +907,7 @@ function nextPlayer() {
 
 </body>
 </html>
+
 
 
 
