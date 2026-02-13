@@ -242,9 +242,21 @@
     <div class="tagline">To the good old days</div>
     <div class="live-label" id="liveLabel">RADIO STATION OFF AIR</div>
 
-    <div class="button-column">
-      <button class="main-button" id="playRadioBtn">▶ Play Glory Years Radio</button>
-    </div>
+   <div class="button-column">
+
+  <!-- Spotify Player -->
+  <iframe data-testid="embed-iframe" style="border-radius:12px" 
+          src="https://open.spotify.com/embed/album/2cRhb2ArJy6mvY1FLdr1LV?utm_source=generator" 
+          width="100%" height="352" frameBorder="0" allowfullscreen="" 
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+          loading="lazy">
+  </iframe>
+
+  <!-- Existing Radio Button -->
+  <button class="main-button" id="playRadioBtn">▶ Play Glory Years Radio</button>
+
+</div>
+
 
     <div id="afterStart" style="display:none; width:100%;">
       <div class="video-container">
@@ -409,3 +421,4 @@
   </script>
 </body>
 </html>
+
