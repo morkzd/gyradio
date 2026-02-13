@@ -749,126 +749,177 @@ document.querySelectorAll(".zone").forEach(zone => {
 
 /* OUTCOME LOGIC (with hooks for multiple outcomes) */
 function getOutcome(zoneKey, isHard) {
-    let runs = 0;
-    let text = "";
     const playerName = players[currentPlayerIndex];
 
     switch (zoneKey) {
+
         case "topOff":
             if (!isHard) {
                 const options = [
                     { runs: 1, text: playerName + " dabs it fine on the off side for 1." },
-                    { runs: 0, text: playerName + " lets it go. No run." }
+                    { runs: 0, text: playerName + " lets it go. No run." },
+                    { runs: 2, text: playerName + " guides it wide of third man for 2." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             } else {
-                runs = 4;
-                text = playerName + " lifts it over the keeper for 4!";
+                const options = [
+                    { runs: 4, text: playerName + " lifts it over the keeper for 4!" },
+                    { runs: 6, text: playerName + " smashes it straight back for 6!" },
+                    { runs: -1, text: playerName + " skies it… OUT caught behind!" }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
             }
             break;
+
         case "topLeg":
             if (!isHard) {
                 const options = [
                     { runs: 1, text: playerName + " glances it down leg for a single." },
-                    { runs: 0, text: playerName + " misses the glance. No run." }
+                    { runs: 0, text: playerName + " misses the glance. No run." },
+                    { runs: 2, text: playerName + " tucks it fine for 2." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             } else {
-                runs = 4;
-                text = playerName + " performs a ramp shot past fine leg for 4!";
+                const options = [
+                    { runs: 4, text: playerName + " ramps it past fine leg for 4!" },
+                    { runs: 6, text: playerName + " scoops it over the keeper for 6!" },
+                    { runs: -1, text: playerName + " miscues the ramp… OUT!" }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
             }
             break;
+
         case "left1":
             if (!isHard) {
                 const options = [
                     { runs: 2, text: playerName + " nudges it behind point for 2." },
-                    { runs: 1, text: playerName + " steers it late for a single." }
+                    { runs: 1, text: playerName + " steers it late for a single." },
+                    { runs: 0, text: playerName + " mistimes the cut. No run." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             } else {
-                runs = 6;
-                text = playerName + " launches a big cut shot for 6!";
+                const options = [
+                    { runs: 6, text: playerName + " launches a big cut shot for 6!" },
+                    { runs: 4, text: playerName + " slashes it square for 4!" },
+                    { runs: -1, text: playerName + " edges the cut… OUT!" }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
             }
             break;
+
         case "left2":
             if (!isHard) {
                 const options = [
                     { runs: 2, text: playerName + " works it into the covers for 2." },
-                    { runs: 1, text: playerName + " mistimes it but they scramble a single." }
+                    { runs: 1, text: playerName + " mistimes it but they scramble a single." },
+                    { runs: 0, text: playerName + " pushes at it. No run." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             } else {
-                runs = 4;
-                text = playerName + " whips it through mid-off for 4!";
+                const options = [
+                    { runs: 4, text: playerName + " drives through mid-off for 4!" },
+                    { runs: 6, text: playerName + " lofts it beautifully for 6!" },
+                    { runs: -1, text: playerName + " chips it to cover… OUT!" }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
             }
             break;
+
         case "left3":
             if (!isHard) {
                 const options = [
                     { runs: 1, text: playerName + " tucks it off the pads for 1." },
-                    { runs: 0, text: playerName + " blocks it. No run." }
+                    { runs: 0, text: playerName + " blocks it. No run." },
+                    { runs: 2, text: playerName + " flicks it nicely for 2." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             } else {
-                runs = 3;
-                text = playerName + " drives it past long off for 3.";
+                const options = [
+                    { runs: 3, text: playerName + " drives it past long off for 3." },
+                    { runs: 4, text: playerName + " drills it through mid-on for 4!" },
+                    { runs: -1, text: playerName + " mistimes the drive… OUT!" }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
             }
             break;
+
         case "right1":
             if (!isHard) {
                 const options = [
                     { runs: 2, text: playerName + " guides it in front of fine leg for 2." },
-                    { runs: 1, text: playerName + " nudges it around the corner for 1." }
+                    { runs: 1, text: playerName + " nudges it around the corner for 1." },
+                    { runs: 0, text: playerName + " misses the glance. No run." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             } else {
-                runs = 6;
-                text = playerName + " hooks it over square leg for 6!";
+                const options = [
+                    { runs: 6, text: playerName + " hooks it over square leg for 6!" },
+                    { runs: 4, text: playerName + " pulls it hard for 4!" },
+                    { runs: -1, text: playerName + " top-edges the hook… OUT!" }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
             }
             break;
+
         case "right2":
             if (!isHard) {
                 const options = [
                     { runs: 2, text: playerName + " pushes it towards cow corner for 2." },
-                    { runs: 1, text: playerName + " clips it off the pads for a single." }
+                    { runs: 1, text: playerName + " clips it off the pads for a single." },
+                    { runs: 0, text: playerName + " plays and misses. No run." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             } else {
-                runs = 4;
-                text = playerName + " drives square through mid wicket for 4!";
+                const options = [
+                    { runs: 4, text: playerName + " drives square through mid wicket for 4!" },
+                    { runs: 6, text: playerName + " launches it over mid-wicket for 6!" },
+                    { runs: -1, text: playerName + " holes out to deep mid-wicket… OUT!" }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
             }
             break;
+
         case "right3":
             if (!isHard) {
                 const options = [
                     { runs: 1, text: playerName + " steers it to mid on for a single." },
-                    { runs: 0, text: playerName + " defends solidly. No run." }
+                    { runs: 0, text: playerName + " defends solidly. No run." },
+                    { runs: 2, text: playerName + " works it nicely for 2." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             } else {
-                runs = 3;
-                text = playerName + " carves it out to deep mid-wicket for 3.";
+                const options = [
+                    { runs: 3, text: playerName + " carves it out to deep mid-wicket for 3." },
+                    { runs: 4, text: playerName + " smashes it through mid-wicket for 4!" },
+                    { runs: -1, text: playerName + " mistimes the slog… OUT!" }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
             }
             break;
+
         case "bottom":
             if (!isHard) {
                 const options = [
                     { runs: 1, text: playerName + " blocks it back down the pitch for 1." },
-                    { runs: 0, text: playerName + " dead-bats it. No run." }
+                    { runs: 0, text: playerName + " dead-bats it. No run." },
+                    { runs: 2, text: playerName + " pushes it past the bowler for 2." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             } else {
-                runs = 4;
-                text = playerName + " smashes a straight drive for 4!";
+                const options = [
+                    { runs: 4, text: playerName + " smashes a straight drive for 4!" },
+                    { runs: 6, text: playerName + " launches it straight back for 6!" },
+                    { runs: -1, text: playerName + " miscues the straight hit… OUT!" }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
             }
             break;
-        default:
-            runs = 0;
-            text = playerName + " lets it go. No run.";
-    }
 
-    return { runs, text };
+        default:
+            return { runs: 0, text: playerName + " lets it go. No run." };
+    }
 }
+
 
 /* WIDE BUTTON */
 function addWide() {
@@ -933,5 +984,6 @@ function nextPlayer() {
 
 </body>
 </html>
+
 
 
