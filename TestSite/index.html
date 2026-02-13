@@ -937,27 +937,28 @@ function endPlayerTurn(skipMessage = false) {
     entry.innerText = playerName + " scored " + currentScore + " runs (" + ballsPerPlayer + " balls).";
     log.appendChild(entry);
 
-    // ⭐ SAVE THE PLAYER'S SCORE — THIS WAS MISSING
-    playerScores[currentPlayerIndex] = currentScore;
+    // Save score if you're tracking it
+    if (typeof playerScores !== "undefined") {
+        playerScores[currentPlayerIndex] = currentScore;
+    }
 
     // Only speak "turn is over" if NOT a manual out
     if (!skipMessage) {
         updateInfoPanel(playerName + "'s turn is over.");
     }
 
-    // ⭐ FINAL PLAYER — SHOW FINAL SCORES POPUP
+    // FINAL PLAYER — show final scores in the info panel instead of a modal
     if (currentPlayerIndex === players.length - 1) {
-
-        let html = "";
+        let summary = "Final scores: ";
         players.forEach((p, i) => {
-            html += `<div style="margin:6px 0; font-size:4.5vw;">${p}: ${playerScores[i]} runs</div>`;
+            const s = (playerScores && playerScores[i] != null) ? playerScores[i] : "?";
+            summary += `${p}: ${s}  `;
         });
-
-        showFinalScores(html);
+        updateInfoPanel(summary.trim());
         return;
     }
 
-    // ⭐ NOT FINAL PLAYER — show next player button
+    // NOT FINAL PLAYER — show next player button
     document.getElementById("nextPlayerBtn").style.display = "block";
 }
 
@@ -972,6 +973,7 @@ function nextPlayer() {
 
 </body>
 </html>
+
 
 
 
