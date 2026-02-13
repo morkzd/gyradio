@@ -504,13 +504,14 @@
 let audioUnlocked = false;
 
 function unlockAudio() {
-if (audioUnlocked) return;
+    if (audioUnlocked) return;
     audioUnlocked = true;
 
-    // Silent utterance to unlock audio on mobile browsers
-const utter = new SpeechSynthesisUtterance("");
-speechSynthesis.speak(utter);
+    const utter = new SpeechSynthesisUtterance(" ");
+    utter.volume = 0;   // silent
+    speechSynthesis.speak(utter);
 }
+
 
 /* STATE */
 let players = [];
@@ -924,6 +925,7 @@ function nextPlayer() {
 
 </body>
 </html>
+
 
 
 
