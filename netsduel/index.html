@@ -2,167 +2,536 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Cricket Nets Duel – Bowling Practice</title>
+<title>Cricket Nets Duel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
     html, body {
         margin: 0;
         padding: 0;
         height: 100%;
-        overflow: hidden;
         font-family: Arial, sans-serif;
-        background: linear-gradient(to bottom, #000000 0%, #003300 100%);
-        color: white;
+        background: radial-gradient(circle at top, #003300 0%, #000000 55%, #000000 100%);
+        color: #eaffff;
     }
 
     #app {
-        height: calc(100vh - 50px);
+        height: 100vh;
         display: flex;
         flex-direction: column;
-        justify-content: space-evenly;
         align-items: center;
-        text-align: center;
-        padding: 5px 0;
+        justify-content: center;
         box-sizing: border-box;
+        padding: 10px;
     }
 
     h1 {
         font-size: 7vw;
         color: #00eaff;
         text-shadow: 0 0 12px #00eaff, 0 0 25px #00eaff;
-        margin: 0;
-        animation: pulse 2.5s infinite ease-in-out;
+        margin: 5px 0 15px 0;
+        text-align: center;
     }
 
-    @keyframes pulse {
-        0% { text-shadow: 0 0 10px #00eaff; }
-        50% { text-shadow: 0 0 25px #00eaff; }
-        100% { text-shadow: 0 0 10px #00eaff; }
+    .screen {
+        width: 100%;
+        max-width: 480px;
+        box-sizing: border-box;
+    }
+
+    .hidden {
+        display: none;
     }
 
     .sectionLabel {
-        font-size: 5vw;
+        font-size: 4.5vw;
         color: #88ff88;
         text-shadow: 0 0 8px #00ff55;
-        margin-bottom: 5px;
+        margin: 10px 0 5px 0;
+        text-align: center;
     }
 
-    .btn, .btnSmall, .pillBtn {
+    .pillBtn, .btn {
         border: none;
         cursor: pointer;
         transition: 0.15s;
         color: white;
         background: #111;
         box-shadow: 0 0 12px #00eaff inset, 0 0 12px #00eaff;
-    }
-
-    .pillBtn {
-        width: 85vw;
-        padding: 1.6vh 0;
-        font-size: 4.5vw;
-        border-radius: 50px;
+        border-radius: 999px;
+        padding: 10px 16px;
+        font-size: 4.2vw;
+        width: 100%;
+        margin-top: 10px;
     }
 
     .btn {
-        width: 85vw;
-        padding: 1.8vh 0;
-        font-size: 5vw;
-        border-radius: 12px;
+        border-radius: 10px;
+        font-size: 4vw;
+    }
+
+    .pillBtn:active, .btn:active {
+        transform: scale(0.97);
+        box-shadow: 0 0 18px #00eaff inset, 0 0 22px #00eaff;
+    }
+
+    .inputRow {
+        display: flex;
+        gap: 8px;
         margin: 5px 0;
     }
 
-    .btnSmall {
-        padding: 1.8vh 0;
-        font-size: 4.8vw;
-        border-radius: 12px;
+    .inputRow input {
+        flex: 1;
+        padding: 8px;
+        border-radius: 8px;
+        border: 1px solid #00eaff;
+        background: #020b0b;
+        color: #eaffff;
+        font-size: 4vw;
+        box-shadow: 0 0 6px #003344 inset;
     }
 
-    .selected {
-        background: #00aaff !important;
-        box-shadow: 0 0 18px #00eaff inset, 0 0 22px #00eaff !important;
-    }
-
-    #bowlGrid {
-        width: 90vw;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 5px;
-    }
-
-    .btnRed {
-        background: #aa0000;
-        box-shadow: 0 0 14px #ff4444 inset, 0 0 18px #ff4444;
-    }
-
-    #scenarioBox {
-        width: 90vw;
-        min-height: 20vh;
-        max-height: 28vh;
-        overflow-y: auto;
-        background: #222;
-        border-radius: 12px;
-        padding: 20px;
-        font-size: 4.8vw;
-        line-height: 1.45;
-        box-shadow: 0 0 10px #444 inset;
-        opacity: 0;
-        transition: opacity 0.4s ease-in-out;
-    }
-
-    #adBanner {
-        width: 100%;
-        height: 50px;
-        background: #111;
+    .smallLabel {
+        font-size: 3.4vw;
         opacity: 0.8;
-        font-size: 3.5vw;
-        text-align: center;
-        line-height: 50px;
+        margin-top: 4px;
+    }
+
+    /* GAME AREA */
+
+    #gameAreaWrapper {
+        width: 100%;
+        max-width: 480px;
+        aspect-ratio: 9 / 16;
+        position: relative;
+        border-radius: 20px;
+        background: linear-gradient(to bottom, #001a00 0%, #000000 100%);
+        box-shadow: 0 0 18px #00eaff;
+        overflow: hidden;
+        margin: 0 auto;
+    }
+
+    #gameArea {
         position: absolute;
-        bottom: 0;
-        left: 0;
+        inset: 0;
+    }
+
+    .zone {
+        position: absolute;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(255,255,255,0.3);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 3vw;
+        text-align: center;
+        color: #000;
+        font-weight: bold;
+        user-select: none;
+    }
+
+    /* Base colours */
+    .zone.yellow {
+        background: #ffe066;
+        box-shadow: 0 0 12px #ffe066;
+    }
+
+    .zone.blue {
+        background: #4da6ff;
+        box-shadow: 0 0 12px #4da6ff;
+    }
+
+    /* Multiplier (green) */
+    .zone.multiplier {
+        background: #4dff88 !important;
+        box-shadow: 0 0 16px #4dff88;
+        border: 2px solid #ffffff;
+    }
+
+    /* Danger (red) */
+    .zone.danger {
+        background: #ff4d4d !important;
+        box-shadow: 0 0 16px #ff4d4d;
+        border: 2px solid #ffffff;
+    }
+
+    .zone.flash {
+        animation: flash 0.25s ease-out;
+    }
+
+    @keyframes flash {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(0.96); opacity: 0.7; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Layout of zones (phone as nets) */
+
+    /* Top two slender rectangles (behind stumps) */
+    #zoneTopOff {
+        top: 2%;
+        left: 5%;
+        width: 42%;
+        height: 8%;
+    }
+    #zoneTopLeg {
+        top: 2%;
+        right: 5%;
+        width: 42%;
+        height: 8%;
+    }
+
+    /* Left side – 3 zones */
+    #zoneLeft1 {
+        top: 14%;
+        left: 2%;
+        width: 18%;
+        height: 18%;
+    }
+    #zoneLeft2 {
+        top: 34%;
+        left: 2%;
+        width: 18%;
+        height: 18%;
+    }
+    #zoneLeft3 {
+        top: 54%;
+        left: 2%;
+        width: 18%;
+        height: 18%;
+    }
+
+    /* Right side – 3 zones */
+    #zoneRight1 {
+        top: 14%;
+        right: 2%;
+        width: 18%;
+        height: 18%;
+    }
+    #zoneRight2 {
+        top: 34%;
+        right: 2%;
+        width: 18%;
+        height: 18%;
+    }
+    #zoneRight3 {
+        top: 54%;
+        right: 2%;
+        width: 18%;
+        height: 18%;
+    }
+
+    /* Bottom – one big rectangle (in front) */
+    #zoneBottom {
+        bottom: 3%;
+        left: 10%;
+        width: 80%;
+        height: 14%;
+    }
+
+    /* Info panel in the middle */
+    #infoPanel {
+        position: absolute;
+        top: 20%;
+        left: 22%;
+        width: 56%;
+        height: 50%;
+        border-radius: 16px;
+        background: rgba(0, 0, 0, 0.75);
+        box-shadow: 0 0 14px #003344 inset;
+        padding: 10px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        color: #eaffff;
+        text-align: center;
+    }
+
+    #infoPlayer {
+        font-size: 4.2vw;
+        color: #00eaff;
+        text-shadow: 0 0 8px #00eaff;
+    }
+
+    #infoBalls, #infoScore {
+        font-size: 3.6vw;
+        margin-top: 4px;
+    }
+
+    #infoLast {
+        font-size: 3.4vw;
+        margin-top: 8px;
+        line-height: 1.4;
+    }
+
+    #softHardHint {
+        font-size: 3.2vw;
+        opacity: 0.8;
+        margin-top: 6px;
+    }
+
+    #multiplierInfo {
+        font-size: 3.2vw;
+        margin-top: 4px;
+        color: #4dff88;
+    }
+
+    #dangerInfo {
+        font-size: 3.2vw;
+        margin-top: 2px;
+        color: #ff4d4d;
+    }
+
+    #nextPlayerBtn {
+        margin-top: 8px;
+        font-size: 3.4vw;
+        padding: 6px 10px;
+    }
+
+    #scoreLog {
+        margin-top: 10px;
+        font-size: 3.4vw;
+        max-height: 20vh;
+        overflow-y: auto;
+    }
+
+    #scoreLog div {
+        margin-bottom: 4px;
+    }
+
+    #controlsRow {
+        display: flex;
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+    #voiceToggleBtn,
+    #deadBallBtn,
+    #wideBtn {
+        font-size: 3.4vw;
+        padding: 6px 10px;
+    }
+
+    #wideBtn {
+        background: #444;
+        box-shadow: 0 0 10px #ffffff44;
+    }
+
+    #deadBallBtn {
+        background: #225522;
+        box-shadow: 0 0 10px #4dff8844;
+    }
+
+    /* RULES MODAL */
+    #rulesModalOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+    }
+
+    #rulesModal {
+        width: 90%;
+        max-width: 480px;
+        background: #020b0b;
+        border-radius: 16px;
+        box-shadow: 0 0 18px #00eaff;
+        padding: 16px;
+        box-sizing: border-box;
+        color: #eaffff;
+    }
+
+    #rulesModal h2 {
+        margin-top: 0;
+        font-size: 5vw;
+        color: #00eaff;
+        text-align: center;
+    }
+
+    #rulesModal p, #rulesModal li {
+        font-size: 3.4vw;
+        line-height: 1.4;
+    }
+
+    #rulesModal ul {
+        padding-left: 18px;
+    }
+
+    #closeRulesBtn {
+        margin-top: 10px;
+        width: 100%;
+        font-size: 4vw;
     }
 </style>
 </head>
-
 <body>
-
 <div id="app">
+    <h1>Cricket Nets Duel</h1>
+    <!-- RULES MODAL -->
+    <div id="rulesModalOverlay">
+        <div id="rulesModal">
+            <h2>How to Play</h2>
+            <p>For the nets, backyards, driveways, hallways.</p>
 
-    <h1>Bowling Practice</h1>
+            <p><strong>Setup</strong></p>
+            <ul>
+                <li>2 or more players (batter, bowler, scorer).</li>
+                <li>Use 4 markers to divide the area into zones.</li>
+                <li>Each player gets a set number of balls (e.g. 30).</li>
+            </ul>
 
-    <button class="pillBtn" onclick="window.location.href='https://www.gyradio.com/TestSite/'">
-        Return to Main Menu
-    </button>
+            <p><strong>How a ball works</strong></p>
+            <ul>
+                <li>Bowler delivers, batter hits, scorer taps the zone where the ball went.</li>
+                <li>Choose soft or hard shot when asked.</li>
+            </ul>
 
-    <div class="sectionLabel">Choose Your Bowling Type</div>
+            <p><strong>Special zones</strong></p>
+            <ul>
+                <li><span style="color:#4dff88;">Green zone</span> = double runs.</li>
+                <li><span style="color:#ff4d4d;">Red zone</span> = danger zone (automatic out).</li>
+            </ul>
 
-    <div id="bowlGrid">
-        <button class="btnSmall" onclick="selectRole('fast')">Fast Bowl</button>
-        <button class="btnSmall" onclick="selectRole('swing')">Swing Bowl</button>
-        <button class="btnSmall" onclick="selectRole('offspin')">Offspin</button>
-        <button class="btnSmall" onclick="selectRole('legspin')">Legspin</button>
+            <p><strong>Extras</strong></p>
+            <ul>
+            <li><strong>Out/Missed</strong>: If the batter is dismissed in real life or missed the ball tap this button.</li>
+            </ul>
+
+            <ul>
+                <li><strong>Wide +1</strong>: Add 1 run, no ball lost.</li>
+                <li><strong>Dead Ball Bonus</strong>: Batter keeps the ball on the pitch, it stops dead before touched by the bowler. Tap the DBB button. Next ball is a Free Hit.</li>
+            </ul>
+
+            <p><strong>Wickets</strong></p>
+            <ul>
+                <li>Danger zone = out.</li>
+                <li>Some shots have a chance of run out or catch.</li>
+            </ul>
+
+            <button id="closeRulesBtn" class="btn" onclick="closeRules()">Close</button>
+        </div>
     </div>
 
-    <div class="sectionLabel">Generate Scenario</div>
-    <button class="btn btnRed" onclick="generateScenario()">Generate Scenario</button>
+    <!-- SETUP SCREEN -->
+    <div id="setupScreen" class="screen">
+        <div class="sectionLabel">Players</div>
+        <div class="smallLabel" style="text-align:center;">
+            Enter 2 or more names. Rotate roles in real life.
+        </div>
 
-    <div id="scenarioBox">Your scenario will appear here.</div>
+        <div class="inputRow">
+            <input id="p1" placeholder="Player 1">
+        </div>
+        <div class="inputRow">
+            <input id="p2" placeholder="Player 2">
+        </div>
+        <div class="inputRow">
+            <input id="p3" placeholder="Player 3 (optional)">
+        </div>
+        <div class="inputRow">
+            <input id="p4" placeholder="Player 4 (optional)">
+        </div>
+        <div class="inputRow">
+            <input id="p5" placeholder="Player 5 (optional)">
+        </div>
 
+        <div class="sectionLabel">Balls per player</div>
+        <div class="inputRow">
+            <input id="ballsInput" type="number" min="6" max="60" value="30">
+        </div>
+        <div class="smallLabel" style="text-align:center;">
+            Default is 30 balls each.
+        </div>
+
+        <button class="pillBtn" onclick="startGame()">Start Nets Duel</button>
+        <button class="btn" style="margin-top:8px;" onclick="openRules()">Rules</button>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="gameScreen" class="screen hidden">
+        <div id="gameAreaWrapper">
+            <div id="gameArea">
+                <!-- Zones -->
+                <div id="zoneTopOff" class="zone yellow" data-zone="topOff">OFF BACK</div>
+                <div id="zoneTopLeg" class="zone blue" data-zone="topLeg">LEG BACK</div>
+
+                <div id="zoneLeft1" class="zone blue" data-zone="left1">OFF 1</div>
+                <div id="zoneLeft2" class="zone yellow" data-zone="left2">OFF 2</div>
+                <div id="zoneLeft3" class="zone blue" data-zone="left3">OFF 3</div>
+
+                <div id="zoneRight1" class="zone yellow" data-zone="right1">LEG 1</div>
+                <div id="zoneRight2" class="zone blue" data-zone="right2">LEG 2</div>
+                <div id="zoneRight3" class="zone yellow" data-zone="right3">LEG 3</div>
+
+                <div id="zoneBottom" class="zone blue" data-zone="bottom">STRAIGHT</div>
+
+                <!-- Info panel -->
+                <div id="infoPanel">
+                    <div id="infoPlayer">Player</div>
+                    <div id="infoBalls">Balls: 30</div>
+                    <div id="infoScore">Score: 0</div>
+                    <div id="infoLast">Tap where the ball went.</div>
+                    <div id="softHardHint">
+                        After tapping a zone, choose soft or hard shot.
+                    </div>
+                    <div id="multiplierInfo"></div>
+                    <div id="dangerInfo"></div>
+                    <button id="nextPlayerBtn" class="btn" onclick="nextPlayer()" style="display:none;">
+                        Next Player
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="controlsRow">
+    <button id="voiceToggleBtn" class="btn" onclick="toggleVoice()">Voice: ON</button>
+    <button id="deadBallBtn" class="btn" onclick="activateDeadBallBonus()">Dead Ball Bonus</button>
+    <button id="manualOutBtn" class="btn" onclick="manualOut()">Out/Missed</button>
+    <button id="wideBtn" class="btn" onclick="addWide()">Wide +1</button>
 </div>
 
-<div id="adBanner">Ad banner goes here</div>
 
+        <div id="scoreLog"></div>
+    </div>
+</div>
 <script>
-/* KEEP SCREEN AWAKE */
-let wakeLock;
-async function keepAwake() {
-    try { wakeLock = await navigator.wakeLock.request('screen'); }
-    catch (err) { console.log("Wake lock not supported", err); }
+let audioUnlocked = false;
+
+function unlockAudio() {
+    if (audioUnlocked) return;
+    audioUnlocked = true;
+
+    const utter = new SpeechSynthesisUtterance(" ");
+    utter.volume = 0;   // silent
+    speechSynthesis.speak(utter);
 }
-document.addEventListener("click", keepAwake);
+
+
+/* STATE */
+let players = [];
+let currentPlayerIndex = 0;
+let ballsPerPlayer = 30;
+let ballsLeft = 0;
+let currentScore = 0;
+
+let voiceOn = true;
+let multiplierZoneId = null;
+let dangerZoneId = null;
+
+let freeHitActive = false;      // next ball is a free hit
+let deadBallArmed = false;      // Dead Ball Bonus has been activated
 
 /* SPEECH SYNTHESIS */
 function speak(text) {
+    if (!voiceOn) return;
+    if (!("speechSynthesis" in window)) return;
+
     const utter = new SpeechSynthesisUtterance(text);
     utter.rate = 1;
     utter.pitch = 1;
@@ -170,9 +539,9 @@ function speak(text) {
 
     const voices = speechSynthesis.getVoices();
     const preferred = voices.find(v =>
-        v.name.toLowerCase().includes("male") ||
-        v.name.toLowerCase().includes("deep") ||
-        v.name.toLowerCase().includes("english")
+        v.name.toLowerCase().includes("english") ||
+        v.name.toLowerCase().includes("child") ||
+        v.name.toLowerCase().includes("male")
     );
     if (preferred) utter.voice = preferred;
 
@@ -180,66 +549,377 @@ function speak(text) {
     speechSynthesis.speak(utter);
 }
 
-/* BOWLING SCENARIOS ONLY */
-const scenarios = {
-    fast: [
-        "Hit the top of off stump with a tight channel.",
-        "Bowl a heavy length and build pressure.",
-        "Use subtle seam movement to challenge the batter.",
-        "Finish the over with a yorker aimed at the toes."
-    ],
-    swing: [
-        "Pitch it up and let the ball swing.",
-        "Set the batter up with outswing, then bring one back in.",
-        "Bowl full and challenge the forward defence.",
-        "Use late swing to attack the stumps."
-    ],
-    offspin: [
-        "Bowl outside off and tempt the forward defence.",
-        "Attack the pads with a close field.",
-        "Vary your flight to draw the batter forward.",
-        "Bowl into the pitch to limit scoring."
-    ],
-    legspin: [
-        "Toss it up and look for drift.",
-        "Bowl your stock leg‑break and build pressure.",
-        "Use the googly as a surprise weapon.",
-        "Slow it down to tempt the big shot."
-    ]
-};
-
-let selectedRole = null;
-
-function selectRole(role) {
-    selectedRole = role;
-    highlightButtons();
+function toggleVoice() {
+    voiceOn = !voiceOn;
+    document.getElementById("voiceToggleBtn").innerText = voiceOn ? "Voice: ON" : "Voice: OFF";
 }
 
-function highlightButtons() {
-    document.querySelectorAll('.btnSmall').forEach(btn => btn.classList.remove('selected'));
-    if (selectedRole)
-        document.querySelector(`[onclick="selectRole('${selectedRole}')"]`).classList.add('selected');
+/* RULES MODAL */
+function openRules() {
+    document.getElementById("rulesModalOverlay").style.display = "flex";
+}
+function closeRules() {
+    document.getElementById("rulesModalOverlay").style.display = "none";
 }
 
-function generateScenario() {
-    const box = document.getElementById("scenarioBox");
-    box.style.opacity = 0;
+/* START GAME */
+function startGame() {
+    unlockAudio();   // 🔊 Unlock audio on first tap
 
-    setTimeout(() => {
-        if (!selectedRole) {
-            box.innerText = "Please select a bowling type.";
-            box.style.opacity = 1;
-            speak("Please select a bowling type.");
-            return;
+    const names = [
+        document.getElementById("p1").value.trim() || "Player 1",
+        document.getElementById("p2").value.trim(),
+        document.getElementById("p3").value.trim(),
+        document.getElementById("p4").value.trim(),
+        document.getElementById("p5").value.trim()
+    ].filter(n => n && n.length > 0);
+
+
+    if (names.length < 2) {
+        alert("Please enter at least 2 player names.");
+        return;
+    }
+
+    players = names;
+    const ballsInput = parseInt(document.getElementById("ballsInput").value, 10);
+    ballsPerPlayer = (!isNaN(ballsInput) && ballsInput > 0) ? ballsInput : 30;
+
+    document.getElementById("setupScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+
+    currentPlayerIndex = 0;
+    startPlayerTurn();
+}
+
+/* START TURN FOR CURRENT PLAYER */
+function startPlayerTurn() {
+    ballsLeft = ballsPerPlayer;
+    currentScore = 0;
+    freeHitActive = false;
+    deadBallArmed = false;
+    updateInfoPanel("Tap where the ball went.");
+    document.getElementById("nextPlayerBtn").style.display = "none";
+    document.getElementById("scoreLog").scrollTop = document.getElementById("scoreLog").scrollHeight;
+    setNewSpecialZones();
+}
+
+/* UPDATE INFO PANEL */
+function updateInfoPanel(lastText) {
+    const playerName = players[currentPlayerIndex];
+    document.getElementById("infoPlayer").innerText = playerName;
+    document.getElementById("infoBalls").innerText = "Balls: " + ballsLeft;
+    document.getElementById("infoScore").innerText = "Score: " + currentScore;
+    if (lastText) {
+        document.getElementById("infoLast").innerText = lastText;
+        speak(lastText);
+    }
+}
+
+/* SPECIAL ZONES: MULTIPLIER + DANGER */
+function setNewSpecialZones() {
+    const zones = Array.from(document.querySelectorAll(".zone"));
+    zones.forEach(z => {
+        z.classList.remove("multiplier");
+        z.classList.remove("danger");
+    });
+
+    const ids = zones.map(z => z.id);
+    if (ids.length < 2) return;
+
+    const multiplierIndex = Math.floor(Math.random() * ids.length);
+    let dangerIndex = Math.floor(Math.random() * ids.length);
+    while (dangerIndex === multiplierIndex) {
+        dangerIndex = Math.floor(Math.random() * ids.length);
+    }
+
+    multiplierZoneId = ids[multiplierIndex];
+    dangerZoneId = ids[dangerIndex];
+
+    const multZone = document.getElementById(multiplierZoneId);
+    const dangerZone = document.getElementById(dangerZoneId);
+
+    if (multZone) multZone.classList.add("multiplier");
+    if (dangerZone) dangerZone.classList.add("danger");
+
+    const multLabel = multZone ? multZone.innerText : "";
+    const dangerLabel = dangerZone ? dangerZone.innerText : "";
+
+    document.getElementById("multiplierInfo").innerText =
+        "Green zone (double runs): " + multLabel;
+    document.getElementById("dangerInfo").innerText =
+        "Red zone (danger out): " + dangerLabel;
+}
+
+/* FREE HIT VISUALS */
+function applyFreeHitMode() {
+    const zones = document.querySelectorAll(".zone");
+    zones.forEach(z => {
+        z.classList.remove("danger");
+        z.classList.add("multiplier");
+    });
+
+    document.getElementById("multiplierInfo").innerText =
+        "FREE HIT! All zones are power zones.";
+    document.getElementById("dangerInfo").innerText = "";
+}
+
+function clearFreeHitMode() {
+    const zones = document.querySelectorAll(".zone");
+    zones.forEach(z => {
+        z.classList.remove("multiplier");
+    });
+}
+
+/* DEAD BALL BONUS BUTTON */
+function activateDeadBallBonus() {
+    if (ballsLeft <= 0) return;
+    if (freeHitActive) return; // already in free hit
+    deadBallArmed = true;
+    freeHitActive = true;
+    applyFreeHitMode();
+    updateInfoPanel("Dead Ball Bonus! Next ball is a FREE HIT.");
+}
+
+/* ZONE CLICK HANDLER */
+document.querySelectorAll(".zone").forEach(zone => {
+    zone.addEventListener("click", () => {
+        if (ballsLeft <= 0) return;
+
+        const zoneKey = zone.getAttribute("data-zone");
+
+        const isHard = confirm("Hard shot? (OK = Hard, Cancel = Soft)");
+
+        let outcome = getOutcome(zoneKey, isHard);
+
+        const zoneId = zone.id;
+        const isDanger = (zoneId === dangerZoneId);
+        const isMultiplier = (zoneId === multiplierZoneId);
+
+        if (isDanger && !freeHitActive) {
+            outcome.runs = 0;
+            outcome.text = players[currentPlayerIndex] +
+                " hits it straight to the fielder in the danger zone. OUT!";
+        } else {
+            if ((isMultiplier || freeHitActive) && outcome.runs > 0) {
+                outcome.runs *= 2;
+                outcome.text += " Power zone! Runs doubled.";
+            }
+
+            const wicketRoll = Math.random();
+            if (!isDanger && !freeHitActive) {
+                if (!isHard && wicketRoll < 0.05) {
+                    outcome.runs = 0;
+                    outcome.text = players[currentPlayerIndex] +
+                        " hesitates… run out chance… OUT!";
+                } else if (isHard && wicketRoll < 0.08) {
+                    outcome.runs = 0;
+                    outcome.text = players[currentPlayerIndex] +
+                        " goes big… but it's caught on the boundary! OUT!";
+                }
+            }
         }
 
-        const list = scenarios[selectedRole];
-        const scenario = list[Math.floor(Math.random() * list.length)];
+        currentScore += outcome.runs;
 
-        box.innerText = scenario;
-        box.style.opacity = 1;
-        speak(scenario);
-    }, 200);
+        // Only reduce balls if this is not a Free Hit
+        if (!freeHitActive) {
+            ballsLeft--;
+        }
+
+        zone.classList.add("flash");
+        setTimeout(() => zone.classList.remove("flash"), 200);
+
+        updateInfoPanel(outcome.text);
+
+        // After the ball, if this was a Free Hit, clear it
+        if (freeHitActive) {
+            freeHitActive = false;
+            deadBallArmed = false;
+            clearFreeHitMode();
+            setNewSpecialZones();
+        } else {
+            if (ballsLeft <= 0) {
+                endPlayerTurn();
+            } else {
+                setNewSpecialZones();
+            }
+        }
+    });
+});
+
+/* OUTCOME LOGIC (with hooks for multiple outcomes) */
+function getOutcome(zoneKey, isHard) {
+    let runs = 0;
+    let text = "";
+    const playerName = players[currentPlayerIndex];
+
+    switch (zoneKey) {
+        case "topOff":
+            if (!isHard) {
+                const options = [
+                    { runs: 1, text: playerName + " dabs it fine on the off side for 1." },
+                    { runs: 0, text: playerName + " lets it go. No run." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 4;
+                text = playerName + " lifts it over the keeper for 4!";
+            }
+            break;
+        case "topLeg":
+            if (!isHard) {
+                const options = [
+                    { runs: 1, text: playerName + " glances it down leg for a single." },
+                    { runs: 0, text: playerName + " misses the glance. No run." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 4;
+                text = playerName + " performs a ramp shot past fine leg for 4!";
+            }
+            break;
+        case "left1":
+            if (!isHard) {
+                const options = [
+                    { runs: 2, text: playerName + " nudges it behind point for 2." },
+                    { runs: 1, text: playerName + " steers it late for a single." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 6;
+                text = playerName + " launches a big cut shot for 6!";
+            }
+            break;
+        case "left2":
+            if (!isHard) {
+                const options = [
+                    { runs: 2, text: playerName + " works it into the covers for 2." },
+                    { runs: 1, text: playerName + " mistimes it but they scramble a single." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 4;
+                text = playerName + " whips it through mid-off for 4!";
+            }
+            break;
+        case "left3":
+            if (!isHard) {
+                const options = [
+                    { runs: 1, text: playerName + " tucks it off the pads for 1." },
+                    { runs: 0, text: playerName + " blocks it. No run." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 3;
+                text = playerName + " drives it past long off for 3.";
+            }
+            break;
+        case "right1":
+            if (!isHard) {
+                const options = [
+                    { runs: 2, text: playerName + " guides it in front of fine leg for 2." },
+                    { runs: 1, text: playerName + " nudges it around the corner for 1." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 6;
+                text = playerName + " hooks it over square leg for 6!";
+            }
+            break;
+        case "right2":
+            if (!isHard) {
+                const options = [
+                    { runs: 2, text: playerName + " pushes it towards cow corner for 2." },
+                    { runs: 1, text: playerName + " clips it off the pads for a single." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 4;
+                text = playerName + " drives square through mid wicket for 4!";
+            }
+            break;
+        case "right3":
+            if (!isHard) {
+                const options = [
+                    { runs: 1, text: playerName + " steers it to mid on for a single." },
+                    { runs: 0, text: playerName + " defends solidly. No run." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 3;
+                text = playerName + " carves it out to deep mid-wicket for 3.";
+            }
+            break;
+        case "bottom":
+            if (!isHard) {
+                const options = [
+                    { runs: 1, text: playerName + " blocks it back down the pitch for 1." },
+                    { runs: 0, text: playerName + " dead-bats it. No run." }
+                ];
+                return options[Math.floor(Math.random() * options.length)];
+            } else {
+                runs = 4;
+                text = playerName + " smashes a straight drive for 4!";
+            }
+            break;
+        default:
+            runs = 0;
+            text = playerName + " lets it go. No run.";
+    }
+
+    return { runs, text };
+}
+
+/* WIDE BUTTON */
+function addWide() {
+    if (ballsLeft <= 0) return;
+    currentScore += 1;
+    updateInfoPanel("Wide ball. +1 run, no ball lost.");
+}
+function manualOut() {
+    if (ballsLeft <= 0) return;
+
+    ballsLeft--;  // ball counts
+    updateInfoPanel("No runs added.");
+
+    // If that was the last ball, end the turn
+    if (ballsLeft <= 0) {
+        endPlayerTurn();
+    }
+}
+
+
+/* END OF PLAYER TURN */
+function endPlayerTurn(skipMessage = false) {
+    const playerName = players[currentPlayerIndex];
+    const log = document.getElementById("scoreLog");
+    const entry = document.createElement("div");
+    entry.innerText = playerName + " scored " + currentScore + " runs (" + ballsPerPlayer + " balls).";
+    log.appendChild(entry);
+
+    // Only speak "turn is over" if NOT a manual out
+    if (!skipMessage) {
+        updateInfoPanel(playerName + "'s turn is over.");
+    }
+
+    if (currentPlayerIndex < players.length - 1) {
+        document.getElementById("nextPlayerBtn").style.display = "block";
+    } else {
+        document.getElementById("nextPlayerBtn").style.display = "none";
+        const finalMsg = document.createElement("div");
+        finalMsg.style.marginTop = "6px";
+        finalMsg.innerText = "All players have finished. Play another round by refreshing.";
+        log.appendChild(finalMsg);
+    }
+
+    document.getElementById("scoreLog").scrollTop = document.getElementById("scoreLog").scrollHeight;
+}
+
+/* NEXT PLAYER */
+function nextPlayer() {
+    if (currentPlayerIndex >= players.length - 1) return;
+    currentPlayerIndex++;
+    startPlayerTurn();
 }
 </script>
 
