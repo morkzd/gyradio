@@ -893,6 +893,7 @@ function manualOut() {
 function endPlayerTurn(skipMessage = false) {
     const playerName = players[currentPlayerIndex];
     const log = document.getElementById("scoreLog");
+
     const entry = document.createElement("div");
     entry.innerText = playerName + " scored " + currentScore + " runs (" + ballsPerPlayer + " balls).";
     log.appendChild(entry);
@@ -906,14 +907,23 @@ function endPlayerTurn(skipMessage = false) {
         document.getElementById("nextPlayerBtn").style.display = "block";
     } else {
         document.getElementById("nextPlayerBtn").style.display = "none";
+
         const finalMsg = document.createElement("div");
         finalMsg.style.marginTop = "6px";
         finalMsg.innerText = "All players have finished. Play another round by refreshing.";
         log.appendChild(finalMsg);
+
+        // ⭐ FORCE SCROLL TO BOTTOM AFTER FINAL MESSAGE RENDERS
+        setTimeout(() => {
+            log.scrollTop = log.scrollHeight;
+        }, 50);
+        return; // prevent double-scroll
     }
 
-    document.getElementById("scoreLog").scrollTop = document.getElementById("scoreLog").scrollHeight;
+    // Normal scroll for mid‑game turns
+    log.scrollTop = log.scrollHeight;
 }
+
 
 /* NEXT PLAYER */
 function nextPlayer() {
@@ -925,6 +935,7 @@ function nextPlayer() {
 
 </body>
 </html>
+
 
 
 
