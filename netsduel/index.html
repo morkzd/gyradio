@@ -893,27 +893,36 @@ function manualOut() {
 function endPlayerTurn(skipMessage = false) {
     const playerName = players[currentPlayerIndex];
     const log = document.getElementById("scoreLog");
+
     const entry = document.createElement("div");
     entry.innerText = playerName + " scored " + currentScore + " runs (" + ballsPerPlayer + " balls).";
     log.appendChild(entry);
+
+    // Save this player's score if you're tracking them
+    if (typeof playerScores !== "undefined") {
+        playerScores[currentPlayerIndex] = currentScore;
+    }
 
     // Only speak "turn is over" if NOT a manual out
     if (!skipMessage) {
         updateInfoPanel(playerName + "'s turn is over.");
     }
 
-    if (currentPlayerIndex < players.length - 1) {
-        document.getElementById("nextPlayerBtn").style.display = "block";
-    } else {
-        document.getElementById("nextPlayerBtn").style.display = "none";
-        const finalMsg = document.createElement("div");
-        finalMsg.style.marginTop = "6px";
-        finalMsg.innerText = "All players have finished. Play another round by refreshing.";
-        log.appendChild(finalMsg);
+    // If this is the last player, show final scores in the info panel
+    if (currentPlayerIndex === players.length - 1) {
+        let summary = "Final scores: ";
+        players.forEach((p, i) => {
+            const s = (playerScores && playerScores[i] != null) ? playerScores[i] : "?";
+            summary += `${p}: ${s}  `;
+        });
+        updateInfoPanel(summary.trim());
+        return;
     }
 
-    document.getElementById("scoreLog").scrollTop = document.getElementById("scoreLog").scrollHeight;
+    // Not final player — show next player button
+    document.getElementById("nextPlayerBtn").style.display = "block";
 }
+
 
 /* NEXT PLAYER */
 function nextPlayer() {
@@ -925,3 +934,4 @@ function nextPlayer() {
 
 </body>
 </html>
+
