@@ -783,7 +783,7 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 4, text: playerName + " ramps it past fine leg for 4!" },
                     { runs: 6, text: playerName + " scoops it over the keeper for 6!" },
-                    { runs: -1, text: playerName + " miscues the ramp… OUT!" }
+                    { runs: 0, text: playerName + " miscues the ramp… OUT!" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -801,7 +801,7 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 6, text: playerName + " launches a big cut shot for 6!" },
                     { runs: 4, text: playerName + " slashes it square for 4!" },
-                    { runs: -1, text: playerName + " edges the cut… OUT!" }
+                    { runs: 0, text: playerName + " edges the cut… OUT!" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -819,7 +819,7 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 4, text: playerName + " drives through mid-off for 4!" },
                     { runs: 6, text: playerName + " lofts it beautifully for 6!" },
-                    { runs: -1, text: playerName + " chips it to cover… OUT!" }
+                    { runs: 0, text: playerName + " chips it to cover… OUT!" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -837,7 +837,7 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 3, text: playerName + " drives it past long off for 3." },
                     { runs: 4, text: playerName + " drills it through mid-on for 4!" },
-                    { runs: -1, text: playerName + " mistimes the drive… OUT!" }
+                    { runs: 0, text: playerName + " mistimes the drive… OUT!" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -855,7 +855,7 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 6, text: playerName + " hooks it over square leg for 6!" },
                     { runs: 4, text: playerName + " pulls it hard for 4!" },
-                    { runs: -1, text: playerName + " top-edges the hook… OUT!" }
+                    { runs: 0, text: playerName + " top-edges the hook… OUT!" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -873,7 +873,7 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 4, text: playerName + " drives square through mid wicket for 4!" },
                     { runs: 6, text: playerName + " launches it over mid-wicket for 6!" },
-                    { runs: -1, text: playerName + " holes out to deep mid-wicket… OUT!" }
+                    { runs: 0, text: playerName + " holes out to deep mid-wicket… OUT!" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -891,7 +891,7 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 3, text: playerName + " carves it out to deep mid-wicket for 3." },
                     { runs: 4, text: playerName + " smashes it through mid-wicket for 4!" },
-                    { runs: -1, text: playerName + " mistimes the slog… OUT!" }
+                    { runs: 0, text: playerName + " mistimes the slog… OUT!" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -909,7 +909,7 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 4, text: playerName + " smashes a straight drive for 4!" },
                     { runs: 6, text: playerName + " launches it straight back for 6!" },
-                    { runs: -1, text: playerName + " miscues the straight hit… OUT!" }
+                    { runs: 0, text: playerName + " miscues the straight hit… OUT!" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -984,6 +984,7 @@ function nextPlayer() {
 
 </body>
 </html>
+
 
 
 
