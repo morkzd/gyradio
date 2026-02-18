@@ -40,6 +40,27 @@
     100% { text-shadow: 0 0 20px #ffcc00; }
   }
 
+  /* Red flash */
+  @keyframes errorFlash {
+    0% { color: #ff4444; text-shadow: 0 0 20px #ff0000; }
+    100% { color: #ffffff; text-shadow: 0 0 20px #ffcc00; }
+  }
+  .error-flash {
+    animation: errorFlash 0.4s ease-out;
+  }
+
+  /* Shake animation */
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-12px); }
+    50% { transform: translateX(12px); }
+    75% { transform: translateX(-12px); }
+    100% { transform: translateX(0); }
+  }
+  .shake {
+    animation: shake 0.3s;
+  }
+
   .btn {
     font-size: 8vw;
     padding: 3vw 6vw;
@@ -104,9 +125,6 @@
 
   <div id="congrats">🎉 Congratulations! 🎉</div>
 
-  <!-- Only audio: soft arcade blip for unrecognized speech -->
-  <audio id="retry" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA/AwACABAAZGF0YQAAAAA="></audio>
-
   <canvas id="confetti-canvas"></canvas>
 
 <script>
@@ -116,7 +134,6 @@
   const startBtn = document.getElementById("start-btn");
   const undoBtn = document.getElementById("undo-btn");
   const congrats = document.getElementById("congrats");
-  const retrySound = document.getElementById("retry");
   const confettiCanvas = document.getElementById("confetti-canvas");
   const ctx = confettiCanvas.getContext("2d");
 
@@ -213,7 +230,7 @@
 
       const transcriptRaw = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
 
-      // If nothing was actually spoken, do nothing
+      // Only react if the user actually said something
       if (!transcriptRaw || transcriptRaw.length === 0) {
         return;
       }
@@ -254,9 +271,12 @@
           statusDisplay.textContent = `Registered: ${score}. Remaining: ${currentScore}`;
         }
       } else {
-        // Only play retry sound once per spoken phrase
-        retrySound.currentTime = 0;
-        retrySound.play();
+        // Vibration + red flash + shake
+        if (navigator.vibrate) navigator.vibrate(80);
+
+        scoreDisplay.classList.add("error-flash", "shake");
+        setTimeout(() => scoreDisplay.classList.remove("error-flash", "shake"), 400);
+
         statusDisplay.textContent = `Didn't catch that. Say it again.`;
       }
     };
@@ -343,4 +363,6 @@
 
 </body>
 </html>
+
+
 
