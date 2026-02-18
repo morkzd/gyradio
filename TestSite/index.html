@@ -224,8 +224,6 @@
         history.push(currentScore);
         undoBtn.style.display = "inline-block";
 
-        beep.play();
-
         if (currentScore === 1) {
           statusDisplay.textContent = `Bust! You can't finish on 1. Score remains ${currentScore}.`;
           return;
@@ -336,3 +334,4 @@
 
 </body>
 </html>
+
