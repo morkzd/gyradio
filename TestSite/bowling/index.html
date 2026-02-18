@@ -1,338 +1,367 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Cricket Nets Duel – Bowling Practice</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Voice Darts Scorer</title>
 
 <style>
-    html, body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        overflow: hidden;
-        font-family: Arial, sans-serif;
-        background: linear-gradient(to bottom, #000000 0%, #003300 100%);
-        color: white;
-    }
+  body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    background: radial-gradient(circle at center, #660000, #000000 80%);
+    font-family: 'Orbitron', sans-serif;
+    color: #ffe066;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    text-align: center;
+  }
 
-    #app {
-        height: calc(100vh - 50px);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-        align-items: center;
-        text-align: center;
-        padding: 5px 0;
-        box-sizing: border-box;
-    }
+  #score {
+    font-size: 35vw;
+    font-weight: 900;
+    color: #fff;
+    text-shadow:
+      0 0 20px #ffcc00,
+      0 0 40px #ff9900,
+      0 0 60px #ff6600;
+    animation: glowPulse 2s infinite ease-in-out;
+    user-select: none;
+    margin: 0;
+  }
 
-    h1 {
-        font-size: 7vw;
-        color: #00eaff;
-        text-shadow: 0 0 12px #00eaff, 0 0 25px #00eaff;
-        margin: 0;
-        animation: pulse 2.5s infinite ease-in-out;
-    }
+  @keyframes glowPulse {
+    0% { text-shadow: 0 0 20px #ffcc00; }
+    50% { text-shadow: 0 0 40px #ff9900; }
+    100% { text-shadow: 0 0 20px #ffcc00; }
+  }
 
-    @keyframes pulse {
-        0% { text-shadow: 0 0 10px #00eaff; }
-        50% { text-shadow: 0 0 25px #00eaff; }
-        100% { text-shadow: 0 0 10px #00eaff; }
-    }
+  /* Red flash */
+  @keyframes errorFlash {
+    0% { color: #ff4444; text-shadow: 0 0 20px #ff0000; }
+    100% { color: #ffffff; text-shadow: 0 0 20px #ffcc00; }
+  }
+  .error-flash {
+    animation: errorFlash 0.4s ease-out;
+  }
 
-    .sectionLabel {
-        font-size: 5vw;
-        color: #88ff88;
-        text-shadow: 0 0 8px #00ff55;
-        margin-bottom: 5px;
-    }
+  /* Shake animation */
+  @keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-12px); }
+    50% { transform: translateX(12px); }
+    75% { transform: translateX(-12px); }
+    100% { transform: translateX(0); }
+  }
+  .shake {
+    animation: shake 0.3s;
+  }
 
-    .btn, .btnSmall, .pillBtn {
-        border: none;
-        cursor: pointer;
-        transition: 0.15s;
-        color: white;
-        background: #111;
-        box-shadow: 0 0 12px #00eaff inset, 0 0 12px #00eaff;
-    }
+  .btn {
+    font-size: 8vw;
+    padding: 3vw 6vw;
+    margin: 2vw;
+    background: #111;
+    color: #ffe066;
+    border: 2px solid #ffe066;
+    border-radius: 1vw;
+    box-shadow: 0 0 20px #ffcc00;
+    transition: 0.2s;
+    cursor: pointer;
+    user-select: none;
+  }
 
-    .pillBtn {
-        width: 85vw;
-        padding: 1.6vh 0;
-        font-size: 4.5vw;
-        border-radius: 50px;
-    }
+  .btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px #ffcc00;
+  }
 
-    .btn {
-        width: 85vw;
-        padding: 1.8vh 0;
-        font-size: 5vw;
-        border-radius: 12px;
-        margin: 5px 0;
-    }
+  #status {
+    font-size: 5vw;
+    max-width: 90vw;
+    margin-top: 2vw;
+    text-shadow: 0 0 10px #ffcc00;
+  }
 
-    .btnSmall {
-        padding: 1.8vh 0;
-        font-size: 4.8vw;
-        border-radius: 12px;
-    }
+  #congrats {
+    position: fixed;
+    top: 30vh;
+    width: 100%;
+    text-align: center;
+    font-size: 12vw;
+    font-weight: bold;
+    color: gold;
+    text-shadow: 0 0 20px #fff, 0 0 30px gold;
+    display: none;
+    pointer-events: none;
+  }
 
-    .selected {
-        background: #00aaff !important;
-        box-shadow: 0 0 18px #00eaff inset, 0 0 22px #00eaff !important;
-    }
+  #undo-btn {
+    display: none;
+  }
 
-    #bowlGrid {
-        width: 90vw;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 5px;
-    }
-
-    .btnRed {
-        background: #aa0000;
-        box-shadow: 0 0 14px #ff4444 inset, 0 0 18px #ff4444;
-    }
-
-    #scenarioBox {
-        width: 90vw;
-        min-height: 20vh;
-        max-height: 28vh;
-        overflow-y: auto;
-        background: #222;
-        border-radius: 12px;
-        padding: 20px;
-        font-size: 4.8vw;
-        line-height: 1.45;
-        box-shadow: 0 0 10px #444 inset;
-        opacity: 0;
-        transition: opacity 0.4s ease-in-out;
-    }
-
-    #adBanner {
-        width: 100%;
-        height: 50px;
-        background: #111;
-        opacity: 0.8;
-        font-size: 3.5vw;
-        text-align: center;
-        line-height: 50px;
-        position: absolute;
-        bottom: 0;
-        left: 0;
-    }
+  canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 9999;
+  }
 </style>
 </head>
 
 <body>
 
-<div id="app">
+  <h1 id="score">501</h1>
 
-    <h1>Bowling Practice</h1>
+  <button id="start-btn" class="btn">Start Listening</button>
+  <button id="undo-btn" class="btn">Undo</button>
 
-    <button class="pillBtn" onclick="window.location.href='https://www.gyradio.com/TestSite/'">
-        Return to Main Menu
-    </button>
+  <p id="status">Say your throw as "N times X" (e.g. "1 times 20"). Say "reset game" to start over.</p>
 
-    <div class="sectionLabel">Choose Your Bowling Type</div>
+  <div id="congrats">🎉 Congratulations! 🎉</div>
 
-    <div id="bowlGrid">
-        <button class="btnSmall" onclick="selectRole('fast')">Fast Bowl</button>
-        <button class="btnSmall" onclick="selectRole('swing')">Swing Bowl</button>
-        <button class="btnSmall" onclick="selectRole('offspin')">Offspin</button>
-        <button class="btnSmall" onclick="selectRole('legspin')">Legspin</button>
-    </div>
-
-    <div class="sectionLabel">Generate Scenario</div>
-    <button class="btn btnRed" onclick="generateScenario()">Generate Scenario</button>
-
-    <div id="scenarioBox">Your scenario will appear here.</div>
-
-</div>
-
-<div id="adBanner">Ad banner goes here</div>
+  <canvas id="confetti-canvas"></canvas>
 
 <script>
-/* KEEP SCREEN AWAKE */
-let wakeLock;
-async function keepAwake() {
-    try { wakeLock = await navigator.wakeLock.request('screen'); }
-    catch (err) { console.log("Wake lock not supported", err); }
-}
-document.addEventListener("click", keepAwake);
+(() => {
+  const scoreDisplay = document.getElementById("score");
+  const statusDisplay = document.getElementById("status");
+  const startBtn = document.getElementById("start-btn");
+  const undoBtn = document.getElementById("undo-btn");
+  const congrats = document.getElementById("congrats");
+  const confettiCanvas = document.getElementById("confetti-canvas");
+  const ctx = confettiCanvas.getContext("2d");
 
-/* SPEECH SYNTHESIS */
-function speak(text) {
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.rate = 1;
-    utter.pitch = 1;
-    utter.volume = 1;
+  let currentScore = 501;
+  let history = [];
+  let recognitionActive = false;
 
-    const voices = speechSynthesis.getVoices();
-    const preferred = voices.find(v =>
-        v.name.toLowerCase().includes("male") ||
-        v.name.toLowerCase().includes("deep") ||
-        v.name.toLowerCase().includes("english")
-    );
-    if (preferred) utter.voice = preferred;
+  function resizeCanvas() {
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+  }
+  window.addEventListener("resize", resizeCanvas);
+  resizeCanvas();
 
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utter);
-}
-    
-/* BOWLING SCENARIOS ONLY */
-const scenarios = {
-    fast: [
-        "Hit the top of off stump.",
-        "Bowl directly at the centre of middle stump.",
-        "Use subtle seam movement to challenge the batter.",
-        "Finish the over with a yorker aimed at the toes.",
-        "Try to unsettle the batsman with a bouncer over leg stump.",
-        "New batter first ball. Bowl an effort ball and aim for his ribs.",
-        "New batter first ball. Fool him with a slower ball.",
-        "You're getting dominated. You're leaking runs. Slow down. Nothing fancy. Aim for his pads.",
-        "Nightwatchman. First ball. Go for a rapid yorker. Effort ball.",
-        "You're tired. Just bowl straight and steady aiming for half way up middle stump.",
-        "Your captain wants you to tempt the batsman into a hook shot.",
-        "He's walking across his stumps. Aim for between middle and off stump. Secure an L.B.W.",
-        "The batsman is in assault mode. Bowl wide and short to deny him a shot.",
-        "You've ordered your slips to be up. Lure the batsman into an offside drive.",
-        "You injured the batsman the previous ball. Try to knock his middle stump out of the ground.",
-        "Last ball of the session. Nothing crazy needed. Just steady and straight.",
-        "The batsman has been charging you. Will you bounce him or use a slower ball?",
-        "Your captain wants you to lure him into a ramp shot down to 3rd-man.",
-        "You have no support at all leg side. Anything leg is runs.",
-        "First ball of the innings. Ask questions of the batsman without conceding runs.",
-        "Last ball of the match. They need 3 to win, 2 to tie. What will be your tactics?",
-        "Last ball of the match. They need 2 to win, 1 to tie. What will be your tactics?",
-        "Last ball of the match. It's a tie. Keeper's up. Aim to make the batsman miss a slow ball.",
-        "You're the first bowling change. The captain needs a wicket. Knock those stumps down.",
-        "It's a free hit. Use change of pace to limit the damage.",
-        "You've been all over the place. Just look for accuracy over speed.",
-        "You're very predictable. Try a slower ball, but too slow will be too easy to spot.",
-        "Your rhythm has been great. Time for a toe-crusher. Go hard at the toes.",
-        "You were embarrassed previous ball with a ramp shot. They may try it twice. How will you respond?",
-        "You need to limit the damage. Bowl very wide but within the tramlines.",
-        "Last over. Bowl wide and short but don't concede any extras.",
-        "The batsman's intent is clear. He's been charging you. Come wide and give him something to think about.",
-        "New batsman in. Bowl very wide of the crease and angle across the batsman.",
-        "There's a real L.B.W. chance if you can get your pace and aim right.",
-        "The batsman is walking across his stumps. Follow them and shorten them up.",
-        "The captain has set a field for the ramp. Aim for middle and leg, just short of a good length.",
-        "The captain has set a field for a hook shot. Bowl short, leg side, roll the fingers over the ball.",
-        "Final ball. The field is all up to protect a single. Give the batsman nothing.",
-        "First ball of the game. Gun for that L.B.W.",
-        "Bowl a cross-seam delivery to disrupt timing."
-    ],
+  /* ---------------- Confetti ---------------- */
 
-    swing: [
-        "Pitch it up outside off stump, draw an off drive.",
-        "Scramble the seam to ensure no swing and up the speed.",
-        "Bowl full and outside off to tempt the drive.",
-        "Use swing to aim for middle stump. Pitch the ball where appropriate.",
-        "The captain has set a field for a legside chip. Pitch it middle stump. Any swing at all may produce a top edge.",
-        "The captain has set a field for a cut shot in the hope of an edge to slips. Shape away with pace.",
-        "First ball after drinks. Nothing crazy, just keep it on the stumps off side.",
-        "Bowl wide of the crease and angle into the stumps with swing.",
-        "The number 11 is desperate to get off strike. Make him miss by bowling wide of off and fast.",
-        "Last ball of the game. 2 to win, 1 to tie. Use change of pace to bamboozle with the keeper up.",
-        "Last ball of the game. 1 to win. Keeper is up with his gloves set outside off stump. Aim for his gloves with a slower ball.",
-        "Long on and long off are deep on the boundary. Lure the batsman into a big drive downtown.",
-        "The captain has set a field for a wide offside drive. Use shape to lure an edge.",
-        "The batsmen are eager to take a quick single. Cramp the batsman up aiming for the tip of middle stump.",
-        "Test match. Aim for leg stump, not too full, not too short. A catcher is in close.",
-        "Hit the seam hard in an attempt at a cutter just outside off stump.",
-        "First ball of the innings in a test. Make it shave the outside of off stump.",
-        "You've just been hit for 3 sixes. Go with a yorker to stop the bleeding.",
-        "The captain has set a field for a hook shot. Go short, slow and leg side.",
-        "Bowl wide of the crease either side. Angle into the stumps.",
-        "The captain wants you to lure the batsman into charging and going big.",
-        "L.B.W. is on the cards with the number 10 batsman. Find their pads.",
-        "Last ball of the over. Nothing leg side, graze the off stump."
-    ],
+  const confettiCount = 150;
+  const confettiColors = ['#fce18a', '#ff726d', '#b48def', '#f4306d', '#5ad5d5'];
+  let confettiParticles = [];
 
-    offspin: [
-        "Bowl outside off and tempt the forward defence.",
-        "Attack the pads with a close field.",
-        "Vary your flight to draw the batter forward.",
-        "You sense the batsman wants to slog you. Use speed and direction to have him stumped.",
-        "If you have a wrong-un then use it now.",
-        "Use flight to lure the batsman into a false shot.",
-        "The batsman has been advancing. A flipper might see an L.B.W.",
-        "The captain has set a field for a long drive. Lure the batsman into this.",
-        "The batsman likes to sweep. A quick ball at middle stump could yield an L.B.W.",
-        "You've been building pressure with off-stump accuracy. One bad ball could ruin the flow.",
-        "Lure the batsman out of their crease with a looping action.",
-        "The opposition have one ball to win the test with a 6. Bowl accordingly to prevent any big hit.",
-        "The batsman is eager to give strike to their star player for the final over. Even a 6 is better than a 1.",
-        "The batsman has been on fire. Keep it nice and wide without conceding a wide.",
-        "The captain has set a field for cow-corner. Aim for middle stump and just short of a good length.",
-        "Vary your flight to draw the batter forward.",
-        "Bowl into the pitch to limit scoring."
-    ],
+  function randomRange(min, max) {
+    return Math.random() * (max - min) + min;
+  }
 
-    legspin: [
-        "Toss it up and look for drift.",
-        "Bowl your stock leg‑break and build pressure.",
-        "Use the googly as a surprise weapon.",
-        "Toss it up and look for drift. Patience is key.",
-        "Keep the ball gunning for the stumps and build pressure.",
-        "There are some big rough patches out wide. Lots of spin possible.",
-        "The batsman is vulnerable and the flipper may yield a wicket.",
-        "Use subtle variations rather than big turn.",
-        "The batsman is looking to charge. Try to lure them into a false shot.",
-        "You're on a roll. This is a hat trick ball. L.B.W. is on the cards with pressure.",
-        "The captain wants to lure the batsman into a false stroke, a top edge. Can you deliver?",
-        "Time for an aggressive quick flipper.",
-        "The batsman has yet to see your wrongin'. Give it to him.",
-        "The batsman is easily sweeping you. How will you adapt?",
-        "It's the final ball with 2 to win, 1 to tie. Will you contain or go for the win?",
-        "The tail-enders are in just looking to hit big. Lure them out for the big shots.",
-        "The quicks have failed, the ball is still hard. How will you approach this?",
-        "There are footsteps by the batsman's feet. Can you hit them?",
-        "Slow it down to tempt the big shot."
-    ]
-};
+  function createConfetti() {
+    confettiParticles = [];
+    for (let i = 0; i < confettiCount; i++) {
+      confettiParticles.push({
+        x: randomRange(0, confettiCanvas.width),
+        y: randomRange(-confettiCanvas.height, 0),
+        size: randomRange(5, 10),
+        color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+        speedX: randomRange(-2, 2),
+        speedY: randomRange(2, 5),
+        rotation: randomRange(0, 360),
+        rotationSpeed: randomRange(-10, 10)
+      });
+    }
+  }
 
+  function updateConfetti() {
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+    confettiParticles.forEach(p => {
+      p.x += p.speedX;
+      p.y += p.speedY;
+      p.rotation += p.rotationSpeed;
+      if (p.y > confettiCanvas.height) {
+        p.x = randomRange(0, confettiCanvas.width);
+        p.y = randomRange(-confettiCanvas.height, 0);
+      }
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.rotation * Math.PI) / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.4);
+      ctx.restore();
+    });
+  }
 
-let selectedRole = null;
+  let confettiAnimationId;
+  function startConfetti() {
+    createConfetti();
+    confettiAnimationId = requestAnimationFrame(confettiLoop);
+  }
 
-function selectRole(role) {
-    selectedRole = role;
-    highlightButtons();
-}
+  function confettiLoop() {
+    updateConfetti();
+    confettiAnimationId = requestAnimationFrame(confettiLoop);
+  }
 
-function highlightButtons() {
-    document.querySelectorAll('.btnSmall').forEach(btn => btn.classList.remove('selected'));
-    if (selectedRole)
-        document.querySelector(`[onclick="selectRole('${selectedRole}')"]`).classList.add('selected');
-}
+  function stopConfetti() {
+    cancelAnimationFrame(confettiAnimationId);
+    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+  }
 
-function generateScenario() {
-    const box = document.getElementById("scenarioBox");
-    box.style.opacity = 0;
+  /* ---------------- Speech Recognition ---------------- */
 
-    setTimeout(() => {
-        if (!selectedRole) {
-            box.innerText = "Please select a bowling type.";
-            box.style.opacity = 1;
-            speak("Please select a bowling type.");
-            return;
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    statusDisplay.textContent = "Speech recognition is not supported on this device.";
+    startBtn.style.display = "none";
+  }
+
+  let recognition;
+  if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.continuous = true;
+
+    recognition.onresult = function(event) {
+      if (!recognitionActive) return;
+
+      const transcriptRaw = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
+
+      // Only react if the user actually said something
+      if (!transcriptRaw || transcriptRaw.length === 0) {
+        return;
+      }
+
+      if (transcriptRaw.includes("reset game")) {
+        resetGame();
+        statusDisplay.textContent = "Game reset. Say your throw.";
+        return;
+      }
+
+      const score = parseScore(transcriptRaw);
+
+      if (score > 0) {
+        history.push(currentScore);
+        undoBtn.style.display = "inline-block";
+
+        if (currentScore === 1) {
+          statusDisplay.textContent = `Bust! You can't finish on 1. Score remains ${currentScore}.`;
+          return;
         }
 
-        const list = scenarios[selectedRole];
-        const scenario = list[Math.floor(Math.random() * list.length)];
+        const projectedScore = currentScore - score;
 
-        box.innerText = scenario;
-        box.style.opacity = 1;
-        speak(scenario);
-    }, 200);
-}
+        if (projectedScore < 0) {
+          statusDisplay.textContent = `Bust! Throw of ${score} too high. Score remains ${currentScore}.`;
+          return;
+        } else if (projectedScore === 0) {
+          currentScore = 0;
+          updateScoreDisplay();
+          recognition.stop();
+          recognitionActive = false;
+          statusDisplay.textContent = "You've finished the game!";
+          showCongrats();
+          return;
+        } else {
+          currentScore = projectedScore;
+          updateScoreDisplay();
+          statusDisplay.textContent = `Registered: ${score}. Remaining: ${currentScore}`;
+        }
+      } else {
+        // Vibration + red flash + shake
+        if (navigator.vibrate) navigator.vibrate(80);
+
+        scoreDisplay.classList.add("error-flash", "shake");
+        setTimeout(() => scoreDisplay.classList.remove("error-flash", "shake"), 400);
+
+        statusDisplay.textContent = `Didn't catch that. Say it again.`;
+      }
+    };
+
+    recognition.onerror = (e) => {
+      statusDisplay.textContent = `Error: ${e.error}`;
+    };
+
+    recognition.onend = () => {
+      if (recognitionActive) recognition.start();
+    };
+  }
+
+  startBtn.addEventListener("click", () => {
+    if (!SpeechRecognition) return;
+
+    try {
+      recognition.start();
+      recognitionActive = true;
+      startBtn.style.display = "none";
+      statusDisplay.textContent = "Listening...";
+    } catch (err) {
+      statusDisplay.textContent = "Speech recognition is not supported on this device or browser.";
+    }
+  });
+
+  /* ---------------- Undo ---------------- */
+
+  undoBtn.addEventListener("click", () => {
+    if (history.length > 0) {
+      currentScore = history.pop();
+      updateScoreDisplay();
+      statusDisplay.textContent = `Undo successful. Score: ${currentScore}`;
+      if (history.length === 0) undoBtn.style.display = "none";
+    } else {
+      statusDisplay.textContent = "No previous score to undo.";
+    }
+  });
+
+  /* ---------------- Helpers ---------------- */
+
+  function parseScore(phrase) {
+    phrase = phrase.replace(/outer bull/gi, '25').replace(/bull/gi, '50');
+    phrase = phrase.replace(/times/gi, 'x');
+    const match = phrase.match(/^(\d+)\s*x\s*(\d+)$/);
+    if (match) {
+      const n = parseInt(match[1]);
+      const val = parseInt(match[2]);
+      if (n >= 1 && n <= 3 && val >= 1 && val <= 60) {
+        return n * val;
+      }
+    }
+    if (phrase === "50") return 50;
+    if (phrase === "25") return 25;
+    return 0;
+  }
+
+  function updateScoreDisplay() {
+    scoreDisplay.textContent = currentScore;
+    scoreDisplay.style.fontSize = currentScore < 100 ? "50vw" : "35vw";
+  }
+
+  function showCongrats() {
+    congrats.style.display = "block";
+    startConfetti();
+    setTimeout(() => {
+      congrats.style.display = "none";
+      stopConfetti();
+      resetGame();
+      startBtn.style.display = "inline-block";
+      statusDisplay.textContent = 'Say your throw as "N times X" (e.g. "1 times 20").';
+    }, 8000);
+  }
+
+  function resetGame() {
+    currentScore = 501;
+    history = [];
+    undoBtn.style.display = "none";
+    updateScoreDisplay();
+  }
+
+})();
 </script>
 
 </body>
 </html>
-
-
 
 
