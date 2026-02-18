@@ -148,14 +148,27 @@
   let history = [];
   let recognitionActive = false;
 
+  /* ---------------- SPEECH SYNTHESIS ---------------- */
+
+  function speak(text) {
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 1;
+    utter.pitch = 1;
+    speechSynthesis.speak(utter);
+  }
+
+  function numberToWords(num) {
+    return new Intl.NumberFormat("en-US", { style: "decimal" }).format(num);
+  }
+
+  /* ---------------- Confetti ---------------- */
+
   function resizeCanvas() {
     confettiCanvas.width = window.innerWidth;
     confettiCanvas.height = window.innerHeight;
   }
   window.addEventListener("resize", resizeCanvas);
   resizeCanvas();
-
-  /* ---------------- Confetti ---------------- */
 
   const confettiCount = 150;
   const confettiColors = ['#fce18a', '#ff726d', '#b48def', '#f4306d', '#5ad5d5'];
@@ -237,10 +250,7 @@
 
       const transcriptRaw = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
 
-      // Only react if the user actually said something
-      if (!transcriptRaw || transcriptRaw.length === 0) {
-        return;
-      }
+      if (!transcriptRaw || transcriptRaw.length === 0) return;
 
       if (transcriptRaw.includes("reset game")) {
         resetGame();
@@ -256,6 +266,7 @@
 
         if (currentScore === 1) {
           statusDisplay.textContent = `Bust! You can't finish on 1. Score remains ${currentScore}.`;
+          speak("Bust. Throw again.");
           return;
         }
 
@@ -263,6 +274,7 @@
 
         if (projectedScore < 0) {
           statusDisplay.textContent = `Bust! Throw of ${score} too high. Score remains ${currentScore}.`;
+          speak("Bust. Throw again.");
           return;
         } else if (projectedScore === 0) {
           currentScore = 0;
@@ -270,20 +282,19 @@
           recognition.stop();
           recognitionActive = false;
           statusDisplay.textContent = "You've finished the game!";
+          speak("Congratulations!");
           showCongrats();
           return;
         } else {
           currentScore = projectedScore;
           updateScoreDisplay();
           statusDisplay.textContent = `Registered: ${score}. Remaining: ${currentScore}`;
+          speak(numberToWords(score));
         }
       } else {
-        // Vibration + red flash + shake
         if (navigator.vibrate) navigator.vibrate(200);
-
         scoreDisplay.classList.add("error-flash", "shake");
         setTimeout(() => scoreDisplay.classList.remove("error-flash", "shake"), 400);
-
         statusDisplay.textContent = `Didn't catch that. Say it again.`;
       }
     };
@@ -301,6 +312,7 @@
     if (!SpeechRecognition) return;
 
     try {
+      speak("Ready"); // unlock speech
       recognition.start();
       recognitionActive = true;
       startBtn.style.display = "none";
