@@ -272,7 +272,7 @@
         }
       } else {
         // Vibration + red flash + shake
-        if (navigator.vibrate) navigator.vibrate(80);
+        if (navigator.vibrate) navigator.vibrate(250);
 
         scoreDisplay.classList.add("error-flash", "shake");
         setTimeout(() => scoreDisplay.classList.remove("error-flash", "shake"), 400);
@@ -363,6 +363,7 @@
 
 </body>
 </html>
+
 
 
 
