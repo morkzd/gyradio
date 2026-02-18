@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Voice Darts Scorer</title>
+<title>Darts 501 Voice Scorer</title>
 
 <style>
   body {
@@ -87,12 +87,6 @@
     text-shadow: 0 0 10px #ffcc00;
   }
 
-  #tip {
-    font-size: 3.5vw;
-    opacity: 0.7;
-    margin-top: 1vw;
-  }
-
   #congrats {
     position: fixed;
     top: 30vh;
@@ -128,7 +122,6 @@
   <button id="undo-btn" class="btn">Undo</button>
 
   <p id="status">Say your throw as "N times X" (e.g. "1 times 20"). Say "reset game" to start over.</p>
-  <p id="tip">Tip: Turn your phone volume down to remove any beeping.</p>
 
   <div id="congrats">🎉 Congratulations! 🎉</div>
 
@@ -366,7 +359,7 @@
       stopConfetti();
       resetGame();
       startBtn.style.display = "inline-block";
-      statusDisplay.textContent = 'Say your throw as "N times X" (e.g. "1 times 20").';
+      statusDisplay.textContent = 'Clearly say each throw as "N times X" (e.g. "1 times 20").';
     }, 8000);
   }
 
