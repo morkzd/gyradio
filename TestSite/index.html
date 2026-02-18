@@ -87,6 +87,12 @@
     text-shadow: 0 0 10px #ffcc00;
   }
 
+  #tip {
+    font-size: 3.5vw;
+    opacity: 0.7;
+    margin-top: 1vw;
+  }
+
   #congrats {
     position: fixed;
     top: 30vh;
@@ -122,6 +128,7 @@
   <button id="undo-btn" class="btn">Undo</button>
 
   <p id="status">Say your throw as "N times X" (e.g. "1 times 20"). Say "reset game" to start over.</p>
+  <p id="tip">Tip: Turn your phone volume down to remove any beeping.</p>
 
   <div id="congrats">🎉 Congratulations! 🎉</div>
 
@@ -272,7 +279,7 @@
         }
       } else {
         // Vibration + red flash + shake
-        if (navigator.vibrate) navigator.vibrate(650);
+        if (navigator.vibrate) navigator.vibrate(200);
 
         scoreDisplay.classList.add("error-flash", "shake");
         setTimeout(() => scoreDisplay.classList.remove("error-flash", "shake"), 400);
@@ -363,8 +370,3 @@
 
 </body>
 </html>
-
-
-
-
-
