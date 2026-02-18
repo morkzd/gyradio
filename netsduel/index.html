@@ -757,7 +757,7 @@ function getOutcome(zoneKey, isHard) {
             if (!isHard) {
                 const options = [
                     { runs: 1, text: playerName + " dabs it fine on the off side for 1." },
-                    { runs: 0, text: playerName + " slips stop the ball. No run." },
+                    { runs: 0, text: playerName + " find the slips. No run." },
                     { runs: 2, text: playerName + " guides it wide of third man for 2." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
@@ -775,7 +775,7 @@ function getOutcome(zoneKey, isHard) {
             if (!isHard) {
                 const options = [
                     { runs: 1, text: playerName + " glances it down leg for a single." },
-                    { runs: 0, text: playerName + " keeper dives at the ball. No run." },
+                    { runs: 0, text: playerName + " finds the keeper's stretched glove. No run." },
                     { runs: 2, text: playerName + " tucks it fine for 2." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
@@ -794,14 +794,14 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 2, text: playerName + " nudges it behind point for 2." },
                     { runs: 1, text: playerName + " steers it late for a single." },
-                    { runs: 1, text: playerName + " they take a cheeky single!" }
+                    { runs: 1, text: playerName + " takes a cheeky single!" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             } else {
                 const options = [
                     { runs: 6, text: playerName + " launches a big cut shot for 6!" },
                     { runs: 4, text: playerName + " slashes it square for 4!" },
-                    { runs: 2, text: playerName + " fielded on the boundary, back for 2!" }
+                    { runs: 2, text: playerName + " finds the boundary fielder, back for 2!" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -812,14 +812,14 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 2, text: playerName + " works it into the covers for 2." },
                     { runs: 1, text: playerName + " finds the gap for a single." },
-                    { runs: 0, text: playerName + " straight to the fielder. No run." }
+                    { runs: 0, text: playerName + " hits it straight to the fielder. No run." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             } else {
                 const options = [
                     { runs: 4, text: playerName + " drives through mid-off for 4!" },
                     { runs: 6, text: playerName + " lofts it beautifully for 6!" },
-                    { runs: 2, text: playerName + " misfield, they scamper for 3!" }
+                    { runs: 2, text: playerName + " forces a misfield, they scamper for 2!" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -829,7 +829,7 @@ function getOutcome(zoneKey, isHard) {
             if (!isHard) {
                 const options = [
                     { runs: 1, text: playerName + " tucks it off the pads for 1." },
-                    { runs: 0, text: playerName + " straight to the fielder. No run." },
+                    { runs: 0, text: playerName + " hits it straight to the fielder. No run." },
                     { runs: 2, text: playerName + " straight bats it nicely for 2." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
@@ -837,7 +837,7 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 3, text: playerName + " drives it past long off for 3." },
                     { runs: 4, text: playerName + " drills it through mid-on for 4!" },
-                    { runs: 1, text: playerName + " straight to the fielder for a single" }
+                    { runs: 1, text: playerName + " hits it straight to the fielder for a single" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -848,14 +848,14 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 2, text: playerName + " guides it in front of fine leg for 2." },
                     { runs: 1, text: playerName + " nudges it around the corner for 1." },
-                    { runs: 0, text: playerName + " straight to the fielder. No run." }
+                    { runs: 0, text: playerName + " hits it straight to the fielder. No run." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             } else {
                 const options = [
                     { runs: 6, text: playerName + " hooks it over square leg for 6!" },
                     { runs: 4, text: playerName + " pulls it hard for 4!" },
-                    { runs: 2, text: playerName + " straight to the fielder, back for 2!" }
+                    { runs: 2, text: playerName + " hits it wide of the fielder, back for 2!" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -866,14 +866,14 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 2, text: playerName + " pushes it towards cow corner for 2." },
                     { runs: 1, text: playerName + " clips it off the pads for a single." },
-                    { runs: 0, text: playerName + " straight to the fielder. No run." }
+                    { runs: 0, text: playerName + " hits it straight to the fielder. No run." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             } else {
                 const options = [
                     { runs: 4, text: playerName + " drives square through mid wicket for 4!" },
                     { runs: 6, text: playerName + " launches it over mid-wicket for 6!" },
-                    { runs: 2, text: playerName + " straight to the fielder for 2." }
+                    { runs: 2, text: playerName + " hits it wide of the fielder for 2." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -883,8 +883,8 @@ function getOutcome(zoneKey, isHard) {
             if (!isHard) {
                 const options = [
                     { runs: 1, text: playerName + " steers it to mid on for a single." },
-                    { runs: 0, text: playerName + " fielder bats it down. No run." },
-                    { runs: 5, text: playerName + " sneaky single & 4 overthrows for 5 runs!" },
+                    { runs: 0, text: playerName + " finds the fielder. No run." },
+                    { runs: 5, text: playerName + " takes a sneaky single & 4 overthrows for 5 runs!" },
                     { runs: 2, text: playerName + " works it nicely for 2." }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
@@ -892,7 +892,7 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 3, text: playerName + " carves it out to deep mid-wicket for 3." },
                     { runs: 4, text: playerName + " smashes it through mid-wicket for 4!" },
-                    { runs: 6, text: playerName + " massive hit for 6!" }
+                    { runs: 6, text: playerName + " pulls off a massive hit for 6!" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -910,7 +910,7 @@ function getOutcome(zoneKey, isHard) {
                 const options = [
                     { runs: 4, text: playerName + " smashes a straight drive for 4!" },
                     { runs: 6, text: playerName + " launches it straight back for 6!" },
-                    { runs: 3, text: playerName + " fielded on the boundary, back for 3!" }
+                    { runs: 3, text: playerName + " finds the gap down to the boundary, back for 3!" }
                 ];
                 return options[Math.floor(Math.random() * options.length)];
             }
@@ -985,6 +985,7 @@ function nextPlayer() {
 
 </body>
 </html>
+
 
 
 
