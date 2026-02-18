@@ -104,6 +104,9 @@
 
   <div id="congrats">🎉 Congratulations! 🎉</div>
 
+  <!-- Only audio: retry sound -->
+  <audio id="retry" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA="></audio>
+
   <canvas id="confetti-canvas"></canvas>
 
 <script>
@@ -113,7 +116,7 @@
   const startBtn = document.getElementById("start-btn");
   const undoBtn = document.getElementById("undo-btn");
   const congrats = document.getElementById("congrats");
-  const beep = document.getElementById("beep");
+  const retrySound = document.getElementById("retry");
   const confettiCanvas = document.getElementById("confetti-canvas");
   const ctx = confettiCanvas.getContext("2d");
 
@@ -246,7 +249,8 @@
           statusDisplay.textContent = `Registered: ${score}. Remaining: ${currentScore}`;
         }
       } else {
-        statusDisplay.textContent = `Didn't catch that. Please say "N times X" like "1 times 20".`;
+        retrySound.play();
+        statusDisplay.textContent = `Didn't catch that. Say it again.`;
       }
     };
 
@@ -332,5 +336,3 @@
 
 </body>
 </html>
-
-
