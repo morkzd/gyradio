@@ -104,8 +104,8 @@
 
   <div id="congrats">🎉 Congratulations! 🎉</div>
 
-  <!-- Only audio: retry sound -->
-  <audio id="retry" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA="></audio>
+  <!-- Only audio: soft arcade blip for unrecognized speech -->
+  <audio id="retry" src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA/AwACABAAZGF0YQAAAAA="></audio>
 
   <canvas id="confetti-canvas"></canvas>
 
@@ -213,6 +213,11 @@
 
       const transcriptRaw = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
 
+      // If nothing was actually spoken, do nothing
+      if (!transcriptRaw || transcriptRaw.length === 0) {
+        return;
+      }
+
       if (transcriptRaw.includes("reset game")) {
         resetGame();
         statusDisplay.textContent = "Game reset. Say your throw.";
@@ -249,6 +254,8 @@
           statusDisplay.textContent = `Registered: ${score}. Remaining: ${currentScore}`;
         }
       } else {
+        // Only play retry sound once per spoken phrase
+        retrySound.currentTime = 0;
         retrySound.play();
         statusDisplay.textContent = `Didn't catch that. Say it again.`;
       }
@@ -336,3 +343,4 @@
 
 </body>
 </html>
+
