@@ -5,43 +5,76 @@
   <title>Funny Skits</title>
 
   <style>
+    :root {
+      --blue: #4a5cff;   /* slightly purple blue, ~60% brightness */
+      --yellow: #ffd447; /* rich yellow, ~60% brightness */
+    }
+
     body {
       margin: 0;
       padding: 0;
-      background: #000;
+      background: var(--blue);
       overflow: hidden;
-      position: relative;
       font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* Video takes up 85% of the screen */
+    #video-container {
+      height: 85vh;
+      width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
     }
 
     iframe {
-      width: 100vw;
-      height: 100vh;
+      width: 100%;
+      height: 100%;
       border: none;
       display: block;
     }
 
-    #hint {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.6);
-      color: #fff;
-      padding: 10px 16px;
-      border-radius: 8px;
-      font-size: 16px;
-      opacity: 1;
-      transition: opacity 0.5s ease;
-      pointer-events: none;
+    /* Bottom control bar */
+    #controls {
+      height: 15vh;
+      width: 100vw;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: var(--blue);
+    }
+
+    button {
+      background: var(--yellow);
+      color: var(--blue);
+      border: none;
+      padding: 14px 28px;
+      font-size: 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:active {
+      opacity: 0.8;
     }
   </style>
 </head>
 
 <body>
 
-  <div id="hint">Touch screen to load next video</div>
-  <iframe id="player" allowfullscreen></iframe>
+  <div id="video-container">
+    <iframe id="player" allowfullscreen></iframe>
+  </div>
+
+  <div id="controls">
+    <button id="backBtn">Back</button>
+    <button id="nextBtn">Next</button>
+  </div>
 
   <script>
     let videos = [];
@@ -62,18 +95,14 @@
       document.getElementById("player").src = videos[index] + autoplay;
     }
 
-    // Hide the hint after first tap
-    function hideHint() {
-      const hint = document.getElementById("hint");
-      hint.style.opacity = 0;
-      setTimeout(() => hint.style.display = "none", 500);
-    }
-
-    // Entire screen advances to next video
-    document.body.addEventListener("click", () => {
+    document.getElementById("nextBtn").addEventListener("click", () => {
       index = (index + 1) % videos.length;
       loadVideo();
-      hideHint();
+    });
+
+    document.getElementById("backBtn").addEventListener("click", () => {
+      index = (index - 1 + videos.length) % videos.length;
+      loadVideo();
     });
   </script>
 
