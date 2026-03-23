@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Funny Skits</title>
+  <style>
+    body {
+      margin: 0;
+      background: #000;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      font-family: sans-serif;
+    }
+    iframe {
+      width: 100%;
+      max-width: 420px;
+      height: 750px;
+      border: none;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      background: #ff0066;
+      color: white;
+      cursor: pointer;
+    }
+    button:active {
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+
+  <iframe id="player" allowfullscreen></iframe>
+  <button id="nextBtn">Next</button>
+
+  <script>
+    let videos = [];
+    let index = 0;
+
+    // Load JSON from your hosted URL
+    fetch("https://gyradio.com/funnyurl/videos.json")
+      .then(response => response.json())
+      .then(data => {
+        videos = data.videos;
+        loadVideo();
+      });
+
+    function loadVideo() {
+      document.getElementById("player").src = videos[index];
+    }
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      index = (index + 1) % videos.length; // loop back to start
+      loadVideo();
+    });
+  </script>
+
+</body>
+</html>
