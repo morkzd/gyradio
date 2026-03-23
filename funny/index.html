@@ -6,8 +6,8 @@
 
   <style>
     :root {
-      --blue: #4a5cff;   /* slightly purple blue, ~60% brightness */
-      --yellow: #ffd447; /* rich yellow, ~60% brightness */
+      --blue: #4a5cff;   /* slightly purple blue */
+      --yellow: #ffd447; /* rich yellow */
     }
 
     body {
@@ -23,12 +23,12 @@
 
     /* Video takes up 85% of the screen */
     #video-container {
-      height: 85vh;
+      flex: 0 0 85vh;
       width: 100vw;
+      background: #000;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #000;
     }
 
     iframe {
@@ -38,14 +38,15 @@
       display: block;
     }
 
-    /* Bottom control bar */
+    /* Controls sit directly under the video */
     #controls {
-      height: 15vh;
+      flex: 0 0 auto;
       width: 100vw;
+      background: var(--blue);
       display: flex;
       justify-content: space-around;
       align-items: center;
-      background: var(--blue);
+      padding: 12px 0;
     }
 
     button {
@@ -80,7 +81,6 @@
     let videos = [];
     let index = 0;
 
-    // Load JSON file (must be in same folder as this HTML)
     fetch("funny.json")
       .then(response => response.json())
       .then(data => {
@@ -89,8 +89,6 @@
       });
 
     function loadVideo() {
-      // First video: no autoplay
-      // Others: autoplay muted
       const autoplay = index === 0 ? "" : "?autoplay=1&mute=1";
       document.getElementById("player").src = videos[index] + autoplay;
     }
