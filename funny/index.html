@@ -31,11 +31,9 @@
       align-items: center;
     }
 
-    iframe {
+    #player {
       width: 100%;
       height: 100%;
-      border: none;
-      display: block;
     }
 
     /* Controls sit directly under the video */
@@ -46,16 +44,16 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 12px 0;
+      padding: 14px 0;
     }
 
     button {
       background: var(--yellow);
       color: var(--blue);
       border: none;
-      padding: 14px 28px;
-      font-size: 20px;
-      border-radius: 10px;
+      padding: 18px 34px;
+      font-size: 24px;   /* bigger text */
+      border-radius: 12px;
       cursor: pointer;
       font-weight: bold;
     }
@@ -74,6 +72,7 @@
 
   <div id="controls">
     <button id="backBtn">Back</button>
+    <button id="shuffleBtn">Shuffle</button>
     <button id="nextBtn">Next</button>
   </div>
 
@@ -98,13 +97,12 @@
       player = new YT.Player("player", {
         height: "100%",
         width: "100%",
-        videoId: "", // will be set dynamically
+        videoId: "",
         playerVars: {
           playsinline: 1
         }
       });
 
-      // Load first video once player is ready
       player.addEventListener("onReady", () => {
         loadVideo();
       });
@@ -113,8 +111,6 @@
     function loadVideo() {
       const videoId = videos[index].split("/embed/")[1];
 
-      // First video: no autoplay
-      // Others: autoplay (sound depends on unlock)
       const autoplay = index === 0 ? 0 : 1;
 
       player.loadVideoById({
@@ -147,6 +143,17 @@
     document.getElementById("backBtn").addEventListener("click", () => {
       unlockSound();
       index = (index - 1 + videos.length) % videos.length;
+      loadVideo();
+    });
+
+    document.getElementById("shuffleBtn").addEventListener("click", () => {
+      unlockSound();
+      let newIndex;
+      do {
+        newIndex = Math.floor(Math.random() * videos.length);
+      } while (newIndex === index);
+
+      index = newIndex;
       loadVideo();
     });
   </script>
