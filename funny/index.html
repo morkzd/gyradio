@@ -3,49 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <title>Funny Skits</title>
+
   <style>
     body {
       margin: 0;
+      padding: 0;
       background: #000;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      overflow: hidden;
+      position: relative;
       font-family: sans-serif;
     }
+
     iframe {
-      width: 100%;
-      max-width: 420px;
-      height: 750px;
+      width: 100vw;
+      height: 100vh;
       border: none;
+      display: block;
     }
-    button {
-      margin-top: 20px;
-      padding: 12px 24px;
-      font-size: 18px;
-      border: none;
+
+    #hint {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      padding: 10px 16px;
       border-radius: 8px;
-      background: #ff0066;
-      color: white;
-      cursor: pointer;
-    }
-    button:active {
-      opacity: 0.7;
+      font-size: 16px;
+      opacity: 1;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
     }
   </style>
 </head>
+
 <body>
 
+  <div id="hint">Touch screen to load next video</div>
   <iframe id="player" allowfullscreen></iframe>
-  <button id="nextBtn">Next</button>
 
   <script>
     let videos = [];
     let index = 0;
 
-    // Load JSON from your hosted URL
+    // Load JSON file (must be in same folder as this HTML)
     fetch("funny.json")
       .then(response => response.json())
       .then(data => {
@@ -54,12 +56,24 @@
       });
 
     function loadVideo() {
-      document.getElementById("player").src = videos[index];
+      // First video: no autoplay
+      // Others: autoplay muted
+      const autoplay = index === 0 ? "" : "?autoplay=1&mute=1";
+      document.getElementById("player").src = videos[index] + autoplay;
     }
 
-    document.getElementById("nextBtn").addEventListener("click", () => {
-      index = (index + 1) % videos.length; // loop back to start
+    // Hide the hint after first tap
+    function hideHint() {
+      const hint = document.getElementById("hint");
+      hint.style.opacity = 0;
+      setTimeout(() => hint.style.display = "none", 500);
+    }
+
+    // Entire screen advances to next video
+    document.body.addEventListener("click", () => {
+      index = (index + 1) % videos.length;
       loadVideo();
+      hideHint();
     });
   </script>
 
