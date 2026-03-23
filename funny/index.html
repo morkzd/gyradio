@@ -69,7 +69,7 @@
 <body>
 
   <div id="video-container">
-    <iframe id="player" allowfullscreen></iframe>
+    <div id="player"></div>
   </div>
 
   <div id="controls">
@@ -77,28 +77,75 @@
     <button id="nextBtn">Next</button>
   </div>
 
+  <!-- Load YouTube Player API -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+
   <script>
     let videos = [];
     let index = 0;
+    let player;
+    let soundUnlocked = false;
 
+    // Load JSON file
     fetch("funny.json")
       .then(response => response.json())
       .then(data => {
         videos = data.videos;
-        loadVideo();
       });
 
+    // YouTube API creates the player
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player("player", {
+        height: "100%",
+        width: "100%",
+        videoId: "", // will be set dynamically
+        playerVars: {
+          playsinline: 1
+        }
+      });
+
+      // Load first video once player is ready
+      player.addEventListener("onReady", () => {
+        loadVideo();
+      });
+    }
+
     function loadVideo() {
-      const autoplay = index === 0 ? "" : "?autoplay=1&mute=1";
-      document.getElementById("player").src = videos[index] + autoplay;
+      const videoId = videos[index].split("/embed/")[1];
+
+      // First video: no autoplay
+      // Others: autoplay (sound depends on unlock)
+      const autoplay = index === 0 ? 0 : 1;
+
+      player.loadVideoById({
+        videoId: videoId,
+        startSeconds: 0
+      });
+
+      if (autoplay === 1) {
+        if (soundUnlocked) {
+          player.unMute();
+        } else {
+          player.mute();
+        }
+      }
+    }
+
+    function unlockSound() {
+      if (!soundUnlocked) {
+        soundUnlocked = true;
+        player.unMute();
+      }
     }
 
     document.getElementById("nextBtn").addEventListener("click", () => {
+      unlockSound();
       index = (index + 1) % videos.length;
       loadVideo();
     });
 
     document.getElementById("backBtn").addEventListener("click", () => {
+      unlockSound();
       index = (index - 1 + videos.length) % videos.length;
       loadVideo();
     });
