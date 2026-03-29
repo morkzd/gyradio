@@ -6,8 +6,8 @@
 
   <style>
     :root {
-      --blue: #4a5cff;   /* slightly purple blue */
-      --yellow: #ffd447; /* rich yellow */
+      --blue: #4a5cff;
+      --yellow: #ffd447;
     }
 
     body {
@@ -21,7 +21,6 @@
       height: 100vh;
     }
 
-    /* Video takes up 85% of the screen */
     #video-container {
       flex: 0 0 85vh;
       width: 100vw;
@@ -36,7 +35,6 @@
       height: 100%;
     }
 
-    /* Controls sit directly under the video */
     #controls {
       flex: 0 0 auto;
       width: 100vw;
@@ -52,7 +50,7 @@
       color: var(--blue);
       border: none;
       padding: 18px 34px;
-      font-size: 24px;   /* bigger text */
+      font-size: 24px;
       border-radius: 12px;
       cursor: pointer;
       font-weight: bold;
@@ -61,10 +59,26 @@
     button:active {
       opacity: 0.8;
     }
+
+    /* Loading overlay */
+    #loading {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #000;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 32px;
+      z-index: 9999;
+    }
   </style>
 </head>
 
 <body>
+
+  <div id="loading">Loading…</div>
 
   <div id="video-container">
     <div id="player"></div>
@@ -76,7 +90,6 @@
     <button id="nextBtn">Next</button>
   </div>
 
-  <!-- Load YouTube Player API -->
   <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
@@ -84,15 +97,23 @@
     let index = 0;
     let player;
     let soundUnlocked = false;
+    let jsonLoaded = false;
+    let playerReady = false;
 
-    // Load JSON file
+    // Load JSON
     fetch("funny.json")
-      .then(response => response.json())
+      .then(res => res.json())
       .then(data => {
         videos = data.videos;
+        jsonLoaded = true;
+        tryStart();
+      })
+      .catch(err => {
+        console.error("JSON error:", err);
+        alert("Could not load video list.");
       });
 
-    // YouTube API creates the player
+    // YouTube API callback
     function onYouTubeIframeAPIReady() {
       player = new YT.Player("player", {
         height: "100%",
@@ -100,31 +121,37 @@
         videoId: "",
         playerVars: {
           playsinline: 1,
-          cc_load_policy: 1   // <-- FORCE CAPTIONS ON
+          cc_load_policy: 1
+        },
+        events: {
+          onReady: () => {
+            playerReady = true;
+            tryStart();
+          }
         }
-      });
-
-      player.addEventListener("onReady", () => {
-        loadVideo();
       });
     }
 
+    // Start only when JSON + Player are ready
+    function tryStart() {
+      if (jsonLoaded && playerReady) {
+        document.getElementById("loading").style.display = "none";
+        loadVideo();
+      }
+    }
+
     function loadVideo() {
-      const videoId = videos[index].split("/embed/")[1];
+      const url = videos[index];
+      if (!url) return;
 
-      const autoplay = index === 0 ? 0 : 1;
+      const videoId = url.split("/embed/")[1];
 
-      player.loadVideoById({
-        videoId: videoId,
-        startSeconds: 0
-      });
+      player.loadVideoById(videoId);
 
-      if (autoplay === 1) {
-        if (soundUnlocked) {
-          player.unMute();
-        } else {
-          player.mute();
-        }
+      if (soundUnlocked) {
+        player.unMute();
+      } else {
+        player.mute();
       }
     }
 
@@ -135,6 +162,7 @@
       }
     }
 
+    // Buttons
     document.getElementById("nextBtn").addEventListener("click", () => {
       unlockSound();
       index = (index + 1) % videos.length;
@@ -156,6 +184,21 @@
 
       index = newIndex;
       loadVideo();
+    });
+
+    // Keyboard controls
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") {
+        index = (index + 1) % videos.length;
+        loadVideo();
+      }
+      if (e.key === "ArrowLeft") {
+        index = (index - 1 + videos.length) % videos.length;
+        loadVideo();
+      }
+      if (e.key === " ") {
+        unlockSound();
+      }
     });
   </script>
 
