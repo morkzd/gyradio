@@ -96,7 +96,6 @@
     let videos = [];
     let index = 0;
     let player;
-    let soundUnlocked = false;
     let jsonLoaded = false;
     let playerReady = false;
 
@@ -148,35 +147,22 @@
 
       player.loadVideoById(videoId);
 
-      if (soundUnlocked) {
-        player.unMute();
-      } else {
-        player.mute();
-      }
-    }
-
-    function unlockSound() {
-      if (!soundUnlocked) {
-        soundUnlocked = true;
-        player.unMute();
-      }
+      // ALWAYS UNMUTE
+      player.unMute();
     }
 
     // Buttons
     document.getElementById("nextBtn").addEventListener("click", () => {
-      unlockSound();
       index = (index + 1) % videos.length;
       loadVideo();
     });
 
     document.getElementById("backBtn").addEventListener("click", () => {
-      unlockSound();
       index = (index - 1 + videos.length) % videos.length;
       loadVideo();
     });
 
     document.getElementById("shuffleBtn").addEventListener("click", () => {
-      unlockSound();
       let newIndex;
       do {
         newIndex = Math.floor(Math.random() * videos.length);
@@ -197,7 +183,7 @@
         loadVideo();
       }
       if (e.key === " ") {
-        unlockSound();
+        player.unMute();
       }
     });
   </script>
