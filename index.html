@@ -265,8 +265,8 @@
       <!-- 5–7. Buttons -->
       <div class="button-column">
 
-        <!-- NEW APP LINK BUTTON -->
-        <button class="secondary-button" id="appLinkBtn">📱 Get the Glory Years Radio App</button>
+        <!-- APP LINK BUTTON (always visible) -->
+        <button class="secondary-button" id="appLinkBtn">📱 GET THE APP!</button>
 
         <button class="secondary-button" id="sleepTimerBtn">⏲️ Sleep Timer (15 minutes)</button>
         <button class="secondary-button" id="carModeBtn">🚗 Car Mode</button>
@@ -326,9 +326,6 @@
       playRadioBtn.addEventListener('click', async () => {
         try {
           document.getElementById('afterStart').style.display = 'block';
-
-          // Hide app link once radio starts
-          appLinkBtn.style.display = 'none';
 
           // Delay Spotify by 30 seconds
           setTimeout(() => {
@@ -450,4 +447,3 @@
   </script>
 </body>
 </html>
-
