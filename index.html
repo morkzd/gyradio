@@ -264,6 +264,10 @@
 
       <!-- 5–7. Buttons -->
       <div class="button-column">
+
+        <!-- NEW APP LINK BUTTON -->
+        <button class="secondary-button" id="appLinkBtn">📱 Get the Glory Years Radio App</button>
+
         <button class="secondary-button" id="sleepTimerBtn">⏲️ Sleep Timer (15 minutes)</button>
         <button class="secondary-button" id="carModeBtn">🚗 Car Mode</button>
         <button class="secondary-button" id="merchBtn">🛍️ Glory Years Merchandise</button>
@@ -310,6 +314,7 @@
       const sleepTimerBtn = document.getElementById('sleepTimerBtn');
       const carModeBtn = document.getElementById('carModeBtn');
       const merchBtn = document.getElementById('merchBtn');
+      const appLinkBtn = document.getElementById('appLinkBtn');
 
       const privacyLink = document.getElementById('privacyLink');
       const privacyModal = document.getElementById('privacyModal');
@@ -321,6 +326,9 @@
       playRadioBtn.addEventListener('click', async () => {
         try {
           document.getElementById('afterStart').style.display = 'block';
+
+          // Hide app link once radio starts
+          appLinkBtn.style.display = 'none';
 
           // Delay Spotify by 30 seconds
           setTimeout(() => {
@@ -374,6 +382,13 @@
           liveLabel.textContent = "RADIO STATION OFF AIR";
           liveLabel.classList.remove('active');
         }
+      });
+
+      /* ------------------------------
+         APP LINK BUTTON
+      ------------------------------ */
+      appLinkBtn.addEventListener('click', () => {
+        window.open('https://play.google.com/store/apps/details?id=com.gloryyears.radio&hl=en-US', '_blank');
       });
 
       /* ------------------------------
