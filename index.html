@@ -419,9 +419,13 @@
   fetch(CATALOG_URL, { cache: "no-cache" })
     .then(function (res) {
       if (!res.ok) throw new Error("HTTP " + res.status);
-      return res.json();
+      return res.text();
     })
-    .then(function (data) {
+    .then(function (text) {
+      var body = text.trim()
+        .replace(/^(?:const|let|var)\s+[A-Za-z0-9_$]+\s*=\s*/, "")
+        .replace(/;\s*$/, "");
+      var data = JSON.parse(body);
       if (!Array.isArray(data)) throw new Error("Bad catalog shape");
       catalog = data.filter(function (s) {
         return s && typeof s.id === "string" && typeof s.title === "string";
