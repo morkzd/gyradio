@@ -1,56 +1,22 @@
-[
+const songs = [
   {
-    "videoId": "0P2ckZNCk1k",
-    "playlistId": "PLmeHHqm4zpr_qbH07qobIFdiDacDgDe71",
-    "index": 0,
-    "duration": 3600
+    id: "12820170-23f9-45fa-8813-0c1a4253732a",
+    title: "Your Eyes Are Still Blue"
   },
   {
-    "videoId": "nKWmqPnijP4",
-    "playlistId": "PLmeHHqm4zpr_qbH07qobIFdiDacDgDe71",
-    "index": 1,
-    "duration": 3600
+    id: "54dbb89e-d63e-4081-9f1e-ccb1ba81c90e",
+    title: "Earl"
   },
   {
-    "videoId": "Zi1sOfT5ceQ",
-    "playlistId": "PLmeHHqm4zpr_qbH07qobIFdiDacDgDe71",
-    "index": 2,
-    "duration": 3600
+    id: "441676e3-3a54-42cd-8ddc-1bfeeb700e02",
+    title: "Beneath The Stars"
   },
   {
-    "videoId": "q2S8Wiv4Lz4",
-    "playlistId": "PLmeHHqm4zpr_qbH07qobIFdiDacDgDe71",
-    "index": 3,
-    "duration": 3600
+    id: "7feb8562-8ec8-4e80-b03c-4e53f5fd7e4e",
+    title: "My Eyes Look Around Me"
   },
   {
-    "videoId": "2uHpDPq1QNA",
-    "playlistId": "PLmeHHqm4zpr_qbH07qobIFdiDacDgDe71",
-    "index": 4,
-    "duration": 3600
-  },
-  {
-    "videoId": "fLRXDj8km9I",
-    "playlistId": "PLmeHHqm4zpr_qbH07qobIFdiDacDgDe71",
-    "index": 5,
-    "duration": 3600
-  },
-  {
-    "videoId": "8YbDLOjxXdE",
-    "playlistId": "PLmeHHqm4zpr_qbH07qobIFdiDacDgDe71",
-    "index": 6,
-    "duration": 3600
-  },
-  {
-    "videoId": "ucXjiyOatF0",
-    "playlistId": "PLmeHHqm4zpr_qbH07qobIFdiDacDgDe71",
-    "index": 7,
-    "duration": 3600
-  },
-  {
-    "videoId": "5m9yj2Bd1oI",
-    "playlistId": "PLmeHHqm4zpr_qbH07qobIFdiDacDgDe71",
-    "index": 8,
-    "duration": 3600
+    id: "6db1a22f-443a-4feb-9049-83f45db1ca7d",
+    title: "The Kings Of Our Time"
   }
-]
+];
