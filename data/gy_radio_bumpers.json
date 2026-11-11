@@ -1,22 +1,22 @@
-const songs = [
+[
   {
-    id: "12820170-23f9-45fa-8813-0c1a4253732a",
-    title: "Your Eyes Are Still Blue"
+    "id": "12820170-23f9-45fa-8813-0c1a4253732a",
+    "title": "Your Eyes Are Still Blue"
   },
   {
-    id: "54dbb89e-d63e-4081-9f1e-ccb1ba81c90e",
-    title: "Earl"
+    "id": "54dbb89e-d63e-4081-9f1e-ccb1ba81c90e",
+    "title": "Earl"
   },
   {
-    id: "441676e3-3a54-42cd-8ddc-1bfeeb700e02",
-    title: "Beneath The Stars"
+    "id": "441676e3-3a54-42cd-8ddc-1bfeeb700e02",
+    "title": "Beneath The Stars"
   },
   {
-    id: "7feb8562-8ec8-4e80-b03c-4e53f5fd7e4e",
-    title: "My Eyes Look Around Me"
+    "id": "7feb8562-8ec8-4e80-b03c-4e53f5fd7e4e",
+    "title": "My Eyes Look Around Me"
   },
   {
-    id: "6db1a22f-443a-4feb-9049-83f45db1ca7d",
-    title: "The Kings Of Our Time"
+    "id": "6db1a22f-443a-4feb-9049-83f45db1ca7d",
+    "title": "The Kings Of Our Time"
   }
-];
+]
