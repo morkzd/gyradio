@@ -24,16 +24,15 @@
   body {
     margin: 0;
     padding: 26px 18px 60px;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
-    font-size: 20px;
-    line-height: 1.5;
-    /* faint blue/pink wash so the black doesn't read as flat */
+    background-color: var(--bg);
     background-image:
       radial-gradient(ellipse 80% 50% at 50% 0%, rgba(143, 214, 255, 0.10), transparent 70%),
       radial-gradient(ellipse 70% 40% at 50% 100%, rgba(255, 158, 210, 0.09), transparent 70%);
     background-attachment: fixed;
+    color: var(--ink);
+    font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+    font-size: 20px;
+    line-height: 1.5;
   }
 
   main { max-width: 560px; margin: 0 auto; }
@@ -110,13 +109,14 @@
     background: var(--panel);
   }
 
-  #sunoLink {
-    margin: 0 0 24px;
-    text-align: center;
-    font-size: 1rem;
+  #sunoLink { margin: 0 0 24px; text-align: center; font-size: 1rem; }
+
+  #sunoLink a {
+    color: var(--blue);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(143, 214, 255, 0.5);
   }
 
-  #sunoLink a { color: var(--blue); text-decoration: none; border-bottom: 1px solid rgba(143, 214, 255, 0.5); }
   #sunoLink a:hover { color: var(--pink); border-bottom-color: var(--pink); }
 
   .controls { display: grid; gap: 14px; margin-bottom: 36px; }
@@ -239,8 +239,8 @@
 <body>
 <main>
   <header>
-    <h1>GLORY YEARS</h1>
-    <p class="tagline">RADIO - Memory Dukebox</p>
+    <h1>GYRADIO</h1>
+    <p class="tagline">Memory Jukebox</p>
   </header>
 
   <section class="now" aria-live="polite">
@@ -250,7 +250,9 @@
 
   <div id="playerHost" class="player"></div>
 
-  <p id="sunoLink"><a id="sunoAnchor" href="https://suno.com" target="_blank" rel="noopener">Open this song on Suno</a></p>
+  <p id="sunoLink">
+    <a id="sunoAnchor" href="https://suno.com" target="_blank" rel="noopener">Open this song on Suno</a>
+  </p>
 
   <div class="controls">
     <button id="surpriseBtn" type="button">Surprise Me</button>
@@ -294,7 +296,7 @@
     statusTimer = setTimeout(function () { statusEl.textContent = ""; }, 2600);
   }
 
-  // ---- Storage ------------------------------------------------------------
+  // ---- Favorites storage --------------------------------------------------
   function readFavs() {
     try {
       var raw = JSON.parse(localStorage.getItem(FAV_KEY));
@@ -333,8 +335,10 @@
 
     if (!frame) {
       frame = document.createElement("iframe");
-      frame.setAttribute("allow", "autoplay; fullscreen; encrypted-media");
+      frame.setAttribute("allow", "autoplay; encrypted-media; fullscreen");
+      frame.setAttribute("allowfullscreen", "");
       frame.setAttribute("frameborder", "0");
+      frame.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
       frame.title = "Song player";
       host.appendChild(frame);
     }
@@ -409,6 +413,25 @@
     });
   }
 
+  // ---- Catalog loading ----------------------------------------------------
+  function parseCatalog(text) {
+    var t = text.trim();
+    try {
+      return JSON.parse(t);
+    } catch (e) { /* not strict JSON — try as JS below */ }
+    var m = t.match(/^(?:const|let|var)\s+[A-Za-z0-9_$]+\s*=\s*([\s\S]*?);?\s*$/);
+    return new Function("return (" + (m ? m[1] : t) + ")")();
+  }
+
+  function acceptCatalog(data) {
+    if (!Array.isArray(data)) throw new Error("catalog is not a list");
+    catalog = data.filter(function (s) {
+      return s && typeof s.id === "string" && typeof s.title === "string";
+    });
+    if (!catalog.length) throw new Error("catalog is empty");
+    loadSong(catalog[0]);
+  }
+
   // ---- Boot ---------------------------------------------------------------
   surpriseBtn.addEventListener("click", surprise);
   favBtn.addEventListener("click", addFavorite);
@@ -419,19 +442,13 @@
   fetch(CATALOG_URL, { cache: "no-cache" })
     .then(function (res) {
       if (!res.ok) throw new Error("HTTP " + res.status);
-      return res.json();
+      return res.text();
     })
-    .then(function (data) {
-      if (!Array.isArray(data)) throw new Error("Bad catalog shape");
-      catalog = data.filter(function (s) {
-        return s && typeof s.id === "string" && typeof s.title === "string";
-      });
-      if (!catalog.length) throw new Error("Catalog empty");
-      loadSong(catalog[0]);
-    })
-    .catch(function () {
+    .then(function (text) { acceptCatalog(parseCatalog(text)); })
+    .catch(function (err) {
       nowTitle.textContent = "Song list unavailable";
-      say("Couldn't load the songs. Check the connection and reload the page.");
+      nowTitle.classList.add("empty");
+      say("Load failed: " + err.message);
     });
 })();
 </script>
