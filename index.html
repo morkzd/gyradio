@@ -416,7 +416,19 @@
   renderFavs();
   syncFavButton();
 
-  loadSong({ id: "12820170-23f9-45fa-8813-0c1a4253732a", title: "Your Eyes Are Still Blue" });
+  fetch(CATALOG_URL, { cache: "no-cache" })
+    .then(function (res) {
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      return res.json();
+    })
+    .then(function (data) {
+      if (!Array.isArray(data)) throw new Error("Bad catalog shape");
+      catalog = data.filter(function (s) {
+        return s && typeof s.id === "string" && typeof s.title === "string";
+      });
+      if (!catalog.length) throw new Error("Catalog empty");
+      loadSong(catalog[0]);
+    })
     .catch(function () {
       nowTitle.textContent = "Song list unavailable";
       say("Couldn't load the songs. Check the connection and reload the page.");
