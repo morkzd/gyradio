@@ -1,5 +1,13 @@
 [
   {
+    id: "441676e3-3a54-42cd-8ddc-1bfeeb700e02",
+    title: "Beneath the Stars"
+  },
+  {
+    id: "ec56502b-d02b-4420-93f5-2e2bccb76629",
+    title: "My Eyes Look... V1"
+  },
+  {
     id: "12820170-23f9-45fa-8813-0c1a4253732a",
     title: "Your Eyes Are Still Blue"
   },
@@ -13,7 +21,7 @@
   },
   {
     id: "7feb8562-8ec8-4e80-b03c-4e53f5fd7e4e",
-    title: "My Eyes Look Around Me"
+    title: "My Eyes Look... V2"
   },
   {
     id: "f09c4e52-11f3-429b-967b-17f313f13539",
@@ -64,8 +72,8 @@
     title: "Funny Right?"
   },
   {
-    id: "71265ee1-59ba-4b05-8ae5-82542437a2be",
-    title: "Small Compass"
+    id: "04380e53-e94d-4284-92e3-ddd90a264cdc",
+    title: "Neon Heartbeat"
   },
   {
     id: "3bb2bec8-efd7-4fb3-a3e4-172415d6c2db",
@@ -218,6 +226,178 @@
   {
     id: "f1bca031-4bb3-44d4-b584-83395e85e38d",
     title: "Moonlight on the Fire Escape"
+  },
+  {
+    id: "6a82ab42-6387-4514-b56b-346e3c8f9069",
+    title: "Highway Adventure"
+  },
+  {
+    id: "81ee053c-82fc-4ef6-a6c8-7438138104e1",
+    title: "Rockin' Horse"
+  },
+  {
+    id: "268cbef9-ca19-431e-8443-397e2e76dcb4",
+    title: "Indigo Blue"
+  },
+  {
+    id: "e055ecdf-bb43-49eb-be8c-7963d7018aae",
+    title: "Silver Screen Dreams"
+  },
+  {
+    id: "a609854d-15d1-43c7-9b98-f2b77f0bc762",
+    title: "Cherry Soda Moon"
+  },
+  {
+    id: "524a58ea-1952-41ac-bc08-489acdb2dc2a",
+    title: "Moonlit Howl"
+  },
+  {
+    id: "de82353d-8b61-4908-a188-85614ae23da8",
+    title: "Taken for a Sunday Drive"
+  },
+  {
+    id: "fefb8ed7-f932-49d1-bb4b-d8e14d17f5ec",
+    title: "Headlights on Forever"
+  },
+  {
+    id: "d3b422f0-f7f2-4d96-b7bd-66b6c8044767",
+    title: "Manson at the Mixer"
+  },
+  {
+    id: "6ebf585d-ab50-4f07-8056-a71dc880df1b",
+    title: "Searching for the Sun"
+  },
+  {
+    id: "d0523e17-8a2a-4e73-bd2b-07e562a9d942",
+    title: "Change the Tide"
+  },
+  {
+    id: "ab590e72-3245-4b8b-b85f-e43ee2cf7235",
+    title: "Father and Daughter"
+  },
+  {
+    id: "cf284968-77e2-4667-9b41-6541ce6e0001",
+    title: "The Greatest Night in New York"
+  },
+  {
+    id: "aa0ab8f1-e792-4625-ba19-b9cccca542f0",
+    title: "Can't Make it Work"
+  },
+  {
+    id: "c5298411-5e6f-4086-b1f1-737e9f2abf99",
+    title: "Job Hunt"
+  },
+  {
+    id: "15466d07-2285-4267-a5fd-a435a5d75a70",
+    title: "Supernova Fever"
+  },
+  {
+    id: "da6fe8af-1dd1-4522-b388-46bc1bba0277",
+    title: "Drinks at the Bar"
+  },
+  {
+    id: "1ffa6e60-bb2e-4930-832f-ff966f6e9186",
+    title: "Rolling Through Europe"
+  },
+  {
+    id: "d01fe709-16fa-42f8-96fb-48a9c771c996",
+    title: "Honey Hills"
+  },
+  {
+    id: "929cdb9c-7b70-43cc-8bc3-51b8ea00b9a3",
+    title: "Call Your Name"
+  },
+  {
+    id: "dccf2570-8a5d-4473-b756-6f06d10c4744",
+    title: "First Step Forward"
+  },
+  {
+    id: "3f24492d-f09e-4015-a913-cda7cfc54bfa",
+    title: "Falling Apart"
+  },
+  {
+    id: "f00c7ad6-a927-4b43-8d55-8bbcb7f0de9e",
+    title: "Sunset Chase"
+  },
+  {
+    id: "e1102ed0-82b3-424b-9278-0cb24c5e94ed",
+    title: "Ultraviolet Motel Room"
+  },
+  {
+    id: "f192b42a-2dd2-49bd-a962-9bc006171441",
+    title: "Rockstar Dad"
+  },
+  {
+    id: "d561a56c-0dff-4690-95a4-fc5113cbb4fc",
+    title: "Hair Like Fire"
+  },
+  {
+    id: "1e6112fc-d820-4add-8365-d646a7a07e8d",
+    title: "Good Times"
+  },
+  {
+    id: "c981852b-95c2-47a4-acaf-7dbbefa0d315",
+    title: "Family Ties"
+  },
+  {
+    id: "d779942a-6f68-4df0-89fd-337a610f5762",
+    title: "Death by Drag Race"
+  },
+  {
+    id: "237feb9b-20eb-4d0d-b84a-a6ace6ce01d4",
+    title: "Echoes of Yesterday"
+  },
+  {
+    id: "f7f2a9b2-db89-433b-b6d1-ee8bb9683a36",
+    title: "Help Each Other"
+  },
+  {
+    id: "648734a3-fb63-4dcb-89e3-ea098c945e92",
+    title: "Don't Go"
+  },
+  {
+    id: "56735b84-d5ef-4fa6-aea7-52abc1a69b03",
+    title: "Light in the Beach House"
+  },
+  {
+    id: "8a8de971-7da7-416a-acf6-3ca739dc6f2a",
+    title: "Surfer From Hell"
+  },
+  {
+    id: "c5696bd8-586f-42f5-a16a-3b849904d1e7",
+    title: "Start to Think"
+  },
+  {
+    id: "aa19674a-48d7-4fa5-aec5-ad81a928afc4",
+    title: "Shiner"
+  },
+  {
+    id: "0aa9fa43-2497-438e-9cc6-7c41a6100644",
+    title: "Silk Rose"
+  },
+  {
+    id: "8ecbd0b1-21e4-4117-8b7c-bce748102349",
+    title: "Hollywood Blues"
+  },
+  {
+    id: "d029c928-0251-428e-a9a2-214e29728cb0",
+    title: "White Ghosts V 2"
+  },
+  {
+    id: "ac86e20f-74d0-401a-851e-a038932f0e44",
+    title: "Home Alone"
+  },
+  {
+    id: "25440aa0-b55c-4696-8dac-a07656727e26",
+    title: "On My Knees"
+  },
+  {
+    id: "90c5933b-4bf5-4276-8adf-34aca2bf352a",
+    title: "Las Vegas Baby"
+  },
+  {
+    id: "505ae3a6-fcd8-4b1b-b237-f39be5030709",
+    title: "Withdrawal"
   },
   {
     id: "6db1a22f-443a-4feb-9049-83f45db1ca7d",
