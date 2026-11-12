@@ -1,4 +1,3 @@
-html
 <!DOCTYPE html>
 <html>
 <head>
@@ -503,15 +502,12 @@ html
 </div>
 <script>
 /* ---------- AUDIO ----------
-   Web Audio tones are the primary feedback because Android WebView has no
-   Web Speech support. Speech is attempted only if the engine actually starts. */
+   Web Audio tones are the primary feedback: they need no speech engine and
+   work in every wrapper. */
 
 let actx = null;
 let soundOn = true;
 let voiceOn = true;
-let ttsBroken = false;
-let ttsStarted = false;
-let ttsProbe = null;
 
 function ensureCtx() {
     if (!actx) {
@@ -586,14 +582,28 @@ function unlockAudio() {
     if (ctx && ctx.state === "suspended") ctx.resume();
 }
 
-/* ---------- SPEECH (optional, self-disabling) ---------- */
-function ttsUsable() {
-    return !ttsBroken && voiceOn && ("speechSynthesis" in window) &&
-           (typeof SpeechSynthesisUtterance === "function");
+/* ---------- SPEECH ----------
+   A WebView has no speech engine, so native speech is attempted only in a real
+   browser. Everywhere else, speech is fetched as MP3 and played as plain media. */
+
+const IS_WEBVIEW = /;\s*wv\)/.test(navigator.userAgent) || !("speechSynthesis" in window);
+
+let ttsMode = IS_WEBVIEW ? "remote" : "native";
+let ttsStarted = false;
+let ttsProbe = null;
+
+const ttsAudio = new Audio();
+ttsAudio.preload = "auto";
+
+function speakRemote(text) {
+    const clipped = text.slice(0, 190);
+    ttsAudio.src = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en-GB&q=" +
+        encodeURIComponent(clipped);
+    const p = ttsAudio.play();
+    if (p && p.catch) p.catch(function () {});
 }
 
-function speak(text) {
-    if (!ttsUsable()) return;
+function speakNative(text, onFail) {
     try {
         const utter = new SpeechSynthesisUtterance(text);
         utter.rate = 1;
@@ -604,7 +614,10 @@ function speak(text) {
         if (!ttsStarted) {
             clearTimeout(ttsProbe);
             ttsProbe = setTimeout(function () {
-                if (!ttsStarted) ttsBroken = true;
+                if (!ttsStarted) {
+                    ttsMode = "remote";
+                    if (onFail) onFail();
+                }
             }, 1500);
         }
 
@@ -613,10 +626,21 @@ function speak(text) {
         if (preferred) utter.voice = preferred;
 
         setTimeout(function () {
-            try { speechSynthesis.speak(utter); } catch (e) { ttsBroken = true; }
+            try { speechSynthesis.speak(utter); } catch (e) { ttsMode = "remote"; }
         }, 0);
     } catch (e) {
-        ttsBroken = true;
+        ttsMode = "remote";
+        if (onFail) onFail();
+    }
+}
+
+function speak(text) {
+    if (!soundOn || !voiceOn) return;
+
+    if (ttsMode === "native") {
+        speakNative(text, function () { speakRemote(text); });
+    } else {
+        speakRemote(text);
     }
 }
 
@@ -624,7 +648,13 @@ function toggleVoice() {
     soundOn = !soundOn;
     voiceOn = soundOn;
     document.getElementById("voiceToggleBtn").innerText = soundOn ? "Sound: ON" : "Sound: OFF";
-    if (soundOn) { unlockAudio(); cue("run"); }
+    if (!soundOn) {
+        try { ttsAudio.pause(); } catch (e) {}
+        try { speechSynthesis.cancel(); } catch (e) {}
+    } else {
+        unlockAudio();
+        cue("run");
+    }
 }
 
 window.addEventListener("pointerdown", unlockAudio, { once: true });
