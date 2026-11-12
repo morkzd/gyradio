@@ -1,3 +1,4 @@
+html
 <!DOCTYPE html>
 <html>
 <head>
@@ -490,7 +491,7 @@
         </div>
 
         <div id="controlsRow">
-    <button id="voiceToggleBtn" class="btn" onclick="toggleVoice()">Voice: ON</button>
+    <button id="voiceToggleBtn" class="btn" onclick="toggleVoice()">Sound: ON</button>
     <button id="deadBallBtn" class="btn" onclick="activateDeadBallBonus()">Dead Ball Bonus</button>
     <button id="manualOutBtn" class="btn" onclick="manualOut()">Dot Ball/ Out</button>
     <button id="wideBtn" class="btn" onclick="addWide()">Wide +1</button>
@@ -501,15 +502,135 @@
     </div>
 </div>
 <script>
-let audioUnlocked = false;
+/* ---------- AUDIO ----------
+   Web Audio tones are the primary feedback because Android WebView has no
+   Web Speech support. Speech is attempted only if the engine actually starts. */
+
+let actx = null;
+let soundOn = true;
+let voiceOn = true;
+let ttsBroken = false;
+let ttsStarted = false;
+let ttsProbe = null;
+
+function ensureCtx() {
+    if (!actx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        try { actx = new AC(); } catch (e) { return null; }
+    }
+    if (actx.state === "suspended") { try { actx.resume(); } catch (e) {} }
+    return actx;
+}
+
+function blip(freq, offset, dur, type, peak) {
+    const ctx = ensureCtx();
+    if (!ctx) return;
+    const t0 = ctx.currentTime + offset;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type || "sine";
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(peak || 0.18, t0 + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.02);
+}
+
+function cue(name) {
+    if (!soundOn) return;
+    switch (name) {
+        case "out":
+            blip(320, 0, 0.16, "sawtooth", 0.2);
+            blip(220, 0.14, 0.22, "sawtooth", 0.2);
+            blip(140, 0.32, 0.4, "sawtooth", 0.2);
+            break;
+        case "zero":
+            blip(180, 0, 0.1, "square", 0.12);
+            break;
+        case "four":
+            blip(523, 0, 0.09, "triangle", 0.16);
+            blip(659, 0.08, 0.09, "triangle", 0.16);
+            blip(784, 0.16, 0.16, "triangle", 0.18);
+            break;
+        case "six":
+            blip(523, 0, 0.08, "triangle", 0.16);
+            blip(659, 0.07, 0.08, "triangle", 0.16);
+            blip(784, 0.14, 0.08, "triangle", 0.16);
+            blip(1046, 0.21, 0.26, "triangle", 0.2);
+            break;
+        case "freehit":
+            blip(659, 0, 0.1, "sine", 0.16);
+            blip(988, 0.1, 0.2, "sine", 0.18);
+            break;
+        case "wide":
+            blip(392, 0, 0.12, "sine", 0.12);
+            break;
+        default:
+            blip(440, 0, 0.08, "sine", 0.14);
+    }
+}
+
+function cueForOutcome(outcome) {
+    if (outcome.runs === 0) cue("zero");
+    else if (outcome.runs >= 6) cue("six");
+    else if (outcome.runs >= 4) cue("four");
+    else cue("run");
+}
 
 function unlockAudio() {
-    if (audioUnlocked) return;
-    audioUnlocked = true;
+    const ctx = ensureCtx();
+    if (ctx && ctx.state === "suspended") ctx.resume();
+}
 
-    const utter = new SpeechSynthesisUtterance(" ");
-    utter.volume = 0;   // silent
-    speechSynthesis.speak(utter);
+/* ---------- SPEECH (optional, self-disabling) ---------- */
+function ttsUsable() {
+    return !ttsBroken && voiceOn && ("speechSynthesis" in window) &&
+           (typeof SpeechSynthesisUtterance === "function");
+}
+
+function speak(text) {
+    if (!ttsUsable()) return;
+    try {
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.rate = 1;
+        utter.pitch = 1;
+        utter.volume = 1;
+        utter.onstart = function () { ttsStarted = true; };
+
+        if (!ttsStarted) {
+            clearTimeout(ttsProbe);
+            ttsProbe = setTimeout(function () {
+                if (!ttsStarted) ttsBroken = true;
+            }, 1500);
+        }
+
+        const voices = speechSynthesis.getVoices();
+        const preferred = voices.find(v => /english|child|male/i.test(v.name));
+        if (preferred) utter.voice = preferred;
+
+        setTimeout(function () {
+            try { speechSynthesis.speak(utter); } catch (e) { ttsBroken = true; }
+        }, 0);
+    } catch (e) {
+        ttsBroken = true;
+    }
+}
+
+function toggleVoice() {
+    soundOn = !soundOn;
+    voiceOn = soundOn;
+    document.getElementById("voiceToggleBtn").innerText = soundOn ? "Sound: ON" : "Sound: OFF";
+    if (soundOn) { unlockAudio(); cue("run"); }
+}
+
+window.addEventListener("pointerdown", unlockAudio, { once: true });
+if ("speechSynthesis" in window) {
+    speechSynthesis.onvoiceschanged = function () { speechSynthesis.getVoices(); };
+    speechSynthesis.getVoices();
 }
 
 
@@ -520,39 +641,11 @@ let ballsPerPlayer = 30;
 let ballsLeft = 0;
 let currentScore = 0;
 
-let voiceOn = true;
 let multiplierZoneId = null;
 let dangerZoneId = null;
 
 let freeHitActive = false;      // next ball is a free hit
 let deadBallArmed = false;      // Dead Ball Bonus has been activated
-
-/* SPEECH SYNTHESIS */
-function speak(text) {
-    if (!voiceOn) return;
-    if (!("speechSynthesis" in window)) return;
-
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.rate = 1;
-    utter.pitch = 1;
-    utter.volume = 1;
-
-    const voices = speechSynthesis.getVoices();
-    const preferred = voices.find(v =>
-        v.name.toLowerCase().includes("english") ||
-        v.name.toLowerCase().includes("child") ||
-        v.name.toLowerCase().includes("male")
-    );
-    if (preferred) utter.voice = preferred;
-
-    speechSynthesis.cancel();
-    speechSynthesis.speak(utter);
-}
-
-function toggleVoice() {
-    voiceOn = !voiceOn;
-    document.getElementById("voiceToggleBtn").innerText = voiceOn ? "Voice: ON" : "Voice: OFF";
-}
 
 /* RULES MODAL */
 function openRules() {
@@ -564,7 +657,7 @@ function closeRules() {
 
 /* START GAME */
 function startGame() {
-    unlockAudio();   // 🔊 Unlock audio on first tap
+    unlockAudio();   // unlock on first tap
 
     const names = [
         document.getElementById("p1").value.trim() || "Player 1",
@@ -677,6 +770,7 @@ function activateDeadBallBonus() {
     deadBallArmed = true;
     freeHitActive = true;
     applyFreeHitMode();
+    cue("freehit");
     updateInfoPanel("Dead Ball Bonus! Next ball is a FREE HIT.");
 }
 
@@ -728,6 +822,12 @@ document.querySelectorAll(".zone").forEach(zone => {
 
         zone.classList.add("flash");
         setTimeout(() => zone.classList.remove("flash"), 200);
+
+        if (outcome.text.indexOf("OUT") !== -1) {
+            cue("out");
+        } else {
+            cueForOutcome(outcome);
+        }
 
         updateInfoPanel(outcome.text);
 
@@ -926,12 +1026,14 @@ function getOutcome(zoneKey, isHard) {
 function addWide() {
     if (ballsLeft <= 0) return;
     currentScore += 1;
+    cue("wide");
     updateInfoPanel("Wide ball. +1 run, no ball lost.");
 }
 function manualOut() {
     if (ballsLeft <= 0) return;
 
     ballsLeft--;  // ball counts
+    cue("zero");
     updateInfoPanel("No runs added.");
 
     // If that was the last ball, end the turn
