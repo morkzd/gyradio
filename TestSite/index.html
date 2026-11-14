@@ -1,387 +1,670 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Darts 501 Voice Scorer</title>
+<meta charset="UTF-8">
+<title>Cricket Nets Duel</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-  body {
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    background: radial-gradient(circle at center, #660000, #000000 80%);
-    font-family: 'Orbitron', sans-serif;
-    color: #ffe066;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    text-align: center;
-  }
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: Arial, sans-serif;
+        background: radial-gradient(circle at top, #003300 0%, #000000 55%, #000000 100%);
+        color: #eaffff;
+        overflow: hidden;
+    }
 
-  #privacy {
-  font-size: 3vw;
-  opacity: 0.6;
-  margin-top: 2vw;
-  }
+    #app {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        box-sizing: border-box;
+        padding: 12px;
+        max-width: 520px;
+        margin: 0 auto;
+    }
 
-  #score {
-    font-size: 35vw;
-    font-weight: 900;
-    color: #fff;
-    text-shadow:
-      0 0 20px #ffcc00,
-      0 0 40px #ff9900,
-      0 0 60px #ff6600;
-    animation: glowPulse 2s infinite ease-in-out;
-    user-select: none;
-    margin: 0;
-  }
+    h1 {
+        font-size: 6vw;
+        color: #00eaff;
+        text-shadow: 0 0 12px #00eaff, 0 0 25px #00eaff;
+        margin: 0 0 10px 0;
+        text-align: center;
+        letter-spacing: 1px;
+    }
 
-  @keyframes glowPulse {
-    0% { text-shadow: 0 0 20px #ffcc00; }
-    50% { text-shadow: 0 0 40px #ff9900; }
-    100% { text-shadow: 0 0 20px #ffcc00; }
-  }
+    .hidden { display: none !important; }
 
-  /* Red flash */
-  @keyframes errorFlash {
-    0% { color: #ff4444; text-shadow: 0 0 20px #ff0000; }
-    100% { color: #ffffff; text-shadow: 0 0 20px #ffcc00; }
-  }
-  .error-flash {
-    animation: errorFlash 0.4s ease-out;
-  }
+    /* ---------- SETUP ---------- */
+    #setupScreen {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        flex: 1;
+    }
 
-  /* Shake animation */
-  @keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-12px); }
-    50% { transform: translateX(12px); }
-    75% { transform: translateX(-12px); }
-    100% { transform: translateX(0); }
-  }
-  .shake {
-    animation: shake 0.3s;
-  }
+    .sectionLabel {
+        font-size: 4.4vw;
+        color: #88ff88;
+        text-shadow: 0 0 8px #00ff55;
+        margin: 8px 0 4px 0;
+        text-align: center;
+    }
 
-  .btn {
-    font-size: 8vw;
-    padding: 3vw 6vw;
-    margin: 2vw;
-    background: #111;
-    color: #ffe066;
-    border: 2px solid #ffe066;
-    border-radius: 1vw;
-    box-shadow: 0 0 20px #ffcc00;
-    transition: 0.2s;
-    cursor: pointer;
-    user-select: none;
-  }
+    .hint {
+        font-size: 3.4vw;
+        opacity: 0.75;
+        text-align: center;
+        margin-bottom: 6px;
+    }
 
-  .btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 30px #ffcc00;
-  }
+    .inputRow { display: flex; gap: 8px; margin: 4px 0; }
 
-  #status {
-    font-size: 5vw;
-    max-width: 90vw;
-    margin-top: 2vw;
-    text-shadow: 0 0 10px #ffcc00;
-  }
+    .inputRow input {
+        flex: 1;
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #00eaff;
+        background: #020b0b;
+        color: #eaffff;
+        font-size: 4vw;
+    }
 
-  #congrats {
-    position: fixed;
-    top: 30vh;
-    width: 100%;
-    text-align: center;
-    font-size: 12vw;
-    font-weight: bold;
-    color: gold;
-    text-shadow: 0 0 20px #fff, 0 0 30px gold;
-    display: none;
-    pointer-events: none;
-  }
+    .btn {
+        border: none;
+        cursor: pointer;
+        color: white;
+        background: #111;
+        box-shadow: 0 0 12px #00eaff inset, 0 0 12px #00eaff;
+        border-radius: 10px;
+        padding: 14px 16px;
+        font-size: 4.4vw;
+        width: 100%;
+        margin-top: 10px;
+        font-weight: bold;
+    }
 
-  #undo-btn {
-    display: none;
-  }
+    .btn:active { transform: scale(0.97); }
 
-  canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    pointer-events: none;
-    z-index: 9999;
-  }
+    /* ---------- GAME ---------- */
+    #gameScreen {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        min-height: 0;
+    }
+
+    #scorePanel {
+        background: rgba(0, 0, 0, 0.6);
+        border: 2px solid #00eaff;
+        border-radius: 16px;
+        box-shadow: 0 0 18px #00eaff inset;
+        padding: 10px 12px;
+        text-align: center;
+        margin-bottom: 8px;
+    }
+
+    #playerName {
+        font-size: 4.6vw;
+        color: #00eaff;
+        text-shadow: 0 0 10px #00eaff;
+        font-weight: bold;
+    }
+
+    #score {
+        font-size: 17vw;
+        line-height: 1;
+        font-weight: bold;
+        color: #eaffff;
+        text-shadow: 0 0 18px #00eaff;
+        margin: 2px 0;
+    }
+
+    #score.bump { animation: bump 0.3s ease-out; }
+
+    @keyframes bump {
+        0% { transform: scale(1); }
+        45% { transform: scale(1.14); }
+        100% { transform: scale(1); }
+    }
+
+    #dots {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        justify-content: center;
+        margin: 6px 0 2px 0;
+    }
+
+    .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #2b6b3a;
+        box-shadow: 0 0 6px #4dff88;
+    }
+
+    .dot.spent {
+        background: #1a2b1f;
+        box-shadow: none;
+    }
+
+    #lastEvent {
+        font-size: 3.8vw;
+        min-height: 1.3em;
+        color: #ffe066;
+        margin-top: 4px;
+    }
+
+    #pad {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        flex: 1;
+        min-height: 0;
+    }
+
+    .padBtn {
+        border: 2px solid #ffffff33;
+        border-radius: 14px;
+        font-size: 4.4vw;
+        font-weight: bold;
+        color: #000;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.15;
+        padding: 4px;
+        text-align: center;
+        user-select: none;
+    }
+
+    .padBtn:active { transform: scale(0.96); }
+
+    .padBtn small {
+        font-size: 3.4vw;
+        font-weight: bold;
+        opacity: 0.75;
+        display: block;
+        margin-top: 2px;
+    }
+
+    .top { background: #4dff88; box-shadow: 0 0 16px #4dff88; }
+    .back { background: #ffb04d; box-shadow: 0 0 16px #ffb04d; }
+    .bonus { background: #ffe066; box-shadow: 0 0 18px #ffe066; }
+    .out { background: #ff4d4d; box-shadow: 0 0 16px #ff4d4d; }
+    .wide { background: #9fb4c4; box-shadow: 0 0 14px #9fb4c4; }
+    .nothing { background: #2f6f7a; color: #eaffff; box-shadow: 0 0 14px #00eaff; }
+
+    #soundBtn {
+        margin-top: 8px;
+        background: #111;
+        color: #00eaff;
+        border: 1px solid #00eaff;
+        border-radius: 10px;
+        padding: 8px;
+        font-size: 3.6vw;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    /* ---------- OVERLAYS ---------- */
+    .overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.88);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 500;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 440px;
+        background: #020b0b;
+        border-radius: 16px;
+        box-shadow: 0 0 20px #00eaff;
+        padding: 18px;
+        box-sizing: border-box;
+        text-align: center;
+        max-height: 88vh;
+        overflow-y: auto;
+    }
+
+    .card h2 {
+        margin: 0 0 10px 0;
+        font-size: 6vw;
+        color: #00eaff;
+        text-shadow: 0 0 12px #00eaff;
+    }
+
+    .card p, .card li {
+        font-size: 3.9vw;
+        line-height: 1.45;
+        text-align: left;
+    }
+
+    .card ul { padding-left: 20px; }
+
+    .bigScore {
+        font-size: 14vw;
+        font-weight: bold;
+        color: #eaffff;
+        text-shadow: 0 0 18px #00eaff;
+        margin: 6px 0;
+    }
+
+    .tableRow {
+        display: flex;
+        justify-content: space-between;
+        font-size: 4.4vw;
+        padding: 6px 2px;
+        border-bottom: 1px solid #123;
+    }
+
+    .tableRow.first { color: #ffe066; font-weight: bold; }
 </style>
 </head>
-
 <body>
+<div id="app">
+    <h1>CRICKET NETS DUEL</h1>
 
-  <h1 id="score">501</h1>
+    <!-- SETUP -->
+    <div id="setupScreen">
+        <div class="sectionLabel">Players</div>
+        <div class="hint">2 or more. Take turns batting.</div>
+        <div class="inputRow"><input id="p1" placeholder="Player 1"></div>
+        <div class="inputRow"><input id="p2" placeholder="Player 2"></div>
+        <div class="inputRow"><input id="p3" placeholder="Player 3 (optional)"></div>
+        <div class="inputRow"><input id="p4" placeholder="Player 4 (optional)"></div>
+        <div class="inputRow"><input id="p5" placeholder="Player 5 (optional)"></div>
 
-  <button id="start-btn" class="btn">Start Listening</button>
-  <button id="undo-btn" class="btn">Undo</button>
+        <div class="hint" style="margin-top:10px;">Everyone gets 18 balls and starts on 100 points.</div>
 
-  <p id="status">Say your throw as "N times X" (e.g. "1 times 20"). Say "reset game" to start over.</p>
+        <button class="btn" onclick="startGame()">Start</button>
+        <button class="btn" onclick="openRules()">Rules</button>
+    </div>
 
-  <p id="privacy">Privacy: This app does not collect, store, or transmit any data.</p>
+    <!-- GAME -->
+    <div id="gameScreen" class="hidden">
+        <div id="scorePanel">
+            <div id="playerName">Player</div>
+            <div id="score">100</div>
+            <div id="dots"></div>
+            <div id="lastEvent"></div>
+        </div>
 
+        <div id="pad">
+            <div class="padBtn top" onclick="hitTop()">TOP NETS<small>+20</small></div>
+            <div class="padBtn back" onclick="hitBack()">BACK NETS<small>-10</small></div>
+            <div class="padBtn bonus" onclick="hitBonus()">BONUS TARGET<small>reset to 100</small></div>
+            <div class="padBtn out" onclick="gotOut()">OUT<small>-50</small></div>
+            <div class="padBtn wide" onclick="wideBall()">WIDE<small>+10, no ball lost</small></div>
+            <div class="padBtn nothing" onclick="nothing()">NOTHING<small>next ball</small></div>
+        </div>
 
-  <div id="congrats">🎉 Congratulations! 🎉</div>
+        <button id="soundBtn" onclick="toggleSound()">Sound: ON</button>
+    </div>
+</div>
 
-  <canvas id="confetti-canvas"></canvas>
+<!-- RULES -->
+<div id="rulesOverlay" class="overlay hidden">
+    <div class="card">
+        <h2>How to Play</h2>
+        <p>Put an object behind the bowler — a bag, a pad, a box. That's the bonus target.</p>
+        <p><strong>Each player gets 18 balls and starts on 100 points.</strong></p>
+        <ul>
+            <li><strong>Top nets (+20)</strong> — ball hits the ceiling net.</li>
+            <li><strong>Back nets (-10)</strong> — ball gets past you and hits the nets behind.</li>
+            <li><strong>Bonus target</strong> — you hit the object: back to 100 points.</li>
+            <li><strong>Out (-50)</strong> — a real dismissal.</li>
+            <li><strong>Wide (+10)</strong> — no ball used up.</li>
+            <li><strong>Nothing</strong> — anywhere else. No change.</li>
+        </ul>
+        <p>Score can't go below 0. Highest score at the end wins.</p>
+        <button class="btn" onclick="closeRules()">Close</button>
+    </div>
+</div>
+
+<!-- TURN END -->
+<div id="turnOverlay" class="overlay hidden">
+    <div class="card">
+        <h2 id="turnName">Player</h2>
+        <p style="text-align:center;margin:0;">Innings over</p>
+        <div class="bigScore" id="turnScore">0</div>
+        <button class="btn" onclick="nextPlayer()">Next Player</button>
+    </div>
+</div>
+
+<!-- GAME END -->
+<div id="endOverlay" class="overlay hidden">
+    <div class="card">
+        <h2>Final Scores</h2>
+        <div id="endTable"></div>
+        <button class="btn" onclick="playAgain()">Play Again</button>
+    </div>
+</div>
 
 <script>
-(() => {
-  const scoreDisplay = document.getElementById("score");
-  const statusDisplay = document.getElementById("status");
-  const startBtn = document.getElementById("start-btn");
-  const undoBtn = document.getElementById("undo-btn");
-  const congrats = document.getElementById("congrats");
-  const confettiCanvas = document.getElementById("confetti-canvas");
-  const ctx = confettiCanvas.getContext("2d");
+/* ---------- AUDIO ---------- */
+let actx = null;
+let soundOn = true;
 
-  let currentScore = 501;
-  let history = [];
-  let recognitionActive = false;
-
-  /* ---------------- SPEECH SYNTHESIS ---------------- */
-
-  function speak(text) {
-    const utter = new SpeechSynthesisUtterance(text);
-    utter.rate = 1;
-    utter.pitch = 1;
-    speechSynthesis.speak(utter);
-  }
-
-  function numberToWords(num) {
-    return new Intl.NumberFormat("en-US", { style: "decimal" }).format(num);
-  }
-
-  /* ---------------- Confetti ---------------- */
-
-  function resizeCanvas() {
-    confettiCanvas.width = window.innerWidth;
-    confettiCanvas.height = window.innerHeight;
-  }
-  window.addEventListener("resize", resizeCanvas);
-  resizeCanvas();
-
-  const confettiCount = 150;
-  const confettiColors = ['#fce18a', '#ff726d', '#b48def', '#f4306d', '#5ad5d5'];
-  let confettiParticles = [];
-
-  function randomRange(min, max) {
-    return Math.random() * (max - min) + min;
-  }
-
-  function createConfetti() {
-    confettiParticles = [];
-    for (let i = 0; i < confettiCount; i++) {
-      confettiParticles.push({
-        x: randomRange(0, confettiCanvas.width),
-        y: randomRange(-confettiCanvas.height, 0),
-        size: randomRange(5, 10),
-        color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
-        speedX: randomRange(-2, 2),
-        speedY: randomRange(2, 5),
-        rotation: randomRange(0, 360),
-        rotationSpeed: randomRange(-10, 10)
-      });
+function ensureCtx() {
+    if (!actx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        try { actx = new AC(); } catch (e) { return null; }
     }
-  }
+    if (actx.state === "suspended") { try { actx.resume(); } catch (e) {} }
+    return actx;
+}
 
-  function updateConfetti() {
-    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-    confettiParticles.forEach(p => {
-      p.x += p.speedX;
-      p.y += p.speedY;
-      p.rotation += p.rotationSpeed;
-      if (p.y > confettiCanvas.height) {
-        p.x = randomRange(0, confettiCanvas.width);
-        p.y = randomRange(-confettiCanvas.height, 0);
-      }
-      ctx.save();
-      ctx.translate(p.x, p.y);
-      ctx.rotate((p.rotation * Math.PI) / 180);
-      ctx.fillStyle = p.color;
-      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.4);
-      ctx.restore();
-    });
-  }
+function blip(freq, offset, dur, type, peak) {
+    const ctx = ensureCtx();
+    if (!ctx) return;
+    const t0 = ctx.currentTime + offset;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = type || "sine";
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(peak || 0.18, t0 + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + dur + 0.02);
+}
 
-  let confettiAnimationId;
-  function startConfetti() {
-    createConfetti();
-    confettiAnimationId = requestAnimationFrame(confettiLoop);
-  }
+function cue(name) {
+    if (!soundOn) return;
+    switch (name) {
+        case "out":
+            blip(320, 0, 0.15, "sawtooth", 0.2);
+            blip(210, 0.13, 0.2, "sawtooth", 0.2);
+            blip(130, 0.3, 0.4, "sawtooth", 0.2);
+            break;
+        case "back":
+            blip(300, 0, 0.12, "square", 0.13);
+            blip(240, 0.1, 0.16, "square", 0.12);
+            break;
+        case "top":
+            blip(660, 0, 0.09, "triangle", 0.16);
+            blip(880, 0.09, 0.16, "triangle", 0.18);
+            break;
+        case "bonus":
+            blip(523, 0, 0.08, "triangle", 0.17);
+            blip(659, 0.07, 0.08, "triangle", 0.17);
+            blip(784, 0.14, 0.08, "triangle", 0.17);
+            blip(1046, 0.21, 0.3, "triangle", 0.2);
+            break;
+        case "wide":
+            blip(392, 0, 0.1, "sine", 0.11);
+            break;
+        default:
+            blip(430, 0, 0.06, "sine", 0.1);
+    }
+}
 
-  function confettiLoop() {
-    updateConfetti();
-    confettiAnimationId = requestAnimationFrame(confettiLoop);
-  }
+function unlockAudio() {
+    const ctx = ensureCtx();
+    if (ctx && ctx.state === "suspended") ctx.resume();
+}
 
-  function stopConfetti() {
-    cancelAnimationFrame(confettiAnimationId);
-    ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-  }
+/* ---------- SPEECH ---------- */
+const IS_WEBVIEW = /;\s*wv\)/.test(navigator.userAgent) || !("speechSynthesis" in window);
 
-  /* ---------------- Speech Recognition ---------------- */
+let ttsMode = IS_WEBVIEW ? "remote" : "native";
+let ttsStarted = false;
+let ttsProbe = null;
 
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const ttsAudio = new Audio();
+ttsAudio.preload = "auto";
 
-  if (!SpeechRecognition) {
-    statusDisplay.textContent = "Speech recognition is not supported on this device.";
-    startBtn.style.display = "none";
-  }
+function speakRemote(text) {
+    ttsAudio.src = "https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en-GB&q=" +
+        encodeURIComponent(text.slice(0, 180));
+    const p = ttsAudio.play();
+    if (p && p.catch) p.catch(function () {});
+}
 
-  let recognition;
-  if (SpeechRecognition) {
-    recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.interimResults = false;
-    recognition.continuous = true;
-
-    recognition.onresult = function(event) {
-      if (!recognitionActive) return;
-
-      const transcriptRaw = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
-
-      if (!transcriptRaw || transcriptRaw.length === 0) return;
-
-      if (transcriptRaw.includes("reset game")) {
-        resetGame();
-        statusDisplay.textContent = "Game reset. Say your throw.";
-        return;
-      }
-
-      const score = parseScore(transcriptRaw);
-
-      if (score > 0) {
-        history.push(currentScore);
-        undoBtn.style.display = "inline-block";
-
-        if (currentScore === 1) {
-          statusDisplay.textContent = `Bust! You can't finish on 1. Score remains ${currentScore}.`;
-          speak("Bust. Throw again.");
-          return;
-        }
-
-        const projectedScore = currentScore - score;
-
-        if (projectedScore < 0) {
-          statusDisplay.textContent = `Bust! Throw of ${score} too high. Score remains ${currentScore}.`;
-          speak("Bust. Throw again.");
-          return;
-        } else if (projectedScore === 0) {
-          currentScore = 0;
-          updateScoreDisplay();
-          recognition.stop();
-          recognitionActive = false;
-          statusDisplay.textContent = "You've finished the game!";
-          speak("Congratulations!");
-          showCongrats();
-          return;
-        } else {
-          currentScore = projectedScore;
-          updateScoreDisplay();
-          statusDisplay.textContent = `Registered: ${score}. Remaining: ${currentScore}`;
-          speak(numberToWords(score));
-        }
-      } else {
-        if (navigator.vibrate) navigator.vibrate(200);
-        scoreDisplay.classList.add("error-flash", "shake");
-        setTimeout(() => scoreDisplay.classList.remove("error-flash", "shake"), 400);
-        statusDisplay.textContent = `Didn't catch that. Say it again.`;
-      }
-    };
-
-    recognition.onerror = (e) => {
-      statusDisplay.textContent = `Error: ${e.error}`;
-    };
-
-    recognition.onend = () => {
-      if (recognitionActive) recognition.start();
-    };
-  }
-
-  startBtn.addEventListener("click", () => {
-    if (!SpeechRecognition) return;
-
+function speakNative(text, onFail) {
     try {
-      speak("Ready"); // unlock speech
-      recognition.start();
-      recognitionActive = true;
-      startBtn.style.display = "none";
-      statusDisplay.textContent = "Listening...";
-    } catch (err) {
-      statusDisplay.textContent = "Speech recognition is not supported on this device or browser.";
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.rate = 1.05;
+        utter.pitch = 1;
+        utter.volume = 1;
+        utter.onstart = function () { ttsStarted = true; };
+
+        if (!ttsStarted) {
+            clearTimeout(ttsProbe);
+            ttsProbe = setTimeout(function () {
+                if (!ttsStarted) { ttsMode = "remote"; if (onFail) onFail(); }
+            }, 1500);
+        }
+
+        const voices = speechSynthesis.getVoices();
+        const preferred = voices.find(v => /english|male|child/i.test(v.name));
+        if (preferred) utter.voice = preferred;
+
+        setTimeout(function () {
+            try { speechSynthesis.speak(utter); } catch (e) { ttsMode = "remote"; }
+        }, 0);
+    } catch (e) {
+        ttsMode = "remote";
+        if (onFail) onFail();
     }
-  });
+}
 
-  /* ---------------- Undo ---------------- */
-
-  undoBtn.addEventListener("click", () => {
-    if (history.length > 0) {
-      currentScore = history.pop();
-      updateScoreDisplay();
-      statusDisplay.textContent = `Undo successful. Score: ${currentScore}`;
-      if (history.length === 0) undoBtn.style.display = "none";
+function speak(text) {
+    if (!soundOn) return;
+    if (ttsMode === "native") {
+        speakNative(text, function () { speakRemote(text); });
     } else {
-      statusDisplay.textContent = "No previous score to undo.";
+        speakRemote(text);
     }
-  });
+}
 
-  /* ---------------- Helpers ---------------- */
-
-  function parseScore(phrase) {
-    phrase = phrase.replace(/outer bull/gi, '25').replace(/bull/gi, '50');
-    phrase = phrase.replace(/times/gi, 'x');
-    const match = phrase.match(/^(\d+)\s*x\s*(\d+)$/);
-    if (match) {
-      const n = parseInt(match[1]);
-      const val = parseInt(match[2]);
-      if (n >= 1 && n <= 3 && val >= 1 && val <= 60) {
-        return n * val;
-      }
+function toggleSound() {
+    soundOn = !soundOn;
+    document.getElementById("soundBtn").innerText = soundOn ? "Sound: ON" : "Sound: OFF";
+    if (soundOn) { unlockAudio(); cue("default"); }
+    else {
+        try { ttsAudio.pause(); } catch (e) {}
+        try { speechSynthesis.cancel(); } catch (e) {}
     }
-    if (phrase === "50") return 50;
-    if (phrase === "25") return 25;
-    return 0;
-  }
+}
 
-  function updateScoreDisplay() {
-    scoreDisplay.textContent = currentScore;
-    scoreDisplay.style.fontSize = currentScore < 100 ? "50vw" : "35vw";
-  }
+window.addEventListener("pointerdown", unlockAudio, { once: true });
+if ("speechSynthesis" in window) {
+    speechSynthesis.onvoiceschanged = function () { speechSynthesis.getVoices(); };
+    speechSynthesis.getVoices();
+}
 
-  function showCongrats() {
-    congrats.style.display = "block";
-    startConfetti();
-    setTimeout(() => {
-      congrats.style.display = "none";
-      stopConfetti();
-      resetGame();
-      startBtn.style.display = "inline-block";
-      statusDisplay.textContent = 'Clearly say each throw as "N times X" (e.g. "1 times 20").';
-    }, 8000);
-  }
+/* ---------- STATE ---------- */
+const BALLS_PER_PLAYER = 18;
+const START_SCORE = 100;
 
-  function resetGame() {
-    currentScore = 501;
-    history = [];
-    undoBtn.style.display = "none";
-    updateScoreDisplay();
-  }
+let players = [];
+let scores = [];
+let currentIndex = 0;
+let ballsLeft = 0;
+let score = START_SCORE;
 
-})();
+/* ---------- SETUP ---------- */
+function openRules() { document.getElementById("rulesOverlay").classList.remove("hidden"); }
+function closeRules() { document.getElementById("rulesOverlay").classList.add("hidden"); }
+
+function startGame() {
+    unlockAudio();
+
+    const names = [
+        document.getElementById("p1").value.trim() || "Player 1",
+        document.getElementById("p2").value.trim(),
+        document.getElementById("p3").value.trim(),
+        document.getElementById("p4").value.trim(),
+        document.getElementById("p5").value.trim()
+    ].filter(n => n && n.length > 0);
+
+    if (names.length < 2) {
+        alert("Please enter at least 2 player names.");
+        return;
+    }
+
+    players = names;
+    scores = players.map(() => START_SCORE);
+    currentIndex = 0;
+
+    document.getElementById("setupScreen").classList.add("hidden");
+    document.getElementById("gameScreen").classList.remove("hidden");
+    startTurn();
+}
+
+function startTurn() {
+    ballsLeft = BALLS_PER_PLAYER;
+    score = START_SCORE;
+    document.getElementById("playerName").innerText = players[currentIndex];
+    document.getElementById("lastEvent").innerText = "";
+    renderScore();
+    renderDots();
+}
+
+/* ---------- RENDER ---------- */
+function renderScore() {
+    const el = document.getElementById("score");
+    el.innerText = score;
+    el.classList.remove("bump");
+    void el.offsetWidth;
+    el.classList.add("bump");
+}
+
+function renderDots() {
+    const box = document.getElementById("dots");
+    box.innerHTML = "";
+    for (let i = 0; i < BALLS_PER_PLAYER; i++) {
+        const d = document.createElement("div");
+        d.className = "dot" + (i < BALLS_PER_PLAYER - ballsLeft ? " spent" : "");
+        box.appendChild(d);
+    }
+}
+
+function say(text) {
+    document.getElementById("lastEvent").innerText = text;
+    speak(text);
+}
+
+/* ---------- BALL ACTIONS ---------- */
+function spendBall() {
+    ballsLeft--;
+    renderDots();
+    if (ballsLeft <= 0) {
+        endTurn();
+        return true;
+    }
+    return false;
+}
+
+function hitTop() {
+    if (ballsLeft <= 0) return;
+    score += 20;
+    cue("top");
+    say("Top nets! Plus twenty.");
+    renderScore();
+    spendBall();
+}
+
+function hitBack() {
+    if (ballsLeft <= 0) return;
+    score = Math.max(0, score - 10);
+    cue("back");
+    say("Back nets. Minus ten.");
+    renderScore();
+    spendBall();
+}
+
+function hitBonus() {
+    if (ballsLeft <= 0) return;
+    score = START_SCORE;
+    cue("bonus");
+    say("Bonus target! Back to a hundred!");
+    renderScore();
+    spendBall();
+}
+
+function gotOut() {
+    if (ballsLeft <= 0) return;
+    score = Math.max(0, score - 50);
+    cue("out");
+    say("Out! Minus fifty.");
+    renderScore();
+    spendBall();
+}
+
+function wideBall() {
+    if (ballsLeft <= 0) return;
+    score += 10;
+    cue("wide");
+    say("Wide. Plus ten.");
+    renderScore();
+}
+
+function nothing() {
+    if (ballsLeft <= 0) return;
+    cue("default");
+    say("");
+    spendBall();
+}
+
+/* ---------- TURN / GAME END ---------- */
+function endTurn() {
+    scores[currentIndex] = score;
+    document.getElementById("turnName").innerText = players[currentIndex];
+    document.getElementById("turnScore").innerText = score;
+    document.getElementById("turnOverlay").classList.remove("hidden");
+    speak(players[currentIndex] + " finishes on " + score + ".");
+}
+
+function nextPlayer() {
+    document.getElementById("turnOverlay").classList.add("hidden");
+    currentIndex++;
+    if (currentIndex >= players.length) {
+        showFinal();
+    } else {
+        startTurn();
+    }
+}
+
+function showFinal() {
+    const rows = players.map((p, i) => ({ name: p, score: scores[i] }))
+        .sort((a, b) => b.score - a.score);
+
+    const table = document.getElementById("endTable");
+    table.innerHTML = "";
+    rows.forEach((r, i) => {
+        const div = document.createElement("div");
+        div.className = "tableRow" + (i === 0 ? " first" : "");
+        div.innerHTML = "<span>" + (i + 1) + ". " + r.name + "</span><span>" + r.score + "</span>";
+        table.appendChild(div);
+    });
+
+    document.getElementById("endOverlay").classList.remove("hidden");
+    speak(rows[0].name + " wins with " + rows[0].score + "!");
+}
+
+function playAgain() {
+    document.getElementById("endOverlay").classList.add("hidden");
+    document.getElementById("gameScreen").classList.add("hidden");
+    document.getElementById("setupScreen").classList.remove("hidden");
+}
 </script>
-
 </body>
 </html>
-
