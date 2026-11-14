@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -303,10 +302,10 @@
         </div>
 
         <div id="pad">
-            <div class="padBtn top" onclick="hitTop()">TOP NETS<small>+20</small></div>
+            <div class="padBtn top" onclick="hitTop()">TOP NETS<small>+30</small></div>
             <div class="padBtn back" onclick="hitBack()">BACK NETS<small>-10</small></div>
             <div class="padBtn bonus" onclick="hitBonus()">BONUS TARGET<small>reset to 100</small></div>
-            <div class="padBtn out" onclick="gotOut()">OUT<small>-50</small></div>
+            <div class="padBtn out" onclick="gotOut()">OUT<small>-25</small></div>
             <div class="padBtn wide" onclick="wideBall()">WIDE<small>+10, no ball lost</small></div>
             <div class="padBtn nothing" onclick="nothing()">NOTHING<small>next ball</small></div>
         </div>
@@ -322,13 +321,14 @@
         <p>Put an object behind the bowler — a bag, a pad, a box. That's the bonus target.</p>
         <p><strong>Each player gets 18 balls and starts on 100 points.</strong></p>
         <ul>
-            <li><strong>Top nets (+20)</strong> — ball hits the ceiling net.</li>
+            <li><strong>Top nets (+30)</strong> — ball hits the ceiling net. The bowler can catch you off the rebound, and that counts as an out.</li>
             <li><strong>Back nets (-10)</strong> — ball gets past you and hits the nets behind.</li>
             <li><strong>Bonus target</strong> — you hit the object: back to 100 points.</li>
-            <li><strong>Out (-50)</strong> — a real dismissal.</li>
+            <li><strong>Out (-25)</strong> — a real dismissal, including caught off the nets.</li>
             <li><strong>Wide (+10)</strong> — no ball used up.</li>
             <li><strong>Nothing</strong> — anywhere else. No change.</li>
         </ul>
+        <p><strong>If you're over 100 points, the bonus target becomes something to avoid</strong> — hitting it drags you back down to 100.</p>
         <p>Score can't go below 0. Highest score at the end wins.</p>
         <button class="btn" onclick="closeRules()">Close</button>
     </div>
@@ -493,6 +493,10 @@ if ("speechSynthesis" in window) {
 /* ---------- STATE ---------- */
 const BALLS_PER_PLAYER = 18;
 const START_SCORE = 100;
+const TOP_NET_BONUS = 30;
+const OUT_COST = 25;
+const BACK_NET_COST = 10;
+const WIDE_BONUS = 10;
 
 let players = [];
 let scores = [];
@@ -575,16 +579,16 @@ function spendBall() {
 
 function hitTop() {
     if (ballsLeft <= 0) return;
-    score += 20;
+    score += TOP_NET_BONUS;
     cue("top");
-    say("Top nets! Plus twenty.");
+    say("Top nets! Plus thirty.");
     renderScore();
     spendBall();
 }
 
 function hitBack() {
     if (ballsLeft <= 0) return;
-    score = Math.max(0, score - 10);
+    score = Math.max(0, score - BACK_NET_COST);
     cue("back");
     say("Back nets. Minus ten.");
     renderScore();
@@ -602,16 +606,16 @@ function hitBonus() {
 
 function gotOut() {
     if (ballsLeft <= 0) return;
-    score = Math.max(0, score - 50);
+    score = Math.max(0, score - OUT_COST);
     cue("out");
-    say("Out! Minus fifty.");
+    say("Out! Minus twenty-five.");
     renderScore();
     spendBall();
 }
 
 function wideBall() {
     if (ballsLeft <= 0) return;
-    score += 10;
+    score += WIDE_BONUS;
     cue("wide");
     say("Wide. Plus ten.");
     renderScore();
