@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#08080c">
-<title>GYRADIO — Memory Jukebox</title>
+<title>Glory Years Radio — Memory Jukebox</title>
 <style>
   :root {
     --bg: #08080c;
@@ -41,9 +41,10 @@
 
   h1 {
     margin: 0;
-    font-size: clamp(2rem, 9vw, 2.75rem);
-    letter-spacing: 0.16em;
+    font-size: clamp(1.6rem, 7.4vw, 2.3rem);
+    letter-spacing: 0.07em;
     font-weight: 800;
+    text-transform: uppercase;
     background: linear-gradient(90deg, var(--blue), var(--pink), var(--blue));
     background-size: 220% auto;
     -webkit-background-clip: text;
@@ -219,6 +220,22 @@
     text-align: center;
   }
 
+  footer {
+    margin-top: 34px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    font-size: 0.95rem;
+  }
+
+  footer a {
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--line);
+  }
+
+  footer a:hover { color: var(--blue); border-bottom-color: var(--blue); }
+
   @keyframes shimmer {
     from { background-position: 0% center; }
     to { background-position: 220% center; }
@@ -239,13 +256,13 @@
 <body>
 <main>
   <header>
-    <h1>GYRADIO</h1>
+    <h1>Glory Years Radio</h1>
     <p class="tagline">Memory Jukebox</p>
   </header>
 
   <section class="now" aria-live="polite">
     <h2>Now Playing</h2>
-    <p id="nowTitle" class="empty">Press Surprise Me</p>
+    <p id="nowTitle" class="empty">Loading a song…</p>
   </section>
 
   <div id="playerHost" class="player"></div>
@@ -266,6 +283,10 @@
   </section>
 
   <p id="status" role="status"></p>
+
+  <footer>
+    <a href="/privacy.html">Privacy policy</a>
+  </footer>
 </main>
 
 <script>
@@ -274,6 +295,7 @@
 
   var CATALOG_URL = "/data/gy_radio_bumpers.json";
   var FAV_KEY = "gyradio.favorites.v1";
+  var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   var host = document.getElementById("playerHost");
   var nowTitle = document.getElementById("nowTitle");
@@ -294,6 +316,14 @@
     statusEl.textContent = msg;
     clearTimeout(statusTimer);
     statusTimer = setTimeout(function () { statusEl.textContent = ""; }, 2600);
+  }
+
+  function toTop() {
+    if (window.scrollY < 40) return;
+    window.scrollTo({
+      top: 0,
+      behavior: reduceMotion ? "auto" : "smooth"
+    });
   }
 
   // ---- Favorites storage --------------------------------------------------
@@ -345,12 +375,8 @@
     frame.src = url;
   }
 
-  // ---- Surprise Me --------------------------------------------------------
-  function surprise() {
-    if (!catalog.length) {
-      say("Song list not loaded yet.");
-      return;
-    }
+  function randomSong() {
+    if (!catalog.length) return;
     var pool = catalog.filter(function (s) { return !current || s.id !== current.id; });
     if (!pool.length) pool = catalog;
     loadSong(pool[Math.floor(Math.random() * pool.length)]);
@@ -395,6 +421,7 @@
       play.textContent = fav.title;
       play.addEventListener("click", function () {
         loadSong({ id: fav.id, title: fav.title });
+        toTop();
       });
 
       var del = document.createElement("button");
@@ -429,11 +456,11 @@
       return s && typeof s.id === "string" && typeof s.title === "string";
     });
     if (!catalog.length) throw new Error("catalog is empty");
-    loadSong(catalog[0]);
+    randomSong();
   }
 
   // ---- Boot ---------------------------------------------------------------
-  surpriseBtn.addEventListener("click", surprise);
+  surpriseBtn.addEventListener("click", randomSong);
   favBtn.addEventListener("click", addFavorite);
 
   renderFavs();
