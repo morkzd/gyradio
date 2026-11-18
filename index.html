@@ -165,6 +165,20 @@
     cursor: default;
   }
 
+  #appLink {
+    margin: -22px 0 30px;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  #appLink a {
+    color: var(--blue);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(143, 214, 255, 0.5);
+  }
+
+  #appLink a:hover { color: var(--pink); border-bottom-color: var(--pink); }
+
   .favorites { margin-bottom: 20px; }
 
   #favList { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
@@ -268,13 +282,18 @@
   <div id="playerHost" class="player"></div>
 
   <p id="sunoLink">
-    <a id="sunoAnchor" href="https://suno.com" target="_blank" rel="noopener">Suno</a>
+    <a id="sunoAnchor" href="https://suno.com" target="_blank" rel="noopener">Listen on Suno</a>
   </p>
 
   <div class="controls">
     <button id="surpriseBtn" type="button">Change Song</button>
     <button id="favBtn" type="button">Add To Favorites</button>
   </div>
+
+  <p id="appLink">
+    <a href="https://play.google.com/store/apps/details?id=com.gloryyears.radio&pcampaignid=web_share"
+       target="_blank" rel="noopener">Get the app</a>
+  </p>
 
   <section class="favorites">
     <h2 id="favHeading">Favorites (0)</h2>
